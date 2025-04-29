@@ -1,4 +1,11 @@
 
+# Planicocina
+
+Backend API para la aplicación de recetas
+
+
+
+
 ## Requerimientos
 
 Preferentemente utilizar IntelliJ IDEA, ya que el siguiente readme está basado en ese IDE.
