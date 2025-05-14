@@ -1,5 +1,5 @@
 
-# Planicocina
+# Cuoto
 
 Backend API para la aplicación de recetas
 
@@ -18,12 +18,12 @@ Gradle para la consola (Opcional)
 
 ## Configuración
 
-- Abrir el editor de base de datos y crear un nuevo schema que se llame `planicocina`.
+- Abrir el editor de base de datos y crear un nuevo schema que se llame `cuoco`.
 
 - Clonar el repositorio
 
     ```bash
-    git clone https://github.com/adigio/planicocina-api
+    git clone https://github.com/adigio/cuoco-api
     ```
 
 - Abrir el proyecto con el IDE y luego el archivo build.gradle. Es probable que el IDE inicie la instalación de dependencias automaticamente. En caso de no ejecutar, nos aparecerá el elefante de Gradle con la opción `Sync Gradle Changes`
@@ -47,7 +47,7 @@ Si la configuración no aparece, debemos hacer lo siguiente:
 - Ir a Edit Configurations
 - En el + agregamos un nuevo build que sea Gradle
 - En `Run` agregamos la opcion `bootRun`
-- En Gradle Project debe aparecer planicocina-api
+- En Gradle Project debe aparecer cuoco-api
 - Ejecutar Run (preferentemente Debug)
 
 Si tenemos un error de Java al tratar de ejecutar, es posible que debamos configurar dentro de

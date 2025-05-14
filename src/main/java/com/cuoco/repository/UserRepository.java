@@ -1,6 +1,6 @@
-package com.planicocina.repository;
+package com.cuoco.repository;
 
-import com.planicocina.model.User;
+import com.cuoco.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

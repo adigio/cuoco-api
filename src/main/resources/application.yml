@@ -1,8 +1,8 @@
 spring:
   application:
-    name: planicocina
+    name: cuoco
   datasource:
-    url: jdbc:mysql://localhost:3306/planicocina?serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/cuoco?serverTimezone=UTC
     username: root
     password: root
   jpa:

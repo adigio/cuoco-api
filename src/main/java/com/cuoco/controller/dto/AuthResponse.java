@@ -1,4 +1,4 @@
-package com.planicocina.controller.dto;
+package com.cuoco.controller.dto;
 
 public class AuthResponse {
     private String token;
