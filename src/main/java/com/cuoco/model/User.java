@@ -1,4 +1,4 @@
-package com.planicocina.model;
+package com.cuoco.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -1,7 +1,7 @@
-package com.planicocina.service.impl;
+package com.cuoco.service.impl;
 
-import com.planicocina.model.User;
-import com.planicocina.repository.UserRepository;
+import com.cuoco.model.User;
+import com.cuoco.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

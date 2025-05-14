@@ -1,8 +1,8 @@
-package com.planicocina.service.impl;
+package com.cuoco.service.impl;
 
-import com.planicocina.model.User;
-import com.planicocina.repository.UserRepository;
-import com.planicocina.service.UserService;
+import com.cuoco.model.User;
+import com.cuoco.repository.UserRepository;
+import com.cuoco.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

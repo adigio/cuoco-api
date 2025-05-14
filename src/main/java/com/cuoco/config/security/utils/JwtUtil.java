@@ -1,4 +1,4 @@
-package com.planicocina.config.security.utils;
+package com.cuoco.config.security.utils;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
