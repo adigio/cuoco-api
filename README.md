@@ -1,5 +1,5 @@
 
-# Cuoto
+# Cuoco
 
 Backend API para la aplicación de recetas
 
