@@ -1,7 +1,7 @@
-package com.planicocina.config.security;
+package com.cuoco.config.security;
 
-import com.planicocina.config.security.utils.JwtUtil;
-import com.planicocina.service.impl.UserDetailsServiceImpl;
+import com.cuoco.config.security.utils.JwtUtil;
+import com.cuoco.service.impl.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

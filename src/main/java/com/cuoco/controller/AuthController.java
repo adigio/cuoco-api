@@ -1,11 +1,10 @@
-package com.planicocina.controller;
+package com.cuoco.controller;
 
-import com.planicocina.config.security.utils.JwtUtil;
-import com.planicocina.controller.dto.AuthRequest;
-import com.planicocina.controller.dto.AuthResponse;
-import com.planicocina.service.UserService;
-import com.planicocina.service.impl.UserDetailsServiceImpl;
-import com.planicocina.service.impl.UserServiceImpl;
+import com.cuoco.config.security.utils.JwtUtil;
+import com.cuoco.controller.dto.AuthRequest;
+import com.cuoco.controller.dto.AuthResponse;
+import com.cuoco.service.UserService;
+import com.cuoco.service.impl.UserDetailsServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

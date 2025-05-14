@@ -1,6 +1,6 @@
-package com.planicocina.config.security;
+package com.cuoco.config.security;
 
-import com.planicocina.service.impl.UserDetailsServiceImpl;
+import com.cuoco.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
