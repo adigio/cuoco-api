@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "striking-port-400505",
+  "private_key_id": "b182aa2f9549a422f1c1bae0f8ce0741c99d2797",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDG2vqZcUFUJozf\n2uXwQXkXGVVqRu+kHWK6fmudljbA6PbO/hgFmYBWEd0glNt89n1LN1IOE4NMu6g4\nnRFlsBRWii14xRj9NWsGBLdLjw2//MH/Tc1rEl7l5So3nS95jLnx3ixTYrlV6150\ngTeSx9LpTtzQ35t/YJonweHSvXk7PlZV5ya+A9/A/Rgw+NA+Q437X7d6lDuh+PD9\nV4PsmJCpc6pLCdYxyEiqrF80vp/EGmbskni5ySbX5Z3iDRIMOEkLKEZj2eYi3F0y\nHTySCRs8M797ca2xmTeCh1JujTkYM2vZePAvLl3Q2DJjAJrdwfet1+1swNvpnxiv\n7IFYvqKBAgMBAAECggEABtAJPlkGNTEV6fRopMTFdoBgcAHqo1t7XqrGmpFDInRI\nwlorrgNuhWRayEs5Qsx6CenlBoTuHmKedoQRDMQNylI1ERpliwU5u6zNL8pAnRd2\neP3sH/My65rgiaO5tOcYlrv3Fks/UL190K19nyp35BTW1VQX0nMXjO2kRDFIFjqy\nwT0y0k4lxBdxnCHqsYGDTn5df3sbbU4RbAx8RgVCI5xvlsLYHHawQxuMZ2dRe+nN\nAagP3V4bKP/3S7nctuHr6+KTVGRSQu7uBYdb2xXaLEzwkn+T6Mxo41mCm7FUB3Xf\noteSbLwsDsLxiDfS0sbDZ4rlRcC0rFQA6T5oRv6PHQKBgQDxa/2IOkUHdJSW9cyM\nqHVk5W1bR5T9O3YhhXfpKSDacS31kWusWx9OOV/Fx/U48mT81gBQWz3K+0Ok1C8D\nKmE+mlXgFoS/W0Wi4GOqhCwpTw41q/H5KU84ApQ7TtslO2ZIJWdnDVY0C/XJeqRQ\nAN5qYtmtbPUKGuenaJd06obplQKBgQDS3PoPOLJEKURAoYerb7MaO+x9OaBrXLwF\nldBYqSAvNVPoLpR1OgWBzkY90QpnrSloqvVLWj5WEDYxEoYvaBTN3Ke7cvhSrR1c\nOu9QnSkbwPOc29MBmC/PPYuflK+SiFptBWzraN3qjau7o14GyEx08ZGGpS615ckA\nqD15C1qSPQKBgQCUwOJ11tmDr3yCy68emAnFgmvwS1ns8n9mRjPNUY8xqX0VC2ZZ\ny8etTkLJvdxGG2zIMR/+Y0ne0RUr8aWKAMnsZfI14gonUhjFNBeVEF2ZkmGCBpFQ\n4fgy3bvyEzOKbGAoYgulfp038oqee1fVB8QDrybK6hDOCifkidiQrJU2RQKBgQDQ\n3/KYl2oHGPWyLBAvY1OAPjHSDf55u3/I7JFY8heei+3VBicrRFFmNwXfgC4VazOk\nqgyYGwm6yQ5VZ+siFLDfB5/jkEyp4TA/R2X+bd/lzSnEjQClCLL7UBT5/Bg7R/SD\nICe3vcZt7O5bzcV7ZHhQM2cbgI8Xwkps6zsRp4yNZQKBgQDq4x6WSQTuzmks2acd\nvAOlONUWrV1Uv2Dnz7bjQUSZA2U4W61pjLocYMO3WezqRmnJlsRf+7N89thJiNVH\nBHK4/nDu49Q5phFETUGbpgN7+rKNPsAMuhCEDIEhT+Zlx1W9PT7utUHyriqJPnDG\nRnsxyd4HLFtRFQTKqsHdXp5l6w==\n-----END PRIVATE KEY-----\n",
+  "client_email": "planicocina-upload@striking-port-400505.iam.gserviceaccount.com",
+  "client_id": "103919708013352687975",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/planicocina-upload%40striking-port-400505.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
