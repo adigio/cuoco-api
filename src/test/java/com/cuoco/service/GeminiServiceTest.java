@@ -1,4 +1,4 @@
-package com.ServiceTest;
+package com.cuoco.service;
 
 import com.cuoco.CuocoApplicationTests;
 import com.cuoco.model.Receta;

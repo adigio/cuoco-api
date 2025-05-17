@@ -1,4 +1,4 @@
-package com.ControllerTest;
+package com.cuoco.controller;
 
 import com.cuoco.controller.UploadController;
 import com.cuoco.service.impl.GeminiServiceImpl;
@@ -100,4 +100,4 @@ public class UploadControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST, respuesta.getStatusCode());
         assertTrue(respuesta.getBody().toString().contains("no se proporcionaron ingredientes"));
     }
-}
+} 
