@@ -1,9 +1,10 @@
 package com.cuoco.service;
 
-import com.cuoco.CuocoApplicationTests;
+import com.cuoco.CuocoApplication;
 import com.cuoco.service.impl.GeminiServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
@@ -12,19 +13,13 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
-@SpringBootTest(classes = CuocoApplicationTests.class)
+@SpringBootTest
 @ActiveProfiles("test")
 public class GeminiServiceTest {
 
+    @Autowired
     private GeminiServiceImpl geminiService;
-
-
-    @BeforeEach
-    public void init() {
-        geminiService = mock(GeminiServiceImpl.class);
-    }
 
     private void imprimirEncabezado(String nombreTest) {
         System.out.println("\n===========================================================");
