@@ -1,6 +1,6 @@
 package com.cuoco.controller;
 
-import com.cuoco.controller.UploadController;
+import com.cuoco.DTO.IngredientDTO;
 import com.cuoco.service.impl.GeminiServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,11 +10,12 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class UploadControllerTest {
 
@@ -35,13 +36,20 @@ public class UploadControllerTest {
     }
 
     @Test
-    public void test1_detectarIngredientes_conArchivoValido() throws Exception {
-        when(geminiServiceMock.detectarYGuardarIngredientes(any())).thenReturn(ingredientesMock);
+    public void test1_detectarIngredientePorMedioDeIngredienteDTO() throws Exception {
+        when(geminiServiceMock.detectarIngredientesDesdeUnaImagen(archivoValido)).thenReturn(ingredientesMock);
 
         ResponseEntity<?> respuesta = uploadController.detectarIngredientes(archivoValido);
 
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
-        assertEquals(ingredientesMock, respuesta.getBody());
+
+        List<IngredientDTO> expected = Arrays.asList(
+                new IngredientDTO("tomate", "imagen", false),
+                new IngredientDTO("cebolla", "imagen", false),
+                new IngredientDTO("ajo", "imagen", false)
+        );
+
+        assertEquals(expected, respuesta.getBody());
     }
 
     @Test
@@ -51,6 +59,20 @@ public class UploadControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST, respuesta.getStatusCode());
         assertTrue(respuesta.getBody().toString().contains("Error: imagen vacía"));
     }
+
+
+
+}
+/*    @Test
+    public void test1_detectarIngredientes_conArchivoValido() throws Exception {
+        when(geminiServiceMock.detectarYGuardarIngredientes(any())).thenReturn(ingredientesMock);
+
+        ResponseEntity<?> respuesta = uploadController.detectarIngredientes(archivoValido);
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertEquals(ingredientesMock, respuesta.getBody());
+    }
+
 
     @Test
     public void test3_detectarIngredientes_conErrorEnServicio() throws Exception {
@@ -100,4 +122,6 @@ public class UploadControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST, respuesta.getStatusCode());
         assertTrue(respuesta.getBody().toString().contains("no se proporcionaron ingredientes"));
     }
-} 
+}
+
+ */

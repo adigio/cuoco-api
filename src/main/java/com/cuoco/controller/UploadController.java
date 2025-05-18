@@ -1,14 +1,17 @@
 package com.cuoco.controller;
 
+import com.cuoco.DTO.IngredientDTO;
 import com.cuoco.service.impl.GeminiServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/ingredientes")
@@ -16,13 +19,10 @@ public class UploadController {
 
     @Autowired
     private GeminiServiceImpl geminiService;
-    
-    // Constructor para facilitar testing
+
     public UploadController() {
-        // Constructor vacío para Spring
     }
-    
-    // Constructor para inyección manual en tests
+
     public UploadController(GeminiServiceImpl geminiService) {
         this.geminiService = geminiService;
     }
@@ -34,14 +34,19 @@ public class UploadController {
         }
 
         try {
-            List<String> ingredientes = geminiService.detectarYGuardarIngredientes(file);
+            List<String> nombres = geminiService.detectarIngredientesDesdeUnaImagen(file);
+            List<IngredientDTO> ingredientes = new ArrayList<>();
+            for (String nombre : nombres) {
+                ingredientes.add(new IngredientDTO(nombre, "imagen", false));
+            }
             return ResponseEntity.ok(ingredientes);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Error al procesar la imagen: " + e.getMessage());
         }
     }
+}
     
-    @PostMapping("/detectar-y-receta")
+/*    @PostMapping("/detectar-y-receta")
     public ResponseEntity<?> detectarYGenerarReceta(@RequestParam("file") MultipartFile file) {
         if (file == null || file.isEmpty()) {
             return ResponseEntity.badRequest().body("Error: imagen vacía o no enviada");
@@ -74,4 +79,6 @@ public class UploadController {
             return ResponseEntity.internalServerError().body("Error al generar la receta: " + e.getMessage());
         }
     }
-}
+*/
+
+

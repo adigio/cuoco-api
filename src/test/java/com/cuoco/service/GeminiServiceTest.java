@@ -1,7 +1,6 @@
 package com.cuoco.service;
 
 import com.cuoco.CuocoApplicationTests;
-import com.cuoco.model.Receta;
 import com.cuoco.service.impl.GeminiServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -166,7 +165,8 @@ public class GeminiServiceTest {
                                 i.toLowerCase().contains("bebida")),
                 "Debería detectar Coca-Cola, botellas o recipientes");
     }
-
+}
+/*
     @Test
     public void test5_generarRecetaDesdeIngredientesDetectados() throws Exception {
         imprimirEncabezado("TEST 5 - GENERACIÓN DE RECETA DESDE INGREDIENTES DETECTADOS");
@@ -238,3 +238,5 @@ public class GeminiServiceTest {
         System.out.println("-----------------------------------------------------------");
     }
 }
+
+*/

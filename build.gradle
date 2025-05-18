@@ -29,7 +29,8 @@ dependencies {
 	implementation 'com.google.protobuf:protobuf-java:4.28.2'
 	implementation 'org.jetbrains.kotlinx:kotlinx-io-bytestring-jvm:0.5.4'
     implementation 'net.javacrumbs.hamcrest-logger:hamcrest-logger:0.0.1'
-    
+    implementation 'com.github.lolgab:snunit-autowire_native0.4.0-M2_2.11:0.0.4'
+
     // Lombok configuration
     compileOnly 'org.projectlombok:lombok:1.18.28'
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
