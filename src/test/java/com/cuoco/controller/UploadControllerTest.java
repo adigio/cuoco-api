@@ -37,8 +37,9 @@ public class UploadControllerTest {
     @Test
     public void test1_detectarIngredientePorMedioDeIngredienteDTO() throws Exception {
         when(geminiServiceMock.detectarIngredientesDesdeUnaImagen(archivoValido)).thenReturn(ingredientesMock);
+        List imagenes = Arrays.asList(archivoValido);
 
-        ResponseEntity<?> respuesta = uploadController.detectarIngredientes(archivoValido);
+        ResponseEntity<?> respuesta = uploadController.detectarIngredientes(imagenes);
 
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
 
@@ -53,7 +54,8 @@ public class UploadControllerTest {
 
     @Test
     public void test2_detectarIngredientes_conArchivoVacio() {
-        ResponseEntity<?> respuesta = uploadController.detectarIngredientes(archivoVacio);
+        List imagenes = Arrays.asList(archivoVacio);
+        ResponseEntity<?> respuesta = uploadController.detectarIngredientes(imagenes);
 
         assertEquals(HttpStatus.BAD_REQUEST, respuesta.getStatusCode());
         assertTrue(respuesta.getBody().toString().contains("Error: imagen vacía"));

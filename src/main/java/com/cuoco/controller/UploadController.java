@@ -4,10 +4,7 @@ import com.cuoco.DTO.IngredientDTO;
 import com.cuoco.service.impl.GeminiServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -28,17 +25,20 @@ public class UploadController {
     }
 
     @PostMapping("/detectar")
-    public ResponseEntity<?> detectarIngredientes(@RequestParam("file") MultipartFile file) {
-        if (file == null || file.isEmpty()) {
+    public ResponseEntity<?> detectarIngredientes(@RequestBody List<MultipartFile> files) {
+        if (files == null || files.size() == 0) {
             return ResponseEntity.badRequest().body("Error: imagen vacía o no enviada");
         }
-
+        List<IngredientDTO> ingredientes = new ArrayList<>();
         try {
-            List<String> nombres = geminiService.detectarIngredientesDesdeUnaImagen(file);
-            List<IngredientDTO> ingredientes = new ArrayList<>();
-            for (String nombre : nombres) {
-                ingredientes.add(new IngredientDTO(nombre, "imagen", false));
+            for (MultipartFile file : files) {
+                List<String> nombres = geminiService.detectarIngredientesDesdeUnaImagen(file);
+
+                for (String nombre : nombres) {
+                    ingredientes.add(new IngredientDTO(nombre, "imagen", false));
+                }
             }
+
             return ResponseEntity.ok(ingredientes);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Error al procesar la imagen: " + e.getMessage());

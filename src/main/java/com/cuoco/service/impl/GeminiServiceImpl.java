@@ -1,5 +1,8 @@
 package com.cuoco.service.impl;
 
+import com.cuoco.model.Ingrediente;
+import com.cuoco.model.Receta;
+import com.cuoco.repository.IngredienteRepository;
 import com.cuoco.repository.RecetaRepository;
 import com.cuoco.service.GeminiService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -14,9 +17,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 
 @Service("gemini")
 public class GeminiServiceImpl implements GeminiService {
@@ -27,6 +28,9 @@ public class GeminiServiceImpl implements GeminiService {
 
     @Autowired
     private RecetaRepository recetaRepository;
+
+    @Autowired
+    private IngredienteRepository ingredienteRepository;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -93,8 +97,7 @@ public class GeminiServiceImpl implements GeminiService {
     }
 
 
-    /*    @Autowired
-    private IngredienteRepository ingredienteRepository;
+    /*
 
     @Override
         public List<String> detectarYGuardarIngredientes(MultipartFile archivo) throws IOException, InterruptedException {
@@ -120,6 +123,7 @@ public class GeminiServiceImpl implements GeminiService {
                 }
             }
         }
+*/
 
     @Override
     public String generarRecetaDesdeIngredientes(List<String> ingredientes) throws IOException, InterruptedException {
@@ -131,7 +135,7 @@ public class GeminiServiceImpl implements GeminiService {
             {
               "contents": [{
                 "parts": [{
-                  "text": "Con los siguientes ingredientes que te vamos a pasar de acá: %s. Generá una receta en español, clara, paso a paso, ideal para cocinar en casa. No inventes ingredientes adicionales. Solo usá los listados. No des contexto, solo la receta."
+                  "text": "Con los siguientes ingredientes que te vamos a pasar de acá: %s. Generá unas 6 recetas en español, claras, paso a paso, ideal para cocinar en casa. Solo recetas que incluyan los ingredientes mencionados, de no haber ir agregandole ingredientes comunes de mesa. No des contexto, solo las recetas."
                 }]
               }],
               "generation_config": {
@@ -147,7 +151,7 @@ public class GeminiServiceImpl implements GeminiService {
         return extraerTextoDeRespuesta(respuesta.body());
     }
     
-    @Override
+/*    @Override
     public Receta generarYGuardarReceta(List<String> ingredientes) throws IOException, InterruptedException {
         String contenidoReceta = generarRecetaDesdeIngredientes(ingredientes);
         
@@ -162,9 +166,9 @@ public class GeminiServiceImpl implements GeminiService {
         nuevaReceta.setFechaCreacion(new Date());
         
         return recetaRepository.save(nuevaReceta);
-    }
+    }*/
     
-    private String generarTituloReceta(List<String> ingredientes) throws IOException, InterruptedException {
+/*    private String generarTituloReceta(List<String> ingredientes) throws IOException, InterruptedException {
         String ingredientesTexto = String.join(", ", ingredientes);
         
         String cuerpoSolicitud = """
@@ -182,7 +186,7 @@ public class GeminiServiceImpl implements GeminiService {
 
         HttpResponse<String> respuesta = enviarSolicitudAGemini(cuerpoSolicitud);
         return extraerTextoDeRespuesta(respuesta.body()).trim();
-    }
+    }*/
 
     private List<Ingrediente> convertirAEntityList(List<String> nombresIngredientes) {
         List<Ingrediente> ingredientes = new ArrayList<>();
@@ -203,5 +207,4 @@ public class GeminiServiceImpl implements GeminiService {
         
         return ingredientes;
     }
-*/
 }
