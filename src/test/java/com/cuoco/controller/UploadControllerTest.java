@@ -1,6 +1,6 @@
 package com.cuoco.controller;
 
-import com.cuoco.presentation.controller.model.IngredientRequest;
+import com.cuoco.presentation.controller.model.IngredientDTO;
 import com.cuoco.presentation.controller.UploadController;
 import com.cuoco.service.impl.GeminiServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,10 +44,10 @@ public class UploadControllerTest {
 
         assertEquals(HttpStatus.OK, respuesta.getStatusCode());
 
-        List<IngredientRequest> expected = Arrays.asList(
-                new IngredientRequest("tomate", "imagen", false),
-                new IngredientRequest("cebolla", "imagen", false),
-                new IngredientRequest("ajo", "imagen", false)
+        List<IngredientDTO> expected = Arrays.asList(
+                new IngredientDTO("tomate", "imagen", false),
+                new IngredientDTO("cebolla", "imagen", false),
+                new IngredientDTO("ajo", "imagen", false)
         );
 
         assertEquals(expected, respuesta.getBody());

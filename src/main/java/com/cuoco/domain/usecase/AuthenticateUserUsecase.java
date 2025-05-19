@@ -31,7 +31,7 @@ public class AuthenticateUserUsecase {
         );
 
         User userWithDetails = getUserByUsernameRepository.execute(user.getUsername());
-        userWithDetails.setToken(jwtUtil.generatdeToken(userWithDetails));
+        userWithDetails.setToken(jwtUtil.generateToken(userWithDetails));
 
         return userWithDetails;
     }

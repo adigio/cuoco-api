@@ -1,11 +1,9 @@
 package com.cuoco.presentation.controller;
 
-import com.cuoco.domain.port.repository.GetRecipesFromIngredientsRepository;
 import com.cuoco.domain.usecase.GetRecipesFromIngredientsUsecase;
+import com.cuoco.presentation.controller.model.IngredientDTO;
 import com.cuoco.presentation.controller.model.RecipeRequest;
 import com.cuoco.infrastructure.repository.hibernate.model.IngredientHibernateModel;
-import com.cuoco.service.impl.GeminiServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,13 +25,11 @@ public class RecipeController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> generar(@RequestBody RecipeRequest ingredientesDto) {
+    public ResponseEntity<?> generar(@RequestBody List<IngredientDTO> ingredients) {
 
-        if (ingredientesDto == null) {
-            return ResponseEntity.badRequest().body("Error: no se proporcionaron ingredientes");
-        }
 
         List ingredientes = Listaderecetas(ingredientesDto);
+
         if(ingredientes == null || ingredientes.size() == 0) {
             return ResponseEntity.badRequest().body("Error: no se proporcionaron ingredientes");
         }

@@ -1,6 +1,6 @@
 package com.cuoco.presentation.controller;
 
-import com.cuoco.presentation.controller.model.IngredientRequest;
+import com.cuoco.presentation.controller.model.IngredientDTO;
 import com.cuoco.service.impl.GeminiServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,13 +29,13 @@ public class UploadController {
         if (files == null || files.size() == 0) {
             return ResponseEntity.badRequest().body("Error: imagen vacía o no enviada");
         }
-        List<IngredientRequest> ingredientes = new ArrayList<>();
+        List<IngredientDTO> ingredientes = new ArrayList<>();
         try {
             for (MultipartFile file : files) {
                 List<String> nombres = geminiService.detectarIngredientesDesdeUnaImagen(file);
 
                 for (String nombre : nombres) {
-                    ingredientes.add(new IngredientRequest(nombre, "imagen", false));
+                    ingredientes.add(new IngredientDTO(nombre, "imagen", false));
                 }
             }
 
