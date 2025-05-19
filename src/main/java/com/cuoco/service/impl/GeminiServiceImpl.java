@@ -1,9 +1,8 @@
 package com.cuoco.service.impl;
 
-import com.cuoco.model.Ingrediente;
-import com.cuoco.model.Receta;
-import com.cuoco.repository.IngredienteRepository;
-import com.cuoco.repository.RecetaRepository;
+import com.cuoco.infrastructure.repository.hibernate.model.IngredientHibernateModel;
+import com.cuoco.infrastructure.repository.hibernate.IngredienteHibernateRepository;
+import com.cuoco.infrastructure.repository.hibernate.RecetaHibernateRepository;
 import com.cuoco.service.GeminiService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,12 +24,11 @@ public class GeminiServiceImpl implements GeminiService {
     @Value("${gemini.api.key}")
     private String apiKey;
 
+    @Autowired
+    private RecetaHibernateRepository recetaRepository;
 
     @Autowired
-    private RecetaRepository recetaRepository;
-
-    @Autowired
-    private IngredienteRepository ingredienteRepository;
+    private IngredienteHibernateRepository ingredienteRepository;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -188,18 +186,18 @@ public class GeminiServiceImpl implements GeminiService {
         return extraerTextoDeRespuesta(respuesta.body()).trim();
     }*/
 
-    private List<Ingrediente> convertirAEntityList(List<String> nombresIngredientes) {
-        List<Ingrediente> ingredientes = new ArrayList<>();
+    private List<IngredientHibernateModel> convertirAEntityList(List<String> nombresIngredientes) {
+        List<IngredientHibernateModel> ingredientes = new ArrayList<>();
         
         for (String nombre : nombresIngredientes) {
             // Buscar el ingrediente en la base de datos
-            Optional<Ingrediente> ingredienteOpt = ingredienteRepository.findByNombre(nombre);
+            Optional<IngredientHibernateModel> ingredienteOpt = ingredienteRepository.findByNombre(nombre);
             
             // Si existe, añadirlo a la lista. Si no existe, crearlo
             if (ingredienteOpt.isPresent()) {
                 ingredientes.add(ingredienteOpt.get());
             } else {
-                Ingrediente nuevoIngrediente = new Ingrediente();
+                IngredientHibernateModel nuevoIngrediente = new IngredientHibernateModel();
                 nuevoIngrediente.setNombre(nombre);
                 ingredientes.add(ingredienteRepository.save(nuevoIngrediente));
             }

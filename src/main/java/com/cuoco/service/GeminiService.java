@@ -1,6 +1,5 @@
 package com.cuoco.service;
 
-import com.cuoco.model.Receta;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
