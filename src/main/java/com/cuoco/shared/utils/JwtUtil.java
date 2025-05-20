@@ -1,6 +1,6 @@
 package com.cuoco.shared.utils;
 
-import com.cuoco.domain.model.User;
+import com.cuoco.application.usecase.model.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;

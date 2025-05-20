@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/cuoco?serverTimezone=UTC
     username: root
-    password: suser123
+    password: root
   jpa:
     hibernate:
       ddl-auto: update
