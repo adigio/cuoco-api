@@ -11,3 +11,7 @@ spring:
     show-sql: false
 jwt:
   secret: defaultsecretkeyforjwtauth123456
+
+gemini:
+  api:
+    key: AIzaSyCJbW7Frv2QVg08Az242DH5m6219iHU37E
