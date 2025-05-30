@@ -25,10 +25,10 @@ public class CreateUserUseCase implements CreateUserCommand {
     }
 
     public User execute(Command command) {
-        log.info("Executing create user use case for username {}", command.getUser().getUsername());
+        log.info("Executing create user use case for username {}", command.getUser().getNombre());
 
-        if(userExistsByUsernameRepository.execute(command.getUser().getUsername())) {
-            log.info("User {} already exists", command.getUser().getUsername());
+        if(userExistsByUsernameRepository.execute(command.getUser().getNombre())) {
+            log.info("User {} already exists", command.getUser().getNombre());
             throw new RuntimeException("El nombre de usuario ya existe.");
         }
 
@@ -46,7 +46,7 @@ public class CreateUserUseCase implements CreateUserCommand {
                 null,
                 null,
                 null,
-                command.getUser().getUsername(),
+                command.getUser().getNombre(),
                 encriptedPassword
         );
     }
