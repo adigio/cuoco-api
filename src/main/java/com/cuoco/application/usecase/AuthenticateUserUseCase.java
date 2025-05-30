@@ -2,44 +2,59 @@ package com.cuoco.application.usecase;
 
 import com.cuoco.application.port.in.AuthenticateUserCommand;
 import com.cuoco.application.port.out.GetUserByUsernameRepository;
+import com.cuoco.application.usecase.model.AuthenticatedUser;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.shared.utils.JwtUtil;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
 
 @Component
 public class AuthenticateUserUseCase implements AuthenticateUserCommand {
 
-    private final GetUserByUsernameRepository getUserByUsernameRepository;
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
+    static final Logger log = LoggerFactory.getLogger(AuthenticateUserUseCase.class);
 
-    public AuthenticateUserUseCase(
-            GetUserByUsernameRepository getUserRepository,
-            AuthenticationManager authenticationManager,
-            JwtUtil jwtUtil
-    ) {
-        this.getUserByUsernameRepository = getUserRepository;
-        this.authenticationManager = authenticationManager;
+    private final JwtUtil jwtUtil;
+    private final GetUserByUsernameRepository getUserByUsernameRepository;
+
+    public AuthenticateUserUseCase(JwtUtil jwtUtil, GetUserByUsernameRepository getUserByUsernameRepository) {
         this.jwtUtil = jwtUtil;
+        this.getUserByUsernameRepository = getUserByUsernameRepository;
     }
 
-    public User execute(Command command) {
+    @Override
+    public AuthenticatedUser execute(Command command) {
 
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(command.getUser().getUsername(), command.getUser().getPassword())
-            );
-        } catch (Exception e) {
-            // Puedes usar logger en lugar de imprimir
-            System.out.println("Autenticación fallida: " + e.getMessage());
-            throw e; // o lanzar una excepción personalizada
+        String authHeader = command.getAuthHeader();
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return null;
         }
 
-        User userWithDetails = getUserByUsernameRepository.execute(command.getUser().getUsername());
-        userWithDetails.setToken(jwtUtil.generateToken(userWithDetails));
+        String jwt = authHeader.substring(7);
+        String username = jwtUtil.extractUsername(jwt);
 
-        return userWithDetails;
+        if (username == null || SecurityContextHolder.getContext().getAuthentication() != null) {
+            return null;
+        }
+
+        User user = getUserByUsernameRepository.execute(username);
+
+        if (user == null || !jwtUtil.validateToken(jwt, user)) {
+            return null;
+        }
+
+        return buildAuthenticatedUser(user);
+    }
+
+    private AuthenticatedUser buildAuthenticatedUser(User user) {
+        return new AuthenticatedUser(
+                user,
+                null,
+                Collections.emptyList()
+        );
     }
 }

@@ -9,23 +9,18 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class GetUserByUsernameDatabaseRepositoryAdapter implements GetUserByUsernameRepository {
 
-    private GetUserHibernateRepositoryAdapter getUserDatabaseRepository;
+    private final GetUserHibernateRepositoryAdapter getUserHibernateRepositoryAdapter;
 
-    public GetUserByUsernameDatabaseRepositoryAdapter(GetUserHibernateRepositoryAdapter getUserDatabaseRepository) {
-        this.getUserDatabaseRepository = getUserDatabaseRepository;
+    public GetUserByUsernameDatabaseRepositoryAdapter(GetUserHibernateRepositoryAdapter getUserHibernateRepositoryAdapter) {
+        this.getUserHibernateRepositoryAdapter = getUserHibernateRepositoryAdapter;
     }
 
-    public User execute(String username) {
-        UserHibernateModel userDatabase = getUserDatabaseRepository.findByUsername(username)
+    @Override
+    public User execute(String username) throws UsernameNotFoundException {
+
+        UserHibernateModel userResult = getUserHibernateRepositoryAdapter.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
-        return new User(
-                null,
-                null,
-                null,
-                userDatabase.getUsername(),
-                userDatabase.getPassword(),
-                null
-        );
+        return userResult.toDomain();
     }
 }

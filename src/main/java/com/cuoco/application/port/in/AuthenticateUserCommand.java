@@ -1,25 +1,26 @@
 package com.cuoco.application.port.in;
 
-import com.cuoco.application.usecase.model.User;
+import com.cuoco.application.usecase.model.AuthenticatedUser;
 
 public interface AuthenticateUserCommand {
-
-    User execute(Command command);
+    AuthenticatedUser execute(Command command);
 
     class Command {
-        private final User user;
+        private final String authHeader;
 
-        public Command(User user) {
-            this.user = user;
+        public Command(String authHeader) {
+            this.authHeader = authHeader;
         }
 
-        public User getUser() {
-            return user;
+        public String getAuthHeader() {
+            return authHeader;
         }
 
         @Override
         public String toString() {
-            return "Command(user=" + user + ")";
+            return "Command{" +
+                    "authHeader='" + authHeader + '\'' +
+                    '}';
         }
     }
 }

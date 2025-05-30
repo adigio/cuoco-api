@@ -36,8 +36,7 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
                 null,
                 null,
                 userResponse.getUsername(),
-                userResponse.getPassword(),
-                null
+                userResponse.getPassword()
         );
     }
 }

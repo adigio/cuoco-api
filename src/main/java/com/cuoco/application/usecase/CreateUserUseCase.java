@@ -4,11 +4,15 @@ import com.cuoco.application.port.in.CreateUserCommand;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.port.out.CreateUserRepository;
 import com.cuoco.application.port.out.UserExistsByUsernameRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CreateUserUseCase implements CreateUserCommand {
+
+    static final Logger log = LoggerFactory.getLogger(CreateUserUseCase.class);
 
     private final PasswordEncoder passwordEncoder;
     private final CreateUserRepository createUserRepository;
@@ -21,12 +25,18 @@ public class CreateUserUseCase implements CreateUserCommand {
     }
 
     public User execute(Command command) {
+        log.info("Executing create user use case for username {}", command.getUser().getUsername());
 
         if(userExistsByUsernameRepository.execute(command.getUser().getUsername())) {
+            log.info("User {} already exists", command.getUser().getUsername());
             throw new RuntimeException("El nombre de usuario ya existe.");
         }
 
-        return createUserRepository.execute(buildUser(command));
+        User userCreated = createUserRepository.execute(buildUser(command));
+
+        userCreated.setPassword(null);
+
+        return userCreated;
     }
 
     private User buildUser(CreateUserCommand.Command command) {
@@ -37,8 +47,7 @@ public class CreateUserUseCase implements CreateUserCommand {
                 null,
                 null,
                 command.getUser().getUsername(),
-                encriptedPassword,
-                null
+                encriptedPassword
         );
     }
 }
