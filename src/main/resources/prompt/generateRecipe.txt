@@ -1,0 +1,4 @@
+Con estos ingredientes %s.
+Generar 6 recetas en español, claras, paso a paso, ideal para cocinar en casa, en formato JSON diferenciando en diferentes propiedades los pasos e ingredientes.
+Solo recetas que incluyan los ingredientes mencionados, de no haber ir agregandole ingredientes comunes de mesa.
+No des contexto, solo las recetas.
