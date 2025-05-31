@@ -1,13 +1,11 @@
 package com.cuoco.adapter.out.hibernate.model;
 
 import com.cuoco.application.usecase.model.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -17,17 +15,30 @@ public class UserHibernateModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String username;
+    private Integer  id;
+    private String nombre;
+    private String email;
     private String password;
+    private LocalDate fechaRegistro;
+    private String plan;
+    private Byte isValid;
+
+    @Lob
+    private String nivelCocina;
+
+    public UserHibernateModel(Object o, String nombre, String password) {
+    }
 
     public User toDomain() {
         return new User(
-                this.id,
-                null,
-                null,
-                this.username,
-                this.password
+                id,
+                nombre,
+                email,
+                password,
+                fechaRegistro,
+                plan,
+                isValid,
+                nivelCocina
         );
     }
 }

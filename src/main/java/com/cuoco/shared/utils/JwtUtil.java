@@ -18,7 +18,7 @@ public class JwtUtil {
 
     public String generateToken(User user) {
         return Jwts.builder()
-                .setSubject(user.getUsername())
+                .setSubject(user.getNombre())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 horas
                 .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()), SignatureAlgorithm.HS256)
@@ -35,6 +35,6 @@ public class JwtUtil {
     }
 
     public boolean validateToken(String token, User user) {
-        return extractUsername(token).equals(user.getUsername());
+        return extractUsername(token).equals(user.getNombre());
     }
 }

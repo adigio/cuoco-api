@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationControllerAdapter {
@@ -59,10 +61,13 @@ public class AuthenticationControllerAdapter {
     private User buildUser(AuthRequest request) {
         return new User(
                 null,
-                null,
-                null,
-                request.getUsername(),
-                request.getPassword()
+                "Juan Pérez",                       // nombre
+                request.getUsername(),              // email
+                request.getPassword(),              // password
+                LocalDate.now(),                    // fechaRegistro
+                "Free",                           // plan
+                (byte) 1,                           // isValid
+                "Facil"
         );
     }
 }

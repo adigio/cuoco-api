@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 @Component
 public class CreateUserUseCase implements CreateUserCommand {
 
@@ -41,13 +43,17 @@ public class CreateUserUseCase implements CreateUserCommand {
 
     private User buildUser(CreateUserCommand.Command command) {
         String encriptedPassword = passwordEncoder.encode(command.getUser().getPassword());
+        User input = command.getUser();
 
         return new User(
                 null,
-                null,
-                null,
-                command.getUser().getNombre(),
-                encriptedPassword
+                input.getNombre(),
+                input.getEmail(),
+                encriptedPassword,
+                LocalDate.now(), // fecha actual
+                input.getPlan() != null ? input.getPlan() : "free", // por defecto
+                (byte)1,         // usuario válido por defecto
+                input.getNivelCocina() // puede ser null
         );
     }
 }

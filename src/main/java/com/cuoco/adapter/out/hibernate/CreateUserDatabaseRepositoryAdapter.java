@@ -25,7 +25,7 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
     private UserHibernateModel buildHibernateUser(User user) {
         return new UserHibernateModel(
                 null,
-                user.getUsername(),
+                user.getNombre(),
                 user.getPassword()
         );
     }
@@ -35,7 +35,7 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
                 null,
                 null,
                 null,
-                userResponse.getUsername(),
+                userResponse.getNombre(),
                 userResponse.getPassword()
         );
     }

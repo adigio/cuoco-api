@@ -9,6 +9,7 @@ import java.time.LocalDate;
 
     @Getter
     @Setter
+    @AllArgsConstructor
     @Table(name = "usuario", schema = "cuoco")
     public class User {
         @Id
@@ -38,8 +39,7 @@ import java.time.LocalDate;
         @Column(name = "nivelCocina")
         private String nivelCocina;
 
-
-        public User(Object o, Object o1, Object o2, String nombre, String encriptedPassword) {
+        public User(Object id, Object nombre, Object email, String nombre1, String password) {
         }
     }
 

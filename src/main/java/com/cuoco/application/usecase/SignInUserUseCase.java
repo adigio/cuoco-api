@@ -34,9 +34,9 @@ public class SignInUserUseCase implements SignInUserCommand {
 
     public AuthenticatedUser execute(Command command) {
 
-        log.info("Executing signin user use case for username: {}", command.getUser().getUsername());
+        log.info("Executing signin user use case for username: {}", command.getUser().getNombre());
 
-        User user = getUserByUsernameRepository.execute(command.getUser().getUsername());
+        User user = getUserByUsernameRepository.execute(command.getUser().getNombre());
 
         if(!passwordEncoder.matches(command.getUser().getPassword(), user.getPassword())) {
             log.info("Invalid credentials");
