@@ -16,15 +16,13 @@ public class UserHibernateModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer  id;
-    private String nombre;
+    private String name;
     private String email;
     private String password;
-    private LocalDate fechaRegistro;
+    private LocalDate registerDate;
     private String plan;
-    private Byte isValid;
-
-    @Lob
-    private String nivelCocina;
+    private Boolean isValid;
+    private String cookLevel;
 
     public UserHibernateModel(Object o, String nombre, String password) {
     }
@@ -32,13 +30,13 @@ public class UserHibernateModel {
     public User toDomain() {
         return new User(
                 id,
-                nombre,
+                name,
                 email,
                 password,
-                fechaRegistro,
+                registerDate,
                 plan,
                 isValid,
-                nivelCocina
+                cookLevel
         );
     }
 }

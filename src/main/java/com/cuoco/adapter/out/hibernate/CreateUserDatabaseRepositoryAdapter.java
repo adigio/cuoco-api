@@ -24,19 +24,28 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
 
     private UserHibernateModel buildHibernateUser(User user) {
         return new UserHibernateModel(
-                null,
-                user.getNombre(),
-                user.getPassword()
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getRegisterDate(),
+                user.getPlan(),
+                user.getIsValid(),
+                user.getCookLevel()
         );
     }
 
+
     private User buildUser(UserHibernateModel userResponse) {
         return new User(
-                null,
-                null,
-                null,
-                userResponse.getNombre(),
-                userResponse.getPassword()
+                userResponse.getId(),
+                userResponse.getName(),
+                userResponse.getEmail(),
+                userResponse.getPassword(),
+                userResponse.getRegisterDate(),
+                userResponse.getPlan(),
+                userResponse.getIsValid(),
+                userResponse.getCookLevel()
         );
     }
 }

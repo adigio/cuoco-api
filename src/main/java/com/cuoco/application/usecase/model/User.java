@@ -10,36 +10,23 @@ import java.time.LocalDate;
     @Getter
     @Setter
     @AllArgsConstructor
-    @Table(name = "usuario", schema = "cuoco")
     public class User {
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "id", nullable = false)
+
         private Integer id;
 
-        @Column(name = "nombre", nullable = false, length = 45)
-        private String nombre;
+        private String name;
 
-        @Column(name = "email", nullable = false, length = 45)
         private String email;
 
-        @Column(name = "password", nullable = false, length = 45)
         private String password;
 
-        @Column(name = "fechaRegistro", nullable = false)
-        private LocalDate fechaRegistro;
+        private LocalDate registerDate;
 
-        @Column(name = "Plan", nullable = false, length = 20)
         private String plan;
 
-        @Column(name = "isValid", nullable = false)
-        private Byte isValid;
+        private Boolean isValid;
 
-        @Lob
-        @Column(name = "nivelCocina")
-        private String nivelCocina;
+        private String cookLevel;
 
-        public User(Object id, Object nombre, Object email, String nombre1, String password) {
-        }
     }
 

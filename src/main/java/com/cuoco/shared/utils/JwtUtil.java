@@ -18,23 +18,24 @@ public class JwtUtil {
 
     public String generateToken(User user) {
         return Jwts.builder()
-                .setSubject(user.getNombre())
+                .setSubject(user.getEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 horas
                 .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String extractUsername(String token) {
+    public String extractEmail(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+
     }
 
     public boolean validateToken(String token, User user) {
-        return extractUsername(token).equals(user.getNombre());
+        return extractEmail(token).equals(user.getEmail());
     }
 }

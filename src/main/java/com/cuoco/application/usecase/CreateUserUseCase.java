@@ -1,9 +1,10 @@
 package com.cuoco.application.usecase;
 
 import com.cuoco.application.port.in.CreateUserCommand;
+import com.cuoco.application.port.out.UserExistsByEmailRepository;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.port.out.CreateUserRepository;
-import com.cuoco.application.port.out.UserExistsByUsernameRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,20 +19,20 @@ public class CreateUserUseCase implements CreateUserCommand {
 
     private final PasswordEncoder passwordEncoder;
     private final CreateUserRepository createUserRepository;
-    private final UserExistsByUsernameRepository userExistsByUsernameRepository;
+    private final UserExistsByEmailRepository userExistsByEmailRepository;
 
-    public CreateUserUseCase(PasswordEncoder passwordEncoder, CreateUserRepository createUserRepository, UserExistsByUsernameRepository userExistsByUsernameRepository) {
+    public CreateUserUseCase(PasswordEncoder passwordEncoder, CreateUserRepository createUserRepository, UserExistsByEmailRepository userExistsByEmailRepository) {
         this.passwordEncoder = passwordEncoder;
         this.createUserRepository = createUserRepository;
-        this.userExistsByUsernameRepository = userExistsByUsernameRepository;
+        this.userExistsByEmailRepository = userExistsByEmailRepository;
     }
 
     public User execute(Command command) {
-        log.info("Executing create user use case for username {}", command.getUser().getNombre());
+        log.info("Executing create user use case for email {}", command.getUser().getEmail());
 
-        if(userExistsByUsernameRepository.execute(command.getUser().getNombre())) {
-            log.info("User {} already exists", command.getUser().getNombre());
-            throw new RuntimeException("El nombre de usuario ya existe.");
+        if(userExistsByEmailRepository.execute(command.getUser().getEmail())) {
+            log.info("Email {} already exists", command.getUser().getEmail());
+            throw new RuntimeException("El email de usuario ya existe.");
         }
 
         User userCreated = createUserRepository.execute(buildUser(command));
@@ -47,13 +48,13 @@ public class CreateUserUseCase implements CreateUserCommand {
 
         return new User(
                 null,
-                input.getNombre(),
+                input.getName(),
                 input.getEmail(),
                 encriptedPassword,
                 LocalDate.now(), // fecha actual
                 input.getPlan() != null ? input.getPlan() : "free", // por defecto
-                (byte)1,         // usuario válido por defecto
-                input.getNivelCocina() // puede ser null
+                true,         // usuario válido por defecto
+                input.getCookLevel() // puede ser null
         );
     }
 }
