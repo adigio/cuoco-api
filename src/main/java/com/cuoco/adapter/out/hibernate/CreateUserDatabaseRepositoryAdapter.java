@@ -31,7 +31,8 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
                 user.getRegisterDate(),
                 user.getPlan(),
                 user.getIsValid(),
-                user.getCookLevel()
+                user.getCookLevel(),
+                user.getDiet()
         );
     }
 
@@ -45,7 +46,8 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
                 userResponse.getRegisterDate(),
                 userResponse.getPlan(),
                 userResponse.getIsValid(),
-                userResponse.getCookLevel()
+                userResponse.getCookLevel(),
+                userResponse.getDiet()
         );
     }
 }

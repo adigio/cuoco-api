@@ -23,6 +23,7 @@ public class UserHibernateModel {
     private String plan;
     private Boolean isValid;
     private String cookLevel;
+    private String diet;
 
     public UserHibernateModel(Object o, String nombre, String password) {
     }
@@ -36,7 +37,8 @@ public class UserHibernateModel {
                 registerDate,
                 plan,
                 isValid,
-                cookLevel
+                cookLevel,
+                diet
         );
     }
 }

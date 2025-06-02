@@ -9,4 +9,5 @@ public class AuthRequest {
     private String email;
     private String plan;
     private String cookLevel;
+    private String diet;
 }

@@ -28,5 +28,6 @@ import java.time.LocalDate;
 
         private String cookLevel;
 
+        private String diet;
     }
 

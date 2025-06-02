@@ -54,7 +54,8 @@ public class CreateUserUseCase implements CreateUserCommand {
                 LocalDate.now(), // fecha actual
                 input.getPlan() != null ? input.getPlan() : "free", // por defecto
                 true,         // usuario válido por defecto
-                input.getCookLevel() // puede ser null
+                input.getCookLevel(),
+                input.getDiet()// puede ser null
         );
     }
 }

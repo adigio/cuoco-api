@@ -44,7 +44,7 @@ public class AuthenticationControllerAdapter {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody AuthRequest request) {
-        log.info("Executing POST register with username {}", request.getName());
+        log.info("Executing POST register with email {}", request.getEmail());
 
         createUserCommand.execute(buildCreateCommand(request));
 
@@ -68,8 +68,8 @@ public class AuthenticationControllerAdapter {
                 LocalDate.now(),
                 "Free",
                 true,
-                request.getCookLevel()
-
+                request.getCookLevel(),
+                request.getDiet()
         );
     }
 }
