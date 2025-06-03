@@ -1,13 +1,13 @@
 package com.cuoco.application.usecase.model;
 
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDate;
+import java.util.List;
 
-    @Getter
+@Getter
     @Setter
     @AllArgsConstructor
     public class User {
@@ -29,5 +29,8 @@ import java.time.LocalDate;
         private String cookLevel;
 
         private String diet;
+
+        private final List<String> dietaryNeeds;
+
     }
 

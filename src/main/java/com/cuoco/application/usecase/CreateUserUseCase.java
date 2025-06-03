@@ -1,10 +1,12 @@
 package com.cuoco.application.usecase;
 
 import com.cuoco.application.port.in.CreateUserCommand;
+import com.cuoco.application.port.out.SaveUserDietaryNeedRepository;
 import com.cuoco.application.port.out.UserExistsByEmailRepository;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.port.out.CreateUserRepository;
 
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,11 +22,16 @@ public class CreateUserUseCase implements CreateUserCommand {
     private final PasswordEncoder passwordEncoder;
     private final CreateUserRepository createUserRepository;
     private final UserExistsByEmailRepository userExistsByEmailRepository;
+    private final SaveUserDietaryNeedRepository saveUserDietaryNeedRepository;
 
-    public CreateUserUseCase(PasswordEncoder passwordEncoder, CreateUserRepository createUserRepository, UserExistsByEmailRepository userExistsByEmailRepository) {
+    public CreateUserUseCase(PasswordEncoder passwordEncoder,
+                             CreateUserRepository createUserRepository,
+                             UserExistsByEmailRepository userExistsByEmailRepository,
+                             SaveUserDietaryNeedRepository saveUserDietaryNeedRepository) {
         this.passwordEncoder = passwordEncoder;
         this.createUserRepository = createUserRepository;
         this.userExistsByEmailRepository = userExistsByEmailRepository;
+        this.saveUserDietaryNeedRepository = saveUserDietaryNeedRepository;
     }
 
     public User execute(Command command) {
@@ -37,10 +44,15 @@ public class CreateUserUseCase implements CreateUserCommand {
 
         User userCreated = createUserRepository.execute(buildUser(command));
 
+        if (command.getUser().getDietaryNeeds() != null && !command.getUser().getDietaryNeeds().isEmpty()) {
+            saveUserDietaryNeedRepository.execute(userCreated, command.getUser().getDietaryNeeds());
+        }
+
         userCreated.setPassword(null);
 
         return userCreated;
     }
+
 
     private User buildUser(CreateUserCommand.Command command) {
         String encriptedPassword = passwordEncoder.encode(command.getUser().getPassword());
@@ -55,7 +67,7 @@ public class CreateUserUseCase implements CreateUserCommand {
                 input.getPlan() != null ? input.getPlan() : "free", // por defecto
                 true,         // usuario válido por defecto
                 input.getCookLevel(),
-                input.getDiet()// puede ser null
-        );
+                input.getDiet(),// puede ser null
+                input.getDietaryNeeds());
     }
 }

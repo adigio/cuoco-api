@@ -1,17 +1,28 @@
 package com.cuoco.adapter.out.hibernate;
 
+import com.cuoco.adapter.out.hibernate.model.DietaryNeedHibernateModel;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.port.out.CreateUserRepository;
 import com.cuoco.adapter.out.hibernate.model.UserHibernateModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Repository
 public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository {
 
     private final CreateUserHibernateRepositoryAdapter createUserHibernateRepositoryAdapter;
+    private final DietaryNeedRepositoryAdapter dietaryNeedRepositoryAdapter;
 
-    public CreateUserDatabaseRepositoryAdapter(CreateUserHibernateRepositoryAdapter createUserHibernateRepositoryAdapter) {
+
+    public CreateUserDatabaseRepositoryAdapter(CreateUserHibernateRepositoryAdapter createUserHibernateRepositoryAdapter,
+                                               DietaryNeedRepositoryAdapter dietaryNeedRepositoryAdapter) {
         this.createUserHibernateRepositoryAdapter = createUserHibernateRepositoryAdapter;
+        this.dietaryNeedRepositoryAdapter = dietaryNeedRepositoryAdapter;
+
     }
 
     @Override
@@ -23,6 +34,12 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
     }
 
     private UserHibernateModel buildHibernateUser(User user) {
+        List<DietaryNeedHibernateModel> dietaryNeedEntities = user.getDietaryNeeds()
+                .stream()
+                .map(needName -> dietaryNeedRepositoryAdapter.findByName(needName))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
         return new UserHibernateModel(
                 user.getId(),
                 user.getName(),
@@ -32,12 +49,18 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
                 user.getPlan(),
                 user.getIsValid(),
                 user.getCookLevel(),
-                user.getDiet()
+                user.getDiet(),
+                dietaryNeedEntities
         );
     }
 
 
     private User buildUser(UserHibernateModel userResponse) {
+        List<String> dietaryNeedNames = userResponse.getDietaryNeeds()
+                .stream()
+                .map(DietaryNeedHibernateModel::getName)
+                .collect(Collectors.toList());
+
         return new User(
                 userResponse.getId(),
                 userResponse.getName(),
@@ -47,7 +70,7 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
                 userResponse.getPlan(),
                 userResponse.getIsValid(),
                 userResponse.getCookLevel(),
-                userResponse.getDiet()
-        );
+                userResponse.getDiet(),
+                dietaryNeedNames);
     }
 }

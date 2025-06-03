@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -25,10 +28,20 @@ public class UserHibernateModel {
     private String cookLevel;
     private String diet;
 
-    public UserHibernateModel(Object o, String nombre, String password) {
-    }
+    @ManyToMany
+    @JoinTable(
+            name = "user_dietary_need",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "dietary_need_id")
+    )
+    private List<DietaryNeedHibernateModel> dietaryNeeds;
+
 
     public User toDomain() {
+        List<String> dietaryNeedNames = dietaryNeeds.stream()
+                .map(DietaryNeedHibernateModel::getName)
+                .collect(Collectors.toList());
+
         return new User(
                 id,
                 name,
@@ -38,7 +51,8 @@ public class UserHibernateModel {
                 plan,
                 isValid,
                 cookLevel,
-                diet
+                diet,
+                dietaryNeedNames
         );
     }
 }

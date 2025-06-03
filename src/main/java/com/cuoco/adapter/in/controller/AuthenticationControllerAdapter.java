@@ -1,5 +1,7 @@
 package com.cuoco.adapter.in.controller;
 
+import com.cuoco.adapter.out.hibernate.DietaryNeedRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.model.DietaryNeedHibernateModel;
 import com.cuoco.application.port.in.SignInUserCommand;
 import com.cuoco.application.port.in.CreateUserCommand;
 import com.cuoco.application.usecase.model.AuthenticatedUser;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -25,10 +28,15 @@ public class AuthenticationControllerAdapter {
 
     private final SignInUserCommand signInUserCommand;
     private final CreateUserCommand createUserCommand;
+    private final DietaryNeedRepositoryAdapter dietaryNeedRepository;
 
-    public AuthenticationControllerAdapter(SignInUserCommand signInUserCommand, CreateUserCommand createUserCommand) {
+
+    public AuthenticationControllerAdapter(SignInUserCommand signInUserCommand, CreateUserCommand createUserCommand, DietaryNeedRepositoryAdapter dietaryNeedRepository
+    ) {
         this.signInUserCommand = signInUserCommand;
         this.createUserCommand = createUserCommand;
+        this.dietaryNeedRepository = dietaryNeedRepository;
+
     }
 
     @PostMapping("/login")
@@ -45,6 +53,14 @@ public class AuthenticationControllerAdapter {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody AuthRequest request) {
         log.info("Executing POST register with email {}", request.getEmail());
+
+        if (request.getDietaryNeeds() != null && !request.getDietaryNeeds().isEmpty()) {
+            List<DietaryNeedHibernateModel> existingNeeds = dietaryNeedRepository.findByNameIn(request.getDietaryNeeds());
+            if (existingNeeds.size() != request.getDietaryNeeds().size()) {
+                return ResponseEntity.badRequest()
+                        .body("Algunos dietary needs especificados no existen en el sistema");
+            }
+        }
 
         createUserCommand.execute(buildCreateCommand(request));
 
@@ -69,7 +85,8 @@ public class AuthenticationControllerAdapter {
                 "Free",
                 true,
                 request.getCookLevel(),
-                request.getDiet()
+                request.getDiet(),
+                request.getDietaryNeeds()
         );
     }
 }
