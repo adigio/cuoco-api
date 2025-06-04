@@ -18,7 +18,7 @@ public class UserHibernateModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer  id;
+    private Long id;
     private String name;
     private String email;
     private String password;
@@ -27,20 +27,19 @@ public class UserHibernateModel {
     private Boolean isValid;
     private String cookLevel;
     private String diet;
+    private List<String> dietaryNeeds;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_dietary_need",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "dietary_need_id")
-    )
-    private List<DietaryNeedHibernateModel> dietaryNeeds;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<UserDietaryNeedModel> userDietaryNeeds;
 
     public User toDomain() {
-        List<String> dietaryNeedNames = dietaryNeeds.stream()
-                .map(DietaryNeedHibernateModel::getName)
-                .collect(Collectors.toList());
+        List<String> dietaryNeedNames = null;
+        if (userDietaryNeeds != null && !userDietaryNeeds.isEmpty()) {
+            dietaryNeedNames = userDietaryNeeds.stream()
+                    .map(udn -> udn.getDietaryNeed().getName())
+                    .collect(Collectors.toList());
+        }
 
         return new User(
                 id,
@@ -55,4 +54,5 @@ public class UserHibernateModel {
                 dietaryNeedNames
         );
     }
+
 }

@@ -34,11 +34,14 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
     }
 
     private UserHibernateModel buildHibernateUser(User user) {
-        List<DietaryNeedHibernateModel> dietaryNeedEntities = user.getDietaryNeeds()
-                .stream()
-                .map(needName -> dietaryNeedRepositoryAdapter.findByName(needName))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        List<DietaryNeedHibernateModel> dietaryNeedEntities =
+                user.getDietaryNeeds() != null ?
+                        user.getDietaryNeeds()
+                                .stream()
+                                .map(needName -> dietaryNeedRepositoryAdapter.findByName(needName))
+                                .filter(Objects::nonNull)
+                                .collect(Collectors.toList())
+                        : null;
 
         return new UserHibernateModel(
                 user.getId(),
@@ -50,16 +53,16 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
                 user.getIsValid(),
                 user.getCookLevel(),
                 user.getDiet(),
-                dietaryNeedEntities
+                user.getDietaryNeeds(),  // Lista de nombres de dietary needs (List<String>)
+                null  // Lista de UserDietaryNeedModel (inicialmente vacía)
         );
+
     }
 
 
     private User buildUser(UserHibernateModel userResponse) {
-        List<String> dietaryNeedNames = userResponse.getDietaryNeeds()
-                .stream()
-                .map(DietaryNeedHibernateModel::getName)
-                .collect(Collectors.toList());
+        // La lista dietaryNeeds ya es una List<String>, no necesitamos transformarla
+        List<String> dietaryNeedNames = userResponse.getDietaryNeeds();
 
         return new User(
                 userResponse.getId(),
@@ -73,4 +76,5 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
                 userResponse.getDiet(),
                 dietaryNeedNames);
     }
+
 }

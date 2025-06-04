@@ -12,7 +12,7 @@ import java.util.List;
     @AllArgsConstructor
     public class User {
 
-        private Integer id;
+        private Long id;
 
         private String name;
 
@@ -30,7 +30,7 @@ import java.util.List;
 
         private String diet;
 
-        private final List<String> dietaryNeeds;
+        private List<String> dietaryNeeds;
 
-    }
+}
 
