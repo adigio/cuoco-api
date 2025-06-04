@@ -28,7 +28,7 @@ public class AuthenticationControllerAdapter {
         this.createUserCommand = createUserCommand;
     }
 
-    @PostMapping("/login")
+    @PostMapping("/logins")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) throws Exception {
 
         log.info("Executing POST login for username {}", request.getUsername());
