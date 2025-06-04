@@ -1,0 +1,42 @@
+name: Deploy Dev
+
+on:
+  push:
+    branches: [release]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Build app
+        run: ./gradlew build -x test
+
+      - name: Copy build to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DO_SSH_HOST }}
+          username: ${{ secrets.DO_SSH_USER }}
+          key: ${{ secrets.DO_SSH_KEY }}
+          source: "build/libs/*.jar"
+          target: "/opt/cuoco/dev/backend"
+
+      - name: Restart app on server
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.DO_SSH_HOST }}
+          username: ${{ secrets.DO_SSH_USER }}
+          key: ${{ secrets.DO_SSH_KEY }}
+          script: |
+            cd /opt/cuoco/dev/backend
+            docker compose down
+            docker compose up -d --build
