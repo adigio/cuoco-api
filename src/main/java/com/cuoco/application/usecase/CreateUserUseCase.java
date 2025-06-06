@@ -1,14 +1,14 @@
 package com.cuoco.application.usecase;
 
 import com.cuoco.application.port.in.CreateUserCommand;
-import com.cuoco.application.port.in.CreateUserDietaryCommand;
-import com.cuoco.application.port.out.CreateUserDietaryRepository;
-import com.cuoco.application.port.out.SaveUserDietaryNeedRepository;
+import com.cuoco.application.port.out.FindDietaryNeedsByNameRepository;
+import com.cuoco.application.port.out.CreateUserDietaryNeedRepository;
 import com.cuoco.application.port.out.UserExistsByEmailRepository;
+import com.cuoco.application.usecase.model.DietaryNeeds;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.port.out.CreateUserRepository;
 
-import com.cuoco.application.usecase.model.UserDietaryNeeds;
+import com.cuoco.application.usecase.model.UserPreferences;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -27,41 +28,45 @@ public class CreateUserUseCase implements CreateUserCommand {
     private final PasswordEncoder passwordEncoder;
     private final CreateUserRepository createUserRepository;
     private final UserExistsByEmailRepository userExistsByEmailRepository;
-    private final SaveUserDietaryNeedRepository saveUserDietaryNeedRepository;
+    private final CreateUserDietaryNeedRepository createUserDietaryNeedRepository;
+    private final FindDietaryNeedsByNameRepository findDietaryNeedsByNameRepository;
 
 
     public CreateUserUseCase(PasswordEncoder passwordEncoder,
                              CreateUserRepository createUserRepository,
                              UserExistsByEmailRepository userExistsByEmailRepository,
-                             SaveUserDietaryNeedRepository saveUserDietaryNeedRepository) {
+                             CreateUserDietaryNeedRepository createUserDietaryNeedRepository,
+                             FindDietaryNeedsByNameRepository findDietaryNeedsByNameRepository) {
         this.passwordEncoder = passwordEncoder;
         this.createUserRepository = createUserRepository;
         this.userExistsByEmailRepository = userExistsByEmailRepository;
-        this.saveUserDietaryNeedRepository = saveUserDietaryNeedRepository;
-
+        this.createUserDietaryNeedRepository = createUserDietaryNeedRepository;
+        this.findDietaryNeedsByNameRepository = findDietaryNeedsByNameRepository;
     }
 
     @Transactional
     public User execute(Command command) {
-        log.info("Executing create user use case for email {}", command.getUser().getEmail());
+        log.info("Executing create user use case for email {}", command.getEmail());
 
-        if(userExistsByEmailRepository.execute(command.getUser().getEmail())) {
-            log.info("Email {} already exists", command.getUser().getEmail());
+        if(userExistsByEmailRepository.execute(command.getEmail())) {
+            log.info("Email {} already exists", command.getEmail());
             throw new RuntimeException("El email de usuario ya existe.");
         }
 
-        User userToSave = buildUserForDatabase(command);
+        List<DietaryNeeds> existingNeeds = Collections.emptyList();
+
+        if(command.getDietaryNeeds() != null && !command.getDietaryNeeds().isEmpty()) {
+            existingNeeds = findDietaryNeedsByNameRepository.execute(command.getDietaryNeeds());
+            if (existingNeeds.size() != command.getDietaryNeeds().size()) {
+                throw new RuntimeException("Las preferencias de usuario no existen.");
+            }
+        }
+
+        User userToSave = buildUser(command, existingNeeds);
 
         User userCreated = createUserRepository.execute(userToSave);
 
-        List<String> dietaryNeedNames = extractDietaryNeedNames(command.getUser());
-
-        if (!dietaryNeedNames.isEmpty()) {
-            saveUserDietaryNeedRepository.execute(userCreated, dietaryNeedNames);
-            log.info("Saved {} dietary needs for user with id {}", dietaryNeedNames.size(), userCreated.getId());
-        }
-
-        userCreated.setDietaryNeeds(dietaryNeedNames);
+        createUserDietaryNeedRepository.execute(userCreated.getId(), existingNeeds);
 
         userCreated.setPassword(null);
 
@@ -69,50 +74,24 @@ public class CreateUserUseCase implements CreateUserCommand {
     }
 
 
-    private User buildUserForDatabase(CreateUserCommand.Command command) {
-        String encriptedPassword = passwordEncoder.encode(command.getUser().getPassword());
-        User input = command.getUser();
+    private User buildUser(CreateUserCommand.Command command, List<DietaryNeeds> existingNeeds) {
+        String encriptedPassword = passwordEncoder.encode(command.getPassword());
+
 
         return new User(
                 null,
-                input.getName(),
-                input.getEmail(),
+                command.getName(),
+                command.getEmail(),
                 encriptedPassword,
                 LocalDate.now(),
-                input.getPlan() != null ? input.getPlan() : "free",
+                command.getPlan() != null ? command.getPlan() : "free",
                 true,
-                input.getCookLevel(),
-                input.getDiet(),
-                null  // No guardar dietaryNeeds en la tabla User
+                new UserPreferences(
+                        command.getCookLevel(),
+                        command.getDiet(),
+                        existingNeeds
+                )
         );
-    }
-
-//    private User buildUser(CreateUserCommand.Command command) {
-//        String encriptedPassword = passwordEncoder.encode(command.getUser().getPassword());
-//        User input = command.getUser();
-//
-//        return new User(
-//                null,
-//                input.getName(),
-//                input.getEmail(),
-//                encriptedPassword,
-//                LocalDate.now(), // fecha actual
-//                input.getPlan() != null ? input.getPlan() : "free", // por defecto
-//                true,         // usuario válido por defecto
-//                input.getCookLevel(),
-//                input.getDiet(),
-//                input.getDietaryNeeds()
-//        );// puede ser null
-//    }
-
-    private List<String> extractDietaryNeedNames(User user) {
-        List<String> dietaryNeeds = new ArrayList<>();
-
-        if (user.getDietaryNeeds() != null && !user.getDietaryNeeds().isEmpty()) {
-            dietaryNeeds.addAll(user.getDietaryNeeds());
-        }
-
-        return dietaryNeeds;
     }
 
 }

@@ -1,10 +1,9 @@
 package com.cuoco.adapter.out.hibernate;
 
-import com.cuoco.adapter.out.hibernate.model.DietaryNeedHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.DietaryNeedsHibernateModel;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.port.out.CreateUserRepository;
 import com.cuoco.adapter.out.hibernate.model.UserHibernateModel;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -34,7 +33,7 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
     }
 
     private UserHibernateModel buildHibernateUser(User user) {
-        List<DietaryNeedHibernateModel> dietaryNeedEntities =
+        List<DietaryNeedsHibernateModel> dietaryNeedEntities =
                 user.getDietaryNeeds() != null ?
                         user.getDietaryNeeds()
                                 .stream()

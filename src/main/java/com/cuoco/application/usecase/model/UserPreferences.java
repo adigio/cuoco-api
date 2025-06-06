@@ -4,12 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
-public class UserDietaryNeeds {
-    private Long userId;
+public class UserPreferences {
+    private String cookLevel;
 
-    private Long dietaryNeedId;
+    private String diet;
 
+    private List<DietaryNeeds> dietaryNeeds;
 }

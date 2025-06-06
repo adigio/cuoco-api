@@ -1,7 +1,7 @@
 package com.cuoco.application.port.out;
 
-import com.cuoco.application.usecase.model.UserDietaryNeeds;
+import com.cuoco.application.usecase.model.DietaryNeeds;
 
 public interface CreateUserDietaryRepository {
-    UserDietaryNeeds execute(UserDietaryNeeds UserDietaryNeeds);
+    DietaryNeeds execute(DietaryNeeds DietaryNeeds);
 }

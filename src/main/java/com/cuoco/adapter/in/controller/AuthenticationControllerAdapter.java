@@ -1,7 +1,6 @@
 package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.out.hibernate.DietaryNeedRepositoryAdapter;
-import com.cuoco.adapter.out.hibernate.model.DietaryNeedHibernateModel;
 import com.cuoco.application.port.in.SignInUserCommand;
 import com.cuoco.application.port.in.CreateUserCommand;
 import com.cuoco.application.usecase.model.AuthenticatedUser;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -54,14 +52,6 @@ public class AuthenticationControllerAdapter {
     public ResponseEntity<?> register(@RequestBody AuthRequest request) {
         log.info("Executing POST register with email {}", request.getEmail());
 
-        if (request.getDietaryNeeds() != null && !request.getDietaryNeeds().isEmpty()) {
-            List<DietaryNeedHibernateModel> existingNeeds = dietaryNeedRepository.findByNameIn(request.getDietaryNeeds());
-            if (existingNeeds.size() != request.getDietaryNeeds().size()) {
-                return ResponseEntity.badRequest()
-                        .body("Algunos dietary needs especificados no existen en el sistema");
-            }
-        }
-
         createUserCommand.execute(buildCreateCommand(request));
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -72,7 +62,15 @@ public class AuthenticationControllerAdapter {
     }
 
     private CreateUserCommand.Command buildCreateCommand(AuthRequest request) {
-        return new CreateUserCommand.Command(buildUser(request));
+        return new CreateUserCommand.Command(request.getName(),
+                request.getEmail(),
+                request.getPassword(),
+                LocalDate.now(),
+                "Free",
+                true,
+                request.getCookLevel(),
+                request.getDiet(),
+                request.getDietaryNeeds());
     }
 
     private User buildUser(AuthRequest request) {
@@ -84,9 +82,7 @@ public class AuthenticationControllerAdapter {
                 LocalDate.now(),
                 "Free",
                 true,
-                request.getCookLevel(),
-                request.getDiet(),
-                request.getDietaryNeeds()
+                null
         );
     }
 }

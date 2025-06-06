@@ -26,11 +26,8 @@ import java.util.List;
 
         private Boolean isValid;
 
-        private String cookLevel;
-
-        private String diet;
-
-        private List<String> dietaryNeeds;
+        private UserPreferences preferences;
 
 }
+
 

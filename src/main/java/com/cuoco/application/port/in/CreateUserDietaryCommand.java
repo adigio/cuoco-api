@@ -1,21 +1,21 @@
 package com.cuoco.application.port.in;
 
 
-import com.cuoco.application.usecase.model.UserDietaryNeeds;
+import com.cuoco.application.usecase.model.DietaryNeeds;
 import lombok.Data;
 import lombok.ToString;
 
 public interface CreateUserDietaryCommand {
 
-    UserDietaryNeeds execute(Command command);
+    DietaryNeeds execute(Command command);
 
     @Data
     @ToString
     class Command {
-        private final UserDietaryNeeds userDietaryNeeds;
+        private final DietaryNeeds dietaryNeeds;
 
-        public Command(UserDietaryNeeds userDietaryNeeds) {
-            this.userDietaryNeeds = userDietaryNeeds;
+        public Command(DietaryNeeds dietaryNeeds) {
+            this.dietaryNeeds = dietaryNeeds;
         }
 
     }
