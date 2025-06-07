@@ -66,7 +66,8 @@ public class AuthenticationControllerAdapter {
                 true,
                 request.getCookLevel(),
                 request.getDiet(),
-                request.getDietaryNeeds());
+                request.getDietaryNeeds(),
+                request.getAllergies());
     }
 
     private User buildUser(AuthRequest request) {

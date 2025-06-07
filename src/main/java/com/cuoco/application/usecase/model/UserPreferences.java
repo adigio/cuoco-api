@@ -15,4 +15,6 @@ public class UserPreferences {
     private String diet;
 
     private List<DietaryNeeds> dietaryNeeds;
+
+    private List<Allergies> allergies;
 }

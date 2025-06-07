@@ -25,7 +25,6 @@ public class CreateUserDietaryneedsDatabaseRepositoryAdapter implements CreateUs
 
             DietaryNeedsHibernateModel model = new DietaryNeedsHibernateModel();
             model.setId(need.getId());
-            // Suponiendo que solo necesitas el ID
 
             entity.setDietaryNeed(model);
             createUserDietaryneedsHibernateRepositoryAdapter.save(entity);

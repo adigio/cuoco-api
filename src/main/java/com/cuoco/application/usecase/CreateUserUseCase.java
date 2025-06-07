@@ -1,12 +1,10 @@
 package com.cuoco.application.usecase;
 
 import com.cuoco.application.port.in.CreateUserCommand;
-import com.cuoco.application.port.out.FindDietaryNeedsByNameRepository;
-import com.cuoco.application.port.out.CreateUserDietaryNeedRepository;
-import com.cuoco.application.port.out.UserExistsByEmailRepository;
+import com.cuoco.application.port.out.*;
+import com.cuoco.application.usecase.model.Allergies;
 import com.cuoco.application.usecase.model.DietaryNeeds;
 import com.cuoco.application.usecase.model.User;
-import com.cuoco.application.port.out.CreateUserRepository;
 
 import com.cuoco.application.usecase.model.UserPreferences;
 import jakarta.transaction.Transactional;
@@ -29,18 +27,24 @@ public class CreateUserUseCase implements CreateUserCommand {
     private final UserExistsByEmailRepository userExistsByEmailRepository;
     private final CreateUserDietaryNeedRepository createUserDietaryNeedRepository;
     private final FindDietaryNeedsByNameRepository findDietaryNeedsByNameRepository;
+    private final FindAllergiesByNameRepository findAllergiesByNameRepository;
+    private final CreateUserAllergieRepository createUserAllergieRepository;
 
 
     public CreateUserUseCase(PasswordEncoder passwordEncoder,
                              CreateUserRepository createUserRepository,
                              UserExistsByEmailRepository userExistsByEmailRepository,
                              CreateUserDietaryNeedRepository createUserDietaryNeedRepository,
-                             FindDietaryNeedsByNameRepository findDietaryNeedsByNameRepository) {
+                             FindDietaryNeedsByNameRepository findDietaryNeedsByNameRepository,
+                             FindAllergiesByNameRepository findAllergiesByNameRepository,
+                             CreateUserAllergieRepository createUserAllergieRepository) {
         this.passwordEncoder = passwordEncoder;
         this.createUserRepository = createUserRepository;
         this.userExistsByEmailRepository = userExistsByEmailRepository;
         this.createUserDietaryNeedRepository = createUserDietaryNeedRepository;
         this.findDietaryNeedsByNameRepository = findDietaryNeedsByNameRepository;
+        this.findAllergiesByNameRepository = findAllergiesByNameRepository;
+        this.createUserAllergieRepository = createUserAllergieRepository;
     }
 
     @Transactional
@@ -61,11 +65,22 @@ public class CreateUserUseCase implements CreateUserCommand {
             }
         }
 
-        User userToSave = buildUser(command, existingNeeds);
+        List<Allergies> existingAlergies = Collections.emptyList();
+
+        if(command.getAllergies() != null && !command.getAllergies().isEmpty()) {
+            existingAlergies = findAllergiesByNameRepository.execute(command.getAllergies());
+            if (existingAlergies.size() != command.getAllergies().size()) {
+                throw new RuntimeException("Las allergias de usuario no existen.");
+            }
+        }
+
+        User userToSave = buildUser(command, existingNeeds, existingAlergies);
 
         User userCreated = createUserRepository.execute(userToSave);
 
         createUserDietaryNeedRepository.execute(userCreated.getId(), existingNeeds);
+
+        createUserAllergieRepository.execute(userCreated.getId(), existingAlergies);
 
         userCreated.setPassword(null);
 
@@ -73,9 +88,8 @@ public class CreateUserUseCase implements CreateUserCommand {
     }
 
 
-    private User buildUser(CreateUserCommand.Command command, List<DietaryNeeds> existingNeeds) {
+    private User buildUser(CreateUserCommand.Command command, List<DietaryNeeds> existingNeeds, List<Allergies> existingAlergies) {
         String encriptedPassword = passwordEncoder.encode(command.getPassword());
-
 
         return new User(
                 null,
@@ -88,7 +102,8 @@ public class CreateUserUseCase implements CreateUserCommand {
                 new UserPreferences(
                         command.getCookLevel(),
                         command.getDiet(),
-                        existingNeeds
+                        existingNeeds,
+                        existingAlergies
                 )
         );
     }

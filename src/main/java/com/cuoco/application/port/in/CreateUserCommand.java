@@ -36,5 +36,6 @@ public interface CreateUserCommand {
 
         private List<String> dietaryNeeds;
 
+        private List<String> allergies;
     }
 }

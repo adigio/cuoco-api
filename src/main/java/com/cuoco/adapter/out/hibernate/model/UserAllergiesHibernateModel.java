@@ -7,7 +7,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class UserDietaryNeedHibernateModel {
+public class UserAllergiesHibernateModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,6 +15,6 @@ public class UserDietaryNeedHibernateModel {
     private Long userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dietary_need_id", nullable = false)
-    private DietaryNeedsHibernateModel dietaryNeed;
+    @JoinColumn(name = "allergies_id", nullable = false)
+    private AllergiesHibernateModel allergies;
 }

@@ -13,4 +13,5 @@ public class AuthRequest {
     private String cookLevel;
     private String diet;
     private List<String> dietaryNeeds;
+    private List<String> allergies;
 }
