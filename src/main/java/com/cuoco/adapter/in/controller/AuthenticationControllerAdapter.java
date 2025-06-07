@@ -1,6 +1,5 @@
 package com.cuoco.adapter.in.controller;
 
-import com.cuoco.adapter.out.hibernate.DietaryNeedRepositoryAdapter;
 import com.cuoco.application.port.in.SignInUserCommand;
 import com.cuoco.application.port.in.CreateUserCommand;
 import com.cuoco.application.usecase.model.AuthenticatedUser;
@@ -26,15 +25,12 @@ public class AuthenticationControllerAdapter {
 
     private final SignInUserCommand signInUserCommand;
     private final CreateUserCommand createUserCommand;
-    private final DietaryNeedRepositoryAdapter dietaryNeedRepository;
 
 
-    public AuthenticationControllerAdapter(SignInUserCommand signInUserCommand, CreateUserCommand createUserCommand, DietaryNeedRepositoryAdapter dietaryNeedRepository
-    ) {
+    public AuthenticationControllerAdapter(SignInUserCommand signInUserCommand,
+                                           CreateUserCommand createUserCommand) {
         this.signInUserCommand = signInUserCommand;
         this.createUserCommand = createUserCommand;
-        this.dietaryNeedRepository = dietaryNeedRepository;
-
     }
 
     @PostMapping("/login")

@@ -6,6 +6,7 @@ import com.cuoco.application.usecase.model.DietaryNeeds;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class FindDietaryNeedsByNameDatabaseRepositoryAdapter implements FindDietaryNeedsByNameRepository {
@@ -20,8 +21,13 @@ public class FindDietaryNeedsByNameDatabaseRepositoryAdapter implements FindDiet
     public List<DietaryNeeds> execute(List<String> dietaryNeedsNames) {
         List<DietaryNeedsHibernateModel> dietaryNeeds = findDietaryNeedsByNameHibernateRepositoryAdapter.findByNameIn(dietaryNeedsNames);
 
-        //recibir dietartneedhibernatemodel y convertir en dietarynneedmodel y retornala
+        return buildDietaryNeeds(dietaryNeeds);
 
+    }
 
+    private List<DietaryNeeds> buildDietaryNeeds(List<DietaryNeedsHibernateModel> dietaryNeeds) {
+        return dietaryNeeds.stream()
+                .map(model -> new DietaryNeeds(model.getId(), model.getName()))
+                .collect(Collectors.toList());
     }
 }

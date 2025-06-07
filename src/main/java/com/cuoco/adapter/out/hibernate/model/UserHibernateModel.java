@@ -1,6 +1,7 @@
 package com.cuoco.adapter.out.hibernate.model;
 
 import com.cuoco.application.usecase.model.User;
+import com.cuoco.application.usecase.model.UserPreferences;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,22 +26,8 @@ public class UserHibernateModel {
     private LocalDate registerDate;
     private String plan;
     private Boolean isValid;
-    private String cookLevel;
-    private String diet;
-    private List<String> dietaryNeeds;
-
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<UserDietaryNeedModel> userDietaryNeeds;
 
     public User toDomain() {
-        List<String> dietaryNeedNames = null;
-        if (userDietaryNeeds != null && !userDietaryNeeds.isEmpty()) {
-            dietaryNeedNames = userDietaryNeeds.stream()
-                    .map(udn -> udn.getDietaryNeed().getName())
-                    .collect(Collectors.toList());
-        }
-
         return new User(
                 id,
                 name,
@@ -49,10 +36,7 @@ public class UserHibernateModel {
                 registerDate,
                 plan,
                 isValid,
-                cookLevel,
-                diet,
-                dietaryNeedNames
-        );
+                null);
     }
 
 }
