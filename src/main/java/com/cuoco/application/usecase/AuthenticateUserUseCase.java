@@ -1,7 +1,7 @@
 package com.cuoco.application.usecase;
 
 import com.cuoco.application.port.in.AuthenticateUserCommand;
-import com.cuoco.application.port.out.GetUserByUsernameRepository;
+import com.cuoco.application.port.out.GetUserByEmailRepository;
 import com.cuoco.application.usecase.model.AuthenticatedUser;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.shared.utils.JwtUtil;
@@ -18,11 +18,11 @@ public class AuthenticateUserUseCase implements AuthenticateUserCommand {
     static final Logger log = LoggerFactory.getLogger(AuthenticateUserUseCase.class);
 
     private final JwtUtil jwtUtil;
-    private final GetUserByUsernameRepository getUserByUsernameRepository;
+    private final GetUserByEmailRepository getUserByEmailRepository;
 
-    public AuthenticateUserUseCase(JwtUtil jwtUtil, GetUserByUsernameRepository getUserByUsernameRepository) {
+    public AuthenticateUserUseCase(JwtUtil jwtUtil, GetUserByEmailRepository getUserByEmailRepository) {
         this.jwtUtil = jwtUtil;
-        this.getUserByUsernameRepository = getUserByUsernameRepository;
+        this.getUserByEmailRepository = getUserByEmailRepository;
     }
 
     @Override
@@ -35,13 +35,13 @@ public class AuthenticateUserUseCase implements AuthenticateUserCommand {
         }
 
         String jwt = authHeader.substring(7);
-        String username = jwtUtil.extractUsername(jwt);
+        String email = jwtUtil.extractEmail(jwt);
 
-        if (username == null || SecurityContextHolder.getContext().getAuthentication() != null) {
+        if (email == null || SecurityContextHolder.getContext().getAuthentication() != null) {
             return null;
         }
 
-        User user = getUserByUsernameRepository.execute(username);
+        User user = getUserByEmailRepository.execute(email);
 
         if (user == null || !jwtUtil.validateToken(jwt, user)) {
             return null;

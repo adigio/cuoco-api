@@ -8,11 +8,14 @@ import com.cuoco.adapter.in.controller.model.AuthRequest;
 import com.cuoco.adapter.in.controller.model.AuthResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/auth")
@@ -23,15 +26,17 @@ public class AuthenticationControllerAdapter {
     private final SignInUserCommand signInUserCommand;
     private final CreateUserCommand createUserCommand;
 
-    public AuthenticationControllerAdapter(SignInUserCommand signInUserCommand, CreateUserCommand createUserCommand) {
+
+    public AuthenticationControllerAdapter(SignInUserCommand signInUserCommand,
+                                           CreateUserCommand createUserCommand) {
         this.signInUserCommand = signInUserCommand;
         this.createUserCommand = createUserCommand;
     }
 
-    @PostMapping("/logins")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) throws Exception {
 
-        log.info("Executing POST login for username {}", request.getUsername());
+        log.info("Executing POST login for username {}", request.getName());
 
         AuthenticatedUser authenticatedUser = signInUserCommand.execute(buildAuthenticationCommand(request));
         AuthResponse response = new AuthResponse(authenticatedUser.getToken());
@@ -40,12 +45,12 @@ public class AuthenticationControllerAdapter {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody AuthRequest request) {
-        log.info("Executing POST register with username {}", request.getUsername());
+    public ResponseEntity<?> register(@RequestBody AuthRequest request) {
+        log.info("Executing POST register with email {}", request.getEmail());
 
-        User user = createUserCommand.execute(buildCreateCommand(request));
+        createUserCommand.execute(buildCreateCommand(request));
 
-        return ResponseEntity.ok(user);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     private SignInUserCommand.Command buildAuthenticationCommand(AuthRequest request) {
@@ -53,16 +58,28 @@ public class AuthenticationControllerAdapter {
     }
 
     private CreateUserCommand.Command buildCreateCommand(AuthRequest request) {
-        return new CreateUserCommand.Command(buildUser(request));
+        return new CreateUserCommand.Command(request.getName(),
+                request.getEmail(),
+                request.getPassword(),
+                LocalDate.now(),
+                "Free",
+                true,
+                request.getCookLevel(),
+                request.getDiet(),
+                request.getDietaryNeeds(),
+                request.getAllergies());
     }
 
     private User buildUser(AuthRequest request) {
         return new User(
                 null,
-                null,
-                null,
-                request.getUsername(),
-                request.getPassword()
+                request.getName(),
+                request.getEmail(),
+                request.getPassword(),
+                LocalDate.now(),
+                "Free",
+                true,
+                null
         );
     }
 }

@@ -5,6 +5,10 @@ import com.cuoco.application.port.out.CreateUserRepository;
 import com.cuoco.adapter.out.hibernate.model.UserHibernateModel;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 @Repository
 public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository {
 
@@ -25,18 +29,23 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
     private UserHibernateModel buildHibernateUser(User user) {
         return new UserHibernateModel(
                 null,
-                user.getUsername(),
-                user.getPassword()
-        );
+                user.getName(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getRegisterDate(),
+                user.getPlan(),
+                user.getIsValid());
     }
 
     private User buildUser(UserHibernateModel userResponse) {
         return new User(
-                null,
-                null,
-                null,
-                userResponse.getUsername(),
-                userResponse.getPassword()
-        );
+                userResponse.getId(),
+                userResponse.getName(),
+                userResponse.getEmail(),
+                userResponse.getPassword(),
+                userResponse.getRegisterDate(),
+                userResponse.getPlan(),
+                userResponse.getIsValid(),
+                null);
     }
 }
