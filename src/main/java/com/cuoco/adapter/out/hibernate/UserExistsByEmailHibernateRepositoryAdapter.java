@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserExistsByUsernameHibernateRepositoryAdapter extends JpaRepository<UserHibernateModel, Long> {
-    Boolean existsByUsername(String username);
+public interface UserExistsByEmailHibernateRepositoryAdapter extends JpaRepository<UserHibernateModel, Long> {
+    Boolean existsByEmail(String email);
 }
