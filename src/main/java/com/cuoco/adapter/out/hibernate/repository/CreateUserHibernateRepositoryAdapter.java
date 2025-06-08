@@ -1,4 +1,4 @@
-package com.cuoco.adapter.out.hibernate;
+package com.cuoco.adapter.out.hibernate.repository;
 
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.adapter.out.hibernate.model.UserHibernateModel;

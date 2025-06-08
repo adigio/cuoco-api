@@ -32,11 +32,11 @@ public class SignInUserUseCase implements SignInUserCommand {
 
     public AuthenticatedUser execute(Command command) {
 
-        log.info("Executing signin user use case for username: {}", command.getUser().getEmail());
+        log.info("Executing signin user use case for email: {}", command.getEmail());
 
-        User user = getUserByEmailRepository.execute(command.getUser().getEmail());
+        User user = getUserByEmailRepository.execute(command.getEmail());
 
-        if(!passwordEncoder.matches(command.getUser().getPassword(), user.getPassword())) {
+        if(!passwordEncoder.matches(command.getPassword(), user.getPassword())) {
             log.info("Invalid credentials");
             throw new RuntimeException("Credenciales inválidas");
         }

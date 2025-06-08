@@ -1,5 +1,6 @@
 package com.cuoco.application.usecase.model;
 
+
 public class Ingredient {
 
     private String name;

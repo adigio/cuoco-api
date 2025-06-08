@@ -1,5 +1,6 @@
 package com.cuoco.adapter.out.hibernate;
 
+import com.cuoco.adapter.out.hibernate.repository.GetUserHibernateRepositoryAdapter;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.port.out.GetUserByEmailRepository;
 import com.cuoco.adapter.out.hibernate.model.UserHibernateModel;
