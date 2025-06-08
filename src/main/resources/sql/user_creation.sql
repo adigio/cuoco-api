@@ -70,3 +70,28 @@ CREATE TABLE user_dietary_needs (
     CONSTRAINT `FK_user_dietary_needs_dietary_need_id` FOREIGN KEY (`dietary_need_id`) REFERENCES `dietary_need` (`id`),
     CONSTRAINT `FK_user_dietary_needs_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 );
+
+INSERT INTO plan (id, description)
+VALUES (1, 'Free'), (2, 'Pro');
+
+INSERT INTO cook_level (id, description)
+VALUES (1, 'Bajo'), (2, 'Medio'), (3, 'Alto');
+
+INSERT INTO diet (id, description)
+VALUES (1, 'Omnivoro'), (2, 'Vegetariano'), (3, 'Vegano'), (4, 'Otro');
+
+INSERT INTO dietary_need (id, description)
+VALUES (1, 'Sin gluten'), (2, 'Sin lactosa'), (3, 'Alta en proteinas'), (4, 'Ninguna en particular');
+
+INSERT INTO allergy (id, description)
+VALUES
+    (1, 'Leche'),
+    (2, 'Frutos secos'),
+    (3, 'Soja'),
+    (4, 'Crustáceos'),
+    (5, 'Huevo'),
+    (6, 'Pescados'),
+    (7, 'Cereales'),
+    (8, 'Maní'),
+    (9, 'Otro'),
+    (10, 'Ninguno en particular');
