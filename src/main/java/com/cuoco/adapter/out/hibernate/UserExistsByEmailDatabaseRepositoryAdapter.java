@@ -1,6 +1,7 @@
 package com.cuoco.adapter.out.hibernate;
 
 
+import com.cuoco.adapter.out.hibernate.repository.UserExistsByEmailHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.UserExistsByEmailRepository;
 import org.springframework.stereotype.Repository;
 

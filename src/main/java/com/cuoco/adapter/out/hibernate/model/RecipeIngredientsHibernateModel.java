@@ -11,23 +11,24 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "ingredient")
+@Entity(name = "recipe_ingredients")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IngredientHibernateModel {
+public class RecipeIngredientsHibernateModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", referencedColumnName = "id")
-    private CategoryHibernateModel category;
+    @JoinColumn(name = "recipe_id", referencedColumnName = "id")
+    private RecipeHibernateModel recipe;
 
     @ManyToOne
-    @JoinColumn(name = "measure_unit_id", referencedColumnName = "id")
-    private MeasureUnitHibernateModel measureUnit;
+    @JoinColumn(name = "ingredient_id", referencedColumnName = "id")
+    private IngredientHibernateModel ingredient;
+
+    private Double quantity;
 }

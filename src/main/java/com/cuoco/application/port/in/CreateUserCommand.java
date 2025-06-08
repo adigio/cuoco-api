@@ -1,6 +1,5 @@
 package com.cuoco.application.port.in;
 
-import com.cuoco.application.usecase.model.DietaryNeeds;
 import com.cuoco.application.usecase.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;

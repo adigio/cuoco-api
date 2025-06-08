@@ -1,20 +1,25 @@
 package com.cuoco.adapter.out.hibernate.model;
 
 import com.cuoco.application.usecase.model.User;
-import com.cuoco.application.usecase.model.UserPreferences;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
+import java.time.LocalDateTime;
+
+@Entity(name = "user")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "user")
+@Builder
 public class UserHibernateModel {
 
     @Id
@@ -23,20 +28,26 @@ public class UserHibernateModel {
     private String name;
     private String email;
     private String password;
-    private LocalDate registerDate;
-    private String plan;
-    private Boolean isValid;
+    @OneToOne
+    @JoinColumn(name = "plan_id")
+    private PlanHibernateModel plan;
+    private Boolean active;
+    @OneToOne(cascade = CascadeType.ALL)
+    private UserPreferencesHibernateModel preferences;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private LocalDateTime deletedAt;
 
     public User toDomain() {
-        return new User(
-                id,
-                name,
-                email,
-                password,
-                registerDate,
-                plan,
-                isValid,
-                null);
+        return User.builder()
+                .id(id)
+                .name(name)
+                .email(email)
+                .password(password)
+                .plan(plan.toDomain())
+                .active(active)
+                .preferences(preferences.toDomain())
+                .createdAt(createdAt)
+                .build();
     }
-
 }
