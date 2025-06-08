@@ -17,6 +17,8 @@ public class AuthenticateUserUseCase implements AuthenticateUserCommand {
 
     static final Logger log = LoggerFactory.getLogger(AuthenticateUserUseCase.class);
 
+    static final String BEARER_PREFIX = "Bearer ";
+
     private final JwtUtil jwtUtil;
     private final GetUserByEmailRepository getUserByEmailRepository;
 
@@ -28,22 +30,27 @@ public class AuthenticateUserUseCase implements AuthenticateUserCommand {
     @Override
     public AuthenticatedUser execute(Command command) {
 
+        log.info("Executing authenticate user usecase");
+
         String authHeader = command.getAuthHeader();
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
+            log.info("User don't have a valid auth header");
             return null;
         }
 
-        String jwt = authHeader.substring(7);
-        String email = jwtUtil.extractEmail(jwt);
+        String receivedJwt = authHeader.substring(7);
+        String email = jwtUtil.extractEmail(receivedJwt);
 
         if (email == null || SecurityContextHolder.getContext().getAuthentication() != null) {
+            log.info("Token is not valid. The email is not present.");
             return null;
         }
 
         User user = getUserByEmailRepository.execute(email);
 
-        if (user == null || !jwtUtil.validateToken(jwt, user)) {
+        if (user == null || !jwtUtil.validateToken(receivedJwt, user)) {
+            log.info("Token or user with email {} are not valid", email);
             return null;
         }
 

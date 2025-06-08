@@ -1,5 +1,6 @@
 package com.cuoco.adapter.in.controller;
 
+import com.cuoco.adapter.in.controller.model.UserRequest;
 import com.cuoco.application.port.in.SignInUserCommand;
 import com.cuoco.application.port.in.CreateUserCommand;
 import com.cuoco.application.usecase.model.AuthenticatedUser;
@@ -34,9 +35,9 @@ public class AuthenticationControllerAdapter {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest request) throws Exception {
+    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
 
-        log.info("Executing POST login for username {}", request.getName());
+        log.info("Executing POST login for email {}", request.getEmail());
 
         AuthenticatedUser authenticatedUser = signInUserCommand.execute(buildAuthenticationCommand(request));
         AuthResponse response = new AuthResponse(authenticatedUser.getToken());
@@ -45,7 +46,7 @@ public class AuthenticationControllerAdapter {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody AuthRequest request) {
+    public ResponseEntity<?> register(@RequestBody UserRequest request) {
         log.info("Executing POST register with email {}", request.getEmail());
 
         createUserCommand.execute(buildCreateCommand(request));
@@ -54,32 +55,24 @@ public class AuthenticationControllerAdapter {
     }
 
     private SignInUserCommand.Command buildAuthenticationCommand(AuthRequest request) {
-        return new SignInUserCommand.Command(buildUser(request));
-    }
-
-    private CreateUserCommand.Command buildCreateCommand(AuthRequest request) {
-        return new CreateUserCommand.Command(request.getName(),
+        return new SignInUserCommand.Command(
                 request.getEmail(),
-                request.getPassword(),
-                LocalDate.now(),
-                "Free",
-                true,
-                request.getCookLevel(),
-                request.getDiet(),
-                request.getDietaryNeeds(),
-                request.getAllergies());
+                request.getPassword()
+        );
     }
 
-    private User buildUser(AuthRequest request) {
-        return new User(
-                null,
+    private CreateUserCommand.Command buildCreateCommand(UserRequest request) {
+        return new CreateUserCommand.Command(
                 request.getName(),
                 request.getEmail(),
                 request.getPassword(),
                 LocalDate.now(),
-                "Free",
-                true,
-                null
+                "Free",  //this need to be changed
+                true, //this need to be changed
+                request.getCookLevel(),
+                request.getDiet(),
+                request.getDietaryNeeds(),
+                request.getAllergies()
         );
     }
 }
