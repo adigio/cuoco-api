@@ -2,17 +2,17 @@ spring:
   application:
     name: cuoco
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:mysql://localhost:3306/cuoco?serverTimezone=UTC
+    username: root
+    password: root
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: false
 jwt:
-  secret: ${JWT_SECRET}
+  secret: defaultsecretkeyforjwtauth123456
 gemini:
   api:
-    url: ${GEMINI_API_URL}
-    key: ${GEMINI_API_KEY}
-  temperature: ${GEMINI_TEMPERATURE}
+    url: https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=
+    key: AIzaSyCJbW7Frv2QVg08Az242DH5m6219iHU37E
+  temperature: 0.4
