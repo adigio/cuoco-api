@@ -19,10 +19,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Grant execute permission for Gradle wrapper
+        run: chmod +x ./gradlew
+
       - name: Build project
         run: |
           if [[ "${{ github.base_ref }}" == "main" ]]; then
-            ./mvnw clean install -Dspring.profiles.active=prod -DskipTests
+            ./gradlew build -x test -Pspring.profiles.active=prod
           else
-            ./mvnw clean install -Dspring.profiles.active=dev -DskipTests
+            ./gradlew build -x test -Pspring.profiles.active=dev
           fi
