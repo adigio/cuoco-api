@@ -12,10 +12,12 @@ import com.cuoco.adapter.out.hibernate.model.UserPreferencesHibernateModel;
 import com.cuoco.adapter.out.hibernate.repository.CreateUserAllergiesHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.CreateUserDietaryNeedsHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.CreateUserHibernateRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.CreateUserPreferencesHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.CreateUserRepository;
 import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.User;
+import com.cuoco.application.usecase.model.UserPreferences;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -26,15 +28,18 @@ import java.util.List;
 public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository {
 
     private final CreateUserHibernateRepositoryAdapter createUserHibernateRepositoryAdapter;
+    private final CreateUserPreferencesHibernateRepositoryAdapter createUserPreferencesHibernateRepositoryAdapter;
     private final CreateUserDietaryNeedsHibernateRepositoryAdapter createUserDietaryNeedsHibernateRepositoryAdapter;
     private final CreateUserAllergiesHibernateRepositoryAdapter createUserAllergiesHibernateRepositoryAdapter;
 
     public CreateUserDatabaseRepositoryAdapter(
             CreateUserHibernateRepositoryAdapter createUserHibernateRepositoryAdapter,
+            CreateUserPreferencesHibernateRepositoryAdapter createUserPreferencesHibernateRepositoryAdapter,
             CreateUserDietaryNeedsHibernateRepositoryAdapter createUserDietaryNeedsHibernateRepositoryAdapter,
             CreateUserAllergiesHibernateRepositoryAdapter createUserAllergiesHibernateRepositoryAdapter
     ) {
         this.createUserHibernateRepositoryAdapter = createUserHibernateRepositoryAdapter;
+        this.createUserPreferencesHibernateRepositoryAdapter = createUserPreferencesHibernateRepositoryAdapter;
         this.createUserDietaryNeedsHibernateRepositoryAdapter = createUserDietaryNeedsHibernateRepositoryAdapter;
         this.createUserAllergiesHibernateRepositoryAdapter = createUserAllergiesHibernateRepositoryAdapter;
     }
@@ -46,16 +51,25 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
 
         UserHibernateModel savedUser = createUserHibernateRepositoryAdapter.save(userToSave);
 
+        UserPreferencesHibernateModel savedPreferences = savePreferences(user, savedUser);
+        
         saveDietaryNeeds(user, savedUser);
 
         saveAllergies(user, savedUser);
 
         User userResponse = savedUser.toDomain();
+        UserPreferences preferences = savedPreferences.toDomain();
 
+        userResponse.setPreferences(preferences);
         userResponse.setDietaryNeeds(user.getDietaryNeeds());
         userResponse.setAllergies(user.getAllergies());
 
         return userResponse;
+    }
+
+    private UserPreferencesHibernateModel savePreferences(User user, UserHibernateModel savedUser) {
+        UserPreferencesHibernateModel preferences = buildUserPreferences(user, savedUser);
+        return createUserPreferencesHibernateRepositoryAdapter.save(preferences);
     }
 
     private void saveAllergies(User user, UserHibernateModel savedUser) {
@@ -64,7 +78,7 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
                 .map(allergy -> buildUserAllergies(savedUser, allergy))
                 .toList();
 
-        List<UserAllergiesHibernateModel> allergiesResponse = createUserAllergiesHibernateRepositoryAdapter.saveAll(allergies);
+        createUserAllergiesHibernateRepositoryAdapter.saveAll(allergies);
     }
 
     private void saveDietaryNeeds(User user, UserHibernateModel savedUser) {
@@ -73,7 +87,7 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
                 .map(dietaryNeed -> buildUserDietaryNeedsHibernateModel(savedUser, dietaryNeed))
                 .toList();
 
-        List<UserDietaryNeedsHibernateModel> dietaryNeedsResponse = createUserDietaryNeedsHibernateRepositoryAdapter.saveAll(dietaryNeeds);
+        createUserDietaryNeedsHibernateRepositoryAdapter.saveAll(dietaryNeeds);
     }
 
     private UserHibernateModel buildHibernateUser(User user) {
@@ -87,16 +101,16 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
                         user.getPlan().getDescription()
                 ),
                 user.getActive(),
-                buildUserPreferences(user),
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 null
         );
     }
 
-    private UserPreferencesHibernateModel buildUserPreferences(User user) {
+    private UserPreferencesHibernateModel buildUserPreferences(User user, UserHibernateModel savedUser) {
         return new UserPreferencesHibernateModel(
                 null,
+                savedUser,
                 new CookLevelHibernateModel(
                         user.getPreferences().getCookLevel().getId(),
                         user.getPreferences().getCookLevel().getDescription()

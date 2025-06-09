@@ -32,8 +32,6 @@ public class UserHibernateModel {
     @JoinColumn(name = "plan_id")
     private PlanHibernateModel plan;
     private Boolean active;
-    @OneToOne(cascade = CascadeType.ALL)
-    private UserPreferencesHibernateModel preferences;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
@@ -46,7 +44,6 @@ public class UserHibernateModel {
                 .password(password)
                 .plan(plan.toDomain())
                 .active(active)
-                .preferences(preferences.toDomain())
                 .createdAt(createdAt)
                 .build();
     }
