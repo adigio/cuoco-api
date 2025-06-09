@@ -1,11 +1,15 @@
 package com.cuoco.adapter.out.hibernate;
 
+import com.cuoco.adapter.exception.NotFoundException;
 import com.cuoco.adapter.out.hibernate.repository.GetUserHibernateRepositoryAdapter;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.port.out.GetUserByEmailRepository;
 import com.cuoco.adapter.out.hibernate.model.UserHibernateModel;
+import com.cuoco.shared.model.ErrorDescription;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 public class GetUserByEmailDatabaseRepositoryAdapter implements GetUserByEmailRepository {
@@ -17,11 +21,13 @@ public class GetUserByEmailDatabaseRepositoryAdapter implements GetUserByEmailRe
     }
 
     @Override
-    public User execute(String email) throws UsernameNotFoundException {
+    public User execute(String email) {
 
-        UserHibernateModel userResult = getUserHibernateRepositoryAdapter.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        Optional<UserHibernateModel> userResult = getUserHibernateRepositoryAdapter.findByEmail(email);
 
-        return userResult.toDomain();
+        if (userResult.isPresent()) {
+            return userResult.get().toDomain();
+        } else throw new NotFoundException(ErrorDescription.USER_NOT_EXISTS.getValue());
+
     }
 }
