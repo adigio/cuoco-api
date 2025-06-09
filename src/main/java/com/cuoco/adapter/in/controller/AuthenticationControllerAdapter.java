@@ -1,5 +1,6 @@
 package com.cuoco.adapter.in.controller;
 
+import com.cuoco.adapter.in.controller.model.AuthDataResponse;
 import com.cuoco.adapter.in.controller.model.CookLevelResponse;
 import com.cuoco.adapter.in.controller.model.DietResponse;
 import com.cuoco.adapter.in.controller.model.PlanResponse;
@@ -49,9 +50,17 @@ public class AuthenticationControllerAdapter {
         log.info("Executing POST login for email {}", request.getEmail());
 
         AuthenticatedUser authenticatedUser = signInUserCommand.execute(buildAuthenticationCommand(request));
-        AuthResponse response = new AuthResponse(authenticatedUser.getToken());
+        AuthResponse response = buildAuthResponse(authenticatedUser);
 
         return ResponseEntity.ok(response);
+    }
+
+    private AuthResponse buildAuthResponse(AuthenticatedUser authenticatedUser) {
+        return AuthResponse.builder()
+                .data(AuthDataResponse.builder()
+                        .user(buildUserResponse(authenticatedUser.getUser(), authenticatedUser.getToken()))
+                        .build())
+                .build();
     }
 
     @PostMapping("/register")
@@ -60,16 +69,17 @@ public class AuthenticationControllerAdapter {
 
         User user = createUserCommand.execute(buildCreateCommand(request));
 
-        UserResponse userResponse = buildUserResponse(user);
+        UserResponse userResponse = buildUserResponse(user, null);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(userResponse);
     }
 
-    private UserResponse buildUserResponse(User user) {
+    private UserResponse buildUserResponse(User user, String token) {
         return UserResponse.builder()
                 .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
+                .token(token)
                 .plan(PlanResponse.builder()
                         .id(user.getPlan().getId())
                         .description(user.getPlan().getDescription())

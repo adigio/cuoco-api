@@ -36,6 +36,7 @@ public class SignInUserUseCase implements SignInUserCommand {
 
         User user = getUserByEmailRepository.execute(command.getEmail());
 
+
         if(!passwordEncoder.matches(command.getPassword(), user.getPassword())) {
             log.info("Invalid credentials");
             throw new RuntimeException("Credenciales inválidas");
