@@ -42,7 +42,7 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
 
         PromptBodyGeminiRequestModel prompt = buildPromptBody(ingredients);
 
-        String geminiUrl = url + apiKey;
+        String geminiUrl = url + "?key=" + apiKey;
 
         String response = restTemplate.postForObject(geminiUrl, prompt, String.class);
 

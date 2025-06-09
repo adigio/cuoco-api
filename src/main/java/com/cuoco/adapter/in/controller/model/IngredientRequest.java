@@ -1,5 +1,8 @@
 package com.cuoco.adapter.in.controller.model;
 
+import lombok.Getter;
+
+@Getter
 public class IngredientRequest {
 
     private String name;
@@ -10,24 +13,12 @@ public class IngredientRequest {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getSource() {
-        return source;
-    }
-
     public void setSource(String source) {
         this.source = source;
-    }
-
-    public boolean isConfirmed() {
-        return confirmed;
     }
 
     public void setConfirmed(boolean confirmed) {
