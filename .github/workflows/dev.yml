@@ -2,8 +2,7 @@ name: Deploy Dev
 
 on:
   push:
-    branches:
-      - 'release/**'
+    branches: [release]
 
 jobs:
   deploy:
