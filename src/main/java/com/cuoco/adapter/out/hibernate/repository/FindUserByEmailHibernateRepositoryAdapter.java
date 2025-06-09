@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface GetUserHibernateRepositoryAdapter extends JpaRepository<UserHibernateModel, Long> {
+public interface FindUserByEmailHibernateRepositoryAdapter extends JpaRepository<UserHibernateModel, Long> {
     Optional<UserHibernateModel> findByEmail(String email);
 }
