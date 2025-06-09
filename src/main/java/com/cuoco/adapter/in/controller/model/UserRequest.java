@@ -23,9 +23,10 @@ public class UserRequest {
     @Email(message = "Email is not valid")
     private String email;
 
-    private String plan;
-    private String cookLevel;
-    private String diet;
+    private Integer planId;
+    private Integer cookLevelId;
+    private Integer dietId;
+
     private List<String> dietaryNeeds;
     private List<String> allergies;
 }

@@ -11,6 +11,7 @@ public enum ErrorDescription {
     UNHANDLED("Ha ocurrido un error inesperado."),
     NOT_AVAILABLE("El servicio no esta disponible."),
     NOT_FOUND("Recurso no encontrado."),
+    VALIDATION_ERROR("Error de validacion"),
     DUPLICATED("El recurso ya existe.");
 
     private final String value;
