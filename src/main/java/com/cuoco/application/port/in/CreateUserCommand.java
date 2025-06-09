@@ -18,23 +18,13 @@ public interface CreateUserCommand {
     class Command {
 
         private String name;
-
         private String email;
-
         private String password;
-
-        private LocalDate registerDate;
-
-        private String plan;
-
-        private Boolean isValid;
-
-        private String cookLevel;
-
-        private String diet;
+        private Integer planId;
+        private Integer cookLevelId;
+        private Integer dietId;
 
         private List<String> dietaryNeeds;
-
         private List<String> allergies;
     }
 }

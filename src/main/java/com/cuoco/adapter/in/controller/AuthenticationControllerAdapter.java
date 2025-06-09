@@ -1,12 +1,19 @@
 package com.cuoco.adapter.in.controller;
 
+import com.cuoco.adapter.in.controller.model.CookLevelResponse;
+import com.cuoco.adapter.in.controller.model.DietResponse;
+import com.cuoco.adapter.in.controller.model.PlanResponse;
+import com.cuoco.adapter.in.controller.model.UserPreferencesResponse;
 import com.cuoco.adapter.in.controller.model.UserRequest;
+import com.cuoco.adapter.in.controller.model.UserResponse;
 import com.cuoco.application.port.in.SignInUserCommand;
 import com.cuoco.application.port.in.CreateUserCommand;
 import com.cuoco.application.usecase.model.AuthenticatedUser;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.adapter.in.controller.model.AuthRequest;
 import com.cuoco.adapter.in.controller.model.AuthResponse;
+import com.cuoco.application.usecase.model.UserPreferences;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -28,8 +35,10 @@ public class AuthenticationControllerAdapter {
     private final CreateUserCommand createUserCommand;
 
 
-    public AuthenticationControllerAdapter(SignInUserCommand signInUserCommand,
-                                           CreateUserCommand createUserCommand) {
+    public AuthenticationControllerAdapter(
+            SignInUserCommand signInUserCommand,
+            CreateUserCommand createUserCommand
+    ) {
         this.signInUserCommand = signInUserCommand;
         this.createUserCommand = createUserCommand;
     }
@@ -46,12 +55,40 @@ public class AuthenticationControllerAdapter {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserRequest request) {
+    public ResponseEntity<?> register(@RequestBody @Valid UserRequest request) {
         log.info("Executing POST register with email {}", request.getEmail());
 
-        createUserCommand.execute(buildCreateCommand(request));
+        User user = createUserCommand.execute(buildCreateCommand(request));
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        UserResponse userResponse = buildUserResponse(user);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(userResponse);
+    }
+
+    private UserResponse buildUserResponse(User user) {
+        return UserResponse.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .plan(PlanResponse.builder()
+                        .id(user.getPlan().getId())
+                        .description(user.getPlan().getDescription())
+                        .build())
+                .preferences(buildUserPreferencesResponse(user.getPreferences()))
+                .build();
+    }
+
+    private UserPreferencesResponse buildUserPreferencesResponse(UserPreferences preferences) {
+        return UserPreferencesResponse.builder()
+                .cookLevel(CookLevelResponse.builder()
+                        .id(preferences.getDiet().getId())
+                        .description(preferences.getDiet().getDescription())
+                        .build())
+                .diet(DietResponse.builder()
+                        .id(preferences.getDiet().getId())
+                        .description(preferences.getDiet().getDescription())
+                        .build())
+                .build();
     }
 
     private SignInUserCommand.Command buildAuthenticationCommand(AuthRequest request) {
@@ -66,11 +103,9 @@ public class AuthenticationControllerAdapter {
                 request.getName(),
                 request.getEmail(),
                 request.getPassword(),
-                LocalDate.now(),
-                "Free",  //this need to be changed
-                true, //this need to be changed
-                request.getCookLevel(),
-                request.getDiet(),
+                request.getPlanId(),
+                request.getCookLevelId(),
+                request.getDietId(),
                 request.getDietaryNeeds(),
                 request.getAllergies()
         );

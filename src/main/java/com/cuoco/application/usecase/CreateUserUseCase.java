@@ -108,9 +108,9 @@ public class CreateUserUseCase implements CreateUserCommand {
     private User buildUser(CreateUserCommand.Command command, List<DietaryNeed> existingNeeds, List<Allergy> existingAlergies) {
         String encriptedPassword = passwordEncoder.encode(command.getPassword());
 
-        Plan plan = getPlanByIdRepository.execute(1);
-        CookLevel cookLevel = getCookLevelByIdRepository.execute(1);
-        Diet diet = getDietByIdRepository.execute(1);
+        Plan plan = getPlanByIdRepository.execute(command.getPlanId());
+        CookLevel cookLevel = getCookLevelByIdRepository.execute(command.getCookLevelId());
+        Diet diet = getDietByIdRepository.execute(command.getDietId());
 
         return new User(
                 null,
