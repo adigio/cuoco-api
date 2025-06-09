@@ -7,6 +7,6 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class AuthResponse {
-    private AuthDataResponse data;
+public class AuthDataResponse {
+    private UserResponse user;
 }
