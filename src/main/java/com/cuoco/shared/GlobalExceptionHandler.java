@@ -1,12 +1,13 @@
 package com.cuoco.shared;
 
 
-import com.cuoco.adapter.exception.ForbiddenException;
 import com.cuoco.adapter.exception.NotAvailableException;
 import com.cuoco.adapter.exception.UnprocessableException;
 import com.cuoco.application.exception.BadRequestException;
 import com.cuoco.application.exception.BusinessException;
 import com.cuoco.application.exception.NotFoundException;
+import com.cuoco.application.exception.ForbiddenException;
+import com.cuoco.application.exception.UnauthorizedException;
 import com.cuoco.application.usecase.model.MessageError;
 import com.cuoco.shared.model.ErrorDescription;
 import com.cuoco.shared.model.exception.GenericException;
@@ -47,15 +48,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ForbiddenException.class)
-    public ResponseEntity<ApiErrorResponse> handle(ForbiddenException ex) {
-        log.info(HttpStatus.FORBIDDEN.getReasonPhrase(), ex);
+    @ExceptionHandler(com.cuoco.adapter.exception.ForbiddenException.class)
+    public ResponseEntity<ApiErrorResponse> handle(com.cuoco.adapter.exception.ForbiddenException ex) {
+        log.info(HttpStatus.FORBIDDEN.getReasonPhrase());
         return buildResponseError(HttpStatus.FORBIDDEN, ex);
     }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ApiErrorResponse> handle(BadRequestException ex) {
-        log.warn(HttpStatus.BAD_REQUEST.getReasonPhrase(), ex);
+        log.warn(HttpStatus.BAD_REQUEST.getReasonPhrase());
         return buildResponseError(HttpStatus.BAD_REQUEST, ex);
     }
 
@@ -69,6 +70,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handle(NotFoundException ex) {
         log.info(HttpStatus.NOT_FOUND.getReasonPhrase(), ex);
         return buildResponseError(HttpStatus.NOT_FOUND, ex);
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ApiErrorResponse> handle(ForbiddenException ex) {
+        log.info(HttpStatus.FORBIDDEN.getReasonPhrase());
+        return buildResponseError(HttpStatus.FORBIDDEN, ex);
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ApiErrorResponse> handle(UnauthorizedException ex) {
+        log.info(HttpStatus.UNAUTHORIZED.getReasonPhrase());
+        return buildResponseError(HttpStatus.UNAUTHORIZED, ex);
     }
 
     @ExceptionHandler(com.cuoco.adapter.exception.NotFoundException.class)

@@ -111,18 +111,23 @@ public class AuthenticationControllerAdapter {
     }
 
     private List<ParametricResponse> buildDietaryNeeds(List<DietaryNeed> dietaryNeeds) {
-        return dietaryNeeds.stream().map(dietaryNeed -> ParametricResponse.builder()
-                .id(dietaryNeed.getId())
-                .description(dietaryNeed.getDescription())
-                .build()).toList();
+        if(dietaryNeeds != null && !dietaryNeeds.isEmpty()) {
+            return dietaryNeeds.stream().map(dietaryNeed -> ParametricResponse.builder()
+                    .id(dietaryNeed.getId())
+                    .description(dietaryNeed.getDescription())
+                    .build()).toList();
+        } else return null;
+
     }
 
     private List<ParametricResponse> buildAllergies(List<Allergy> allergies) {
-        return allergies.stream().map(allergy -> ParametricResponse.builder()
-                .id(allergy.getId())
-                .description(allergy.getDescription())
-                .build()
-        ).toList();
+        if(allergies != null && !allergies.isEmpty()) {
+            return allergies.stream().map(allergy -> ParametricResponse.builder()
+                    .id(allergy.getId())
+                    .description(allergy.getDescription())
+                    .build()
+            ).toList();
+        } else return null;
     }
 
     private UserPreferencesResponse buildUserPreferencesResponse(UserPreferences preferences) {
