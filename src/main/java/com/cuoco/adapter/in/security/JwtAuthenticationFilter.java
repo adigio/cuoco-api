@@ -59,6 +59,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         AntPathMatcher matcher = new AntPathMatcher();
-        return matcher.match("/auth/**", request.getRequestURI()) || matcher.match("/actuator/health", request.getRequestURI());
+        return matcher.match("/auth/**", request.getRequestURI())
+                || matcher.match("/actuator/health", request.getRequestURI())
+                || matcher.match("/plan", request.getRequestURI())
+                || matcher.match("/allergy", request.getRequestURI())
+                || matcher.match("/diet", request.getRequestURI())
+                || matcher.match("/dietary-need", request.getRequestURI())
+                || matcher.match("/cook-level", request.getRequestURI());
     }
 }

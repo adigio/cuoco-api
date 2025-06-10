@@ -31,7 +31,15 @@ public class SecurityConfiguration {
                         exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/actuator/health").permitAll()
+                        .requestMatchers(
+                                "/auth/**",
+                                "/actuator/health",
+                                "/cook-level",
+                                "/plan",
+                                "/diet",
+                                "/dietary-need",
+                                "/allergy"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
