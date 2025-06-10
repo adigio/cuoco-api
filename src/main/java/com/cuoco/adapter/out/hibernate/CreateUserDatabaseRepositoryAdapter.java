@@ -18,6 +18,7 @@ import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserPreferences;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Repository
+@Transactional
 public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository {
 
     private final CreateUserHibernateRepositoryAdapter createUserHibernateRepositoryAdapter;

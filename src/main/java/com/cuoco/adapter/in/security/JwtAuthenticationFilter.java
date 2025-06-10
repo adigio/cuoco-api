@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -53,5 +54,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 null,
                 authenticatedUser.getRoles().stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
         );
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        AntPathMatcher matcher = new AntPathMatcher();
+        return matcher.match("/auth/**", request.getRequestURI()) || matcher.match("/actuator/health", request.getRequestURI());
     }
 }

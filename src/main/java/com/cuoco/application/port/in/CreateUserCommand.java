@@ -24,7 +24,7 @@ public interface CreateUserCommand {
         private Integer cookLevelId;
         private Integer dietId;
 
-        private List<String> dietaryNeeds;
-        private List<String> allergies;
+        private List<Integer> dietaryNeeds;
+        private List<Integer> allergies;
     }
 }

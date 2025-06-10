@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface FindDietaryNeedsByDescriptionHibernateRepositoryAdapter extends JpaRepository<DietaryNeedHibernateModel, Long> {
-    List<DietaryNeedHibernateModel> findByDescriptionIn(List<String> dietaryNeeds);
+public interface GetDietaryNeedsByIdHibernateRepositoryAdapter extends JpaRepository<DietaryNeedHibernateModel, Long> {
+    List<DietaryNeedHibernateModel> findByIdIn(List<Integer> dietaryNeedIds);
 }

@@ -2,18 +2,24 @@ package com.cuoco.shared.model;
 
 public enum ErrorDescription {
 
-    ALLERGIES_NOT_EXISTS("Las alergias ingresadas no existen."),
-    PREFERENCES_NOT_EXISTS("Las preferencias ingresadas no existen."),
-    PLAN_NOT_EXISTS("El plan ingresado no existe."),
-    COOK_LEVEL_NOT_EXISTS("El nivel de dificulad ingresado no existe."),
-    DIET_NOT_EXISTS("La dieta ingresada no existe."),
-    USER_NOT_EXISTS("El usuario ingresado no existe."),
+    ALLERGIES_NOT_EXISTS("Uno o mas valores de allergies no existen"),
+    DIETARY_NEEDS_NOT_EXISTS("Uno o mas valores de dietary-needs no existen"),
+    PREFERENCES_NOT_EXISTS("Las preferencias ingresadas no existen"),
+    PLAN_NOT_EXISTS("El plan ingresado no existe"),
+    COOK_LEVEL_NOT_EXISTS("El nivel de dificulad ingresado no existe"),
+    DIET_NOT_EXISTS("La dieta ingresada no existe"),
+    USER_NOT_EXISTS("El usuario ingresado no existe"),
+    USER_DUPLICATED("El usuario ya existe"),
+    INVALID_CREDENTIALS("Las credenciales no son válidas"),
+    INVALID_TOKEN("El token no es valido"),
+    EXPIRED_TOKEN("El token ha expirado"),
+    UNAUTHORIZED("El token no esta presente"),
     UNEXPECTED_ERROR("An unexpected error occurred: "),
-    UNHANDLED("Ha ocurrido un error inesperado."),
-    NOT_AVAILABLE("El servicio no esta disponible."),
-    NOT_FOUND("Recurso no encontrado."),
+    UNHANDLED("Ha ocurrido un error inesperado"),
+    NOT_AVAILABLE("El servicio no esta disponible"),
+    NOT_FOUND("Recurso no encontrado"),
     VALIDATION_ERROR("Error de validacion"),
-    DUPLICATED("El recurso ya existe.");
+    DUPLICATED("El recurso ya existe");
 
     private final String value;
 
