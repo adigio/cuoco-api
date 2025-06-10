@@ -25,8 +25,8 @@ public class GetAllPlansDatabaseRepository implements GetAllPlansRepository {
     public List<Plan> execute() {
         log.info("Get all plans from database");
 
-        List<PlanHibernateModel> plansReponse = getAllPlansHibernateRepository.findAll();
+        List<PlanHibernateModel> response = getAllPlansHibernateRepository.findAll();
 
-        return plansReponse.stream().map(PlanHibernateModel::toDomain).toList();
+        return response.stream().map(PlanHibernateModel::toDomain).toList();
     }
 }

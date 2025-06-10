@@ -25,8 +25,8 @@ public class GetAllDietsDatabaseRepository implements GetAllDietsRepository {
     public List<Diet> execute() {
         log.info("Get all diets from database");
 
-        List<DietHibernateModel> dietsResponse = getAllDietsHibernateRepository.findAll();
+        List<DietHibernateModel> response = getAllDietsHibernateRepository.findAll();
 
-        return dietsResponse.stream().map(DietHibernateModel::toDomain).toList();
+        return response.stream().map(DietHibernateModel::toDomain).toList();
     }
 }

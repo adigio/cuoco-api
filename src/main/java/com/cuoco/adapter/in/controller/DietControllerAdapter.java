@@ -30,7 +30,7 @@ public class DietControllerAdapter {
         List<Diet> diets = getDietsQuery.execute();
         List<ParametricResponse> response = diets.stream().map(this::buildParametricResponse).toList();
 
-        log.info("All diets retrieved successfully");
+        log.info("All diets are retrieved successfully");
         return ResponseEntity.ok(response);
     }
 

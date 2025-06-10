@@ -30,7 +30,7 @@ public class PlanControllerAdapter {
         List<Plan> plans = getPlansQuery.execute();
         List<ParametricResponse> response = plans.stream().map(this::buildParametricResponse).toList();
 
-        log.info("All plans retrieved successfully");
+        log.info("All plans are retrieved successfully");
         return ResponseEntity.ok(response);
     }
 

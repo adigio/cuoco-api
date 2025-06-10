@@ -25,8 +25,8 @@ public class GetAllCookLevelsDatabaseRepository implements GetAllCookLevelsRepos
     public List<CookLevel> execute() {
         log.info("Get all cook levels from database");
 
-        List<CookLevelHibernateModel> cookLevelsResponse = getAllCookLevelsHibernateRepository.findAll();
+        List<CookLevelHibernateModel> response = getAllCookLevelsHibernateRepository.findAll();
 
-        return cookLevelsResponse.stream().map(CookLevelHibernateModel::toDomain).toList();
+        return response.stream().map(CookLevelHibernateModel::toDomain).toList();
     }
 }
