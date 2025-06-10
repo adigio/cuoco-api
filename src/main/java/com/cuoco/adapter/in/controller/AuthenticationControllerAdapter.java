@@ -1,18 +1,18 @@
 package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.AuthDataResponse;
+import com.cuoco.adapter.in.controller.model.AuthRequest;
+import com.cuoco.adapter.in.controller.model.AuthResponse;
 import com.cuoco.adapter.in.controller.model.CookLevelResponse;
 import com.cuoco.adapter.in.controller.model.DietResponse;
 import com.cuoco.adapter.in.controller.model.PlanResponse;
 import com.cuoco.adapter.in.controller.model.UserPreferencesResponse;
 import com.cuoco.adapter.in.controller.model.UserRequest;
 import com.cuoco.adapter.in.controller.model.UserResponse;
-import com.cuoco.application.port.in.SignInUserCommand;
 import com.cuoco.application.port.in.CreateUserCommand;
+import com.cuoco.application.port.in.SignInUserCommand;
 import com.cuoco.application.usecase.model.AuthenticatedUser;
 import com.cuoco.application.usecase.model.User;
-import com.cuoco.adapter.in.controller.model.AuthRequest;
-import com.cuoco.adapter.in.controller.model.AuthResponse;
 import com.cuoco.application.usecase.model.UserPreferences;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -23,8 +23,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/auth")
