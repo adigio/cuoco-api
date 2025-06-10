@@ -4,6 +4,6 @@ import com.cuoco.application.usecase.model.Allergy;
 
 import java.util.List;
 
-public interface FindAllergiesByDescriptionRepository {
-    List<Allergy> execute(List<String> descriptions);
+public interface GetAllergiesByIdRepository {
+    List<Allergy> execute(List<Integer> allergyIds);
 }

@@ -13,6 +13,6 @@ import lombok.Data;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserPreferencesResponse {
-    private CookLevelResponse cookLevel;
-    private DietResponse diet;
+    private ParametricResponse cookLevel;
+    private ParametricResponse diet;
 }

@@ -19,9 +19,9 @@ public class UserResponse {
     private String name;
     private String email;
     private String token;
-    private PlanResponse plan;
+    private ParametricResponse plan;
     private UserPreferencesResponse preferences;
 
-    private List<String> dietaryNeeds;
-    private List<String> allergies;
+    private List<ParametricResponse> dietaryNeeds;
+    private List<ParametricResponse> allergies;
 }

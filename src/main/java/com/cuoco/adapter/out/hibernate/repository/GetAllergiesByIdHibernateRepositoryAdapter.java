@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface FindAllergiesByDescriptionHibernateRepositoryAdapter extends JpaRepository<AllergyHibernateModel, Long> {
-    List<AllergyHibernateModel> findByDescriptionIn(List<String> descriptions);
+public interface GetAllergiesByIdHibernateRepositoryAdapter extends JpaRepository<AllergyHibernateModel, Long> {
+    List<AllergyHibernateModel> findByIdIn(List<Integer> allergiesIds);
 }

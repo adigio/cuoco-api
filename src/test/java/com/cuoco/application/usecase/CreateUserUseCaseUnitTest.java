@@ -46,10 +46,10 @@ class CreateUserUseCaseUnitTest {
     private GetCookLevelByIdRepository getCookLevelByIdRepository;
 
     @Mock
-    private FindDietaryNeedsByDescriptionRepository findDietaryNeedsByDescriptionRepository;
+    private GetDietaryNeedsByIdRepository getDietaryNeedsByIdRepository;
 
     @Mock
-    private FindAllergiesByDescriptionRepository findAllergiesByDescriptionRepository;
+    private GetAllergiesByIdRepository getAllergiesByIdRepository;
 
     private CreateUserUseCase useCase;
 
@@ -62,8 +62,8 @@ class CreateUserUseCaseUnitTest {
                 getPlanByIdRepository,
                 getDietByIdRepository,
                 getCookLevelByIdRepository,
-                findDietaryNeedsByDescriptionRepository,
-                findAllergiesByDescriptionRepository
+                getDietaryNeedsByIdRepository,
+                getAllergiesByIdRepository
         );
     }
 
@@ -165,7 +165,7 @@ class CreateUserUseCaseUnitTest {
         );
 
         when(userExistsByEmailRepository.execute("jane@example.com")).thenReturn(false);
-        when(findDietaryNeedsByDescriptionRepository.execute(dietaryNeedDescriptions)).thenReturn(dietaryNeeds);
+        when(getDietaryNeedsByIdRepository.execute(dietaryNeedDescriptions)).thenReturn(dietaryNeeds);
         when(passwordEncoder.encode("password123")).thenReturn("encodedPassword");
         when(getPlanByIdRepository.execute(1)).thenReturn(plan);
         when(getDietByIdRepository.execute(1)).thenReturn(diet);
@@ -182,7 +182,7 @@ class CreateUserUseCaseUnitTest {
         assertEquals(2, result.getDietaryNeeds().size());
         assertTrue(result.getDietaryNeeds().stream().anyMatch(need -> "Low sodium".equals(need.getDescription())));
 
-        verify(findDietaryNeedsByDescriptionRepository, times(1)).execute(dietaryNeedDescriptions);
+        verify(getDietaryNeedsByIdRepository, times(1)).execute(dietaryNeedDescriptions);
         verify(userExistsByEmailRepository, times(1)).execute("jane@example.com");
         verify(createUserRepository, times(1)).execute(any(User.class));
     }
@@ -200,7 +200,7 @@ class CreateUserUseCaseUnitTest {
         );
 
         when(userExistsByEmailRepository.execute("fail@example.com")).thenReturn(false);
-        when(findDietaryNeedsByDescriptionRepository.execute(inputNeeds)).thenReturn(foundNeeds);
+        when(getDietaryNeedsByIdRepository.execute(inputNeeds)).thenReturn(foundNeeds);
 
         // When & Then
         BadRequestException ex = assertThrows(BadRequestException.class, () -> {
@@ -208,7 +208,7 @@ class CreateUserUseCaseUnitTest {
         });
 
         assertEquals(ErrorDescription.PREFERENCES_NOT_EXISTS.getValue(), ex.getDescription());
-        verify(findDietaryNeedsByDescriptionRepository, times(1)).execute(inputNeeds);
+        verify(getDietaryNeedsByIdRepository, times(1)).execute(inputNeeds);
         verifyNoInteractions(createUserRepository);
     }
 
@@ -225,7 +225,7 @@ class CreateUserUseCaseUnitTest {
         );
 
         when(userExistsByEmailRepository.execute("allergy@example.com")).thenReturn(false);
-        when(findAllergiesByDescriptionRepository.execute(allergies)).thenReturn(foundAllergies);
+        when(getAllergiesByIdRepository.execute(allergies)).thenReturn(foundAllergies);
 
         // When & Then
         BadRequestException ex = assertThrows(BadRequestException.class, () -> {
@@ -233,7 +233,7 @@ class CreateUserUseCaseUnitTest {
         });
 
         assertEquals(ErrorDescription.ALLERGIES_NOT_EXISTS.getValue(), ex.getDescription());
-        verify(findAllergiesByDescriptionRepository, times(1)).execute(allergies);
+        verify(getAllergiesByIdRepository, times(1)).execute(allergies);
         verifyNoInteractions(createUserRepository);
     }
 }

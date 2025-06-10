@@ -16,10 +16,10 @@ public class UserAllergiesHibernateModel {
     private Long id;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserHibernateModel user;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "allergy_id")
+    @JoinColumn(name = "allergy_id", referencedColumnName = "id")
     private AllergyHibernateModel allergy;
 }

@@ -4,6 +4,6 @@ import com.cuoco.application.usecase.model.DietaryNeed;
 
 import java.util.List;
 
-public interface FindDietaryNeedsByDescriptionRepository {
-    List<DietaryNeed> execute(List<String> descriptions);
+public interface GetDietaryNeedsByIdRepository {
+    List<DietaryNeed> execute(List<Integer> dietaryNeedIds);
 }
