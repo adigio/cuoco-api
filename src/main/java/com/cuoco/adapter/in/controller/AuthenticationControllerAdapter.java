@@ -133,8 +133,8 @@ public class AuthenticationControllerAdapter {
     private UserPreferencesResponse buildUserPreferencesResponse(UserPreferences preferences) {
         return UserPreferencesResponse.builder()
                 .cookLevel(ParametricResponse.builder()
-                        .id(preferences.getDiet().getId())
-                        .description(preferences.getDiet().getDescription())
+                        .id(preferences.getCookLevel().getId())
+                        .description(preferences.getCookLevel().getDescription())
                         .build())
                 .diet(ParametricResponse.builder()
                         .id(preferences.getDiet().getId())
@@ -142,6 +142,4 @@ public class AuthenticationControllerAdapter {
                         .build())
                 .build();
     }
-
-
 }
