@@ -4,10 +4,13 @@ import com.cuoco.application.usecase.model.Ingredient;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 public interface GetIngredientsFromFileCommand {
 
     List<Ingredient> execute(Command command);
+
+    Map<String, List<Ingredient>> executeWithSeparation(Command command);
 
     class Command {
 

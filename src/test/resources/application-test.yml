@@ -1,7 +1,8 @@
 logging:
   level:
-    org.springframework: ERROR
-    org.hibernate: ERROR
+    com.cuoco: INFO
+    org.springframework: WARN
+    org.hibernate: WARN
     com.planicocina: INFO
     root: ERROR
     # Silenciar más loggers específicos
@@ -14,7 +15,7 @@ spring:
     banner-mode: off
     log-startup-info: false
   datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MySQL
+    url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
     username: sa
     password:
@@ -33,3 +34,25 @@ spring:
   output:
     ansi:
       enabled: never
+  h2:
+    console:
+      enabled: false
+  security:
+    user:
+      name: testuser
+      password: testpass
+
+# Server configuration for tests
+server:
+  port: 0  # Random port for tests
+
+# JWT configuration for tests
+jwt:
+  secret: test-jwt-secret-key-for-testing-purposes-only
+
+# Gemini API configuration for tests (using dummy values)
+gemini:
+  api:
+    url: ${GEMINI_API_URL}
+    key: ${GEMINI_API_KEY}
+  temperature: ${GEMINI_TEMPERATURE}

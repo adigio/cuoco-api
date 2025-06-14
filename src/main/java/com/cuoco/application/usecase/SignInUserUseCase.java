@@ -1,9 +1,11 @@
 package com.cuoco.application.usecase;
 
+import com.cuoco.application.exception.ForbiddenException;
 import com.cuoco.application.port.in.SignInUserCommand;
 import com.cuoco.application.port.out.GetUserByEmailRepository;
 import com.cuoco.application.usecase.model.AuthenticatedUser;
 import com.cuoco.application.usecase.model.User;
+import com.cuoco.shared.model.ErrorDescription;
 import com.cuoco.shared.utils.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,13 +34,14 @@ public class SignInUserUseCase implements SignInUserCommand {
 
     public AuthenticatedUser execute(Command command) {
 
-        log.info("Executing signin user use case for username: {}", command.getUser().getEmail());
+        log.info("Executing signin user use case for email: {}", command.getEmail());
 
-        User user = getUserByEmailRepository.execute(command.getUser().getEmail());
+        User user = getUserByEmailRepository.execute(command.getEmail());
 
-        if(!passwordEncoder.matches(command.getUser().getPassword(), user.getPassword())) {
+
+        if(!passwordEncoder.matches(command.getPassword(), user.getPassword())) {
             log.info("Invalid credentials");
-            throw new RuntimeException("Credenciales inválidas");
+            throw new ForbiddenException(ErrorDescription.INVALID_CREDENTIALS.getValue());
         }
 
         user.setPassword(null);

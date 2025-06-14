@@ -1,34 +1,49 @@
 package com.cuoco.adapter.in.controller;
 
+import com.cuoco.adapter.in.controller.model.IngredientsResponseMapper;
+import com.cuoco.adapter.in.controller.model.IngredientsResponse;
 import com.cuoco.application.port.in.GetIngredientsFromFileCommand;
 import com.cuoco.application.usecase.model.Ingredient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/ingredients")
+@RequestMapping("/api/analyze-images")
 public class UploadControllerAdapter {
 
-    private GetIngredientsFromFileCommand getIngredientsFromFileCommand;
+    private static final Logger log = LoggerFactory.getLogger(UploadControllerAdapter.class);
 
-    public UploadControllerAdapter(GetIngredientsFromFileCommand getIngredientsFromFileCommand) {
+    private final GetIngredientsFromFileCommand getIngredientsFromFileCommand;
+    private final IngredientsResponseMapper ingredientsResponseMapper;
+
+    public UploadControllerAdapter(GetIngredientsFromFileCommand getIngredientsFromFileCommand,
+                                   IngredientsResponseMapper ingredientsResponseMapper) {
         this.getIngredientsFromFileCommand = getIngredientsFromFileCommand;
+        this.ingredientsResponseMapper = ingredientsResponseMapper;
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> getIngredients(@RequestBody List<MultipartFile> files) {
+    public ResponseEntity<?> getIngredients(@RequestParam("files") List<MultipartFile> files) {
         try {
-            List<Ingredient> ingredientsReponse = getIngredientsFromFileCommand.execute(buildIngredientsFromFileCommand(files));
+            log.info("Processing {} image files for ingredient analysis", files.size());
 
-            // TODO esto debe ser convertido a un DTO correspondiente con la capa de adapter IngredientsResponse
-            return ResponseEntity.ok(ingredientsReponse);
+            Map<String, List<Ingredient>> ingredientsByImage = getIngredientsFromFileCommand.executeWithSeparation(buildIngredientsFromFileCommand(files));
+
+            IngredientsResponse ingredientsResponse = ingredientsResponseMapper.toImageSeparateResponse(ingredientsByImage);
+
+            log.info("Successfully extracted ingredients from {} images with separation", ingredientsByImage.size());
+            return ResponseEntity.ok(ingredientsResponse);
         } catch (Exception e) {
+            log.error("Error processing images: {}", e.getMessage(), e);
             return ResponseEntity.internalServerError().body("Error al procesar la imagen: " + e.getMessage());
         }
     }
@@ -37,60 +52,3 @@ public class UploadControllerAdapter {
         return new GetIngredientsFromFileCommand.Command(files);
     }
 }
-
-/*
-        if (files == null || files.size() == 0) {
-            return ResponseEntity.badRequest().body("Error: imagen vacía o no enviada");
-        }
-        List<IngredientRequest> ingredientes = new ArrayList<>();
-        try {
-            for (MultipartFile file : files) {
-                List<String> nombres = geminiService.detectarIngredientesDesdeUnaImagen(file);
-
-                for (String nombre : nombres) {
-                    ingredientes.add(new IngredientRequest(nombre, "imagen", false));
-                }
-            }
-
-            return ResponseEntity.ok(ingredientes);
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error al procesar la imagen: " + e.getMessage());
-        }
- */
-
-/*    @PostMapping("/detectar-y-receta")
-    public ResponseEntity<?> detectarYGenerarReceta(@RequestParam("file") MultipartFile file) {
-        if (file == null || file.isEmpty()) {
-            return ResponseEntity.badRequest().body("Error: imagen vacía o no enviada");
-        }
-
-        try {
-            List<String> ingredientes = geminiService.detectarYGuardarIngredientes(file);
-            String receta = geminiService.generarRecetaDesdeIngredientes(ingredientes);
-
-            Map<String, Object> respuesta = new HashMap<>();
-            respuesta.put("ingredientes", ingredientes);
-            respuesta.put("receta", receta);
-
-            return ResponseEntity.ok(respuesta);
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error al procesar la imagen y generar receta: " + e.getMessage());
-        }
-    }
-
-    @PostMapping("/generar-receta")
-    public ResponseEntity<?> generarReceta(@RequestBody List<String> ingredientes) {
-        if (ingredientes == null || ingredientes.isEmpty()) {
-            return ResponseEntity.badRequest().body("Error: no se proporcionaron ingredientes");
-        }
-
-        try {
-            String receta = geminiService.generarRecetaDesdeIngredientes(ingredientes);
-            return ResponseEntity.ok(receta);
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error al generar la receta: " + e.getMessage());
-        }
-    }
-*/
-
-

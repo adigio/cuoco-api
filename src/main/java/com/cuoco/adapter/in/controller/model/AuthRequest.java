@@ -1,17 +1,21 @@
 package com.cuoco.adapter.in.controller.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AuthRequest {
-    private String name;
+
+    @NotBlank(message = "Password is required")
     private String password;
+
+    @NotBlank(message = "Email is required")
     private String email;
-    private String plan;
-    private String cookLevel;
-    private String diet;
-    private List<String> dietaryNeeds;
-    private List<String> allergies;
 }
