@@ -1,10 +1,16 @@
 package com.cuoco.adapter.in.controller;
 
+import com.cuoco.adapter.in.controller.model.IngredientResponse;
+import com.cuoco.adapter.in.controller.model.RecipeFilterRequest;
+import com.cuoco.adapter.in.controller.model.IngredientRequest;
+import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.adapter.out.rest.model.gemini.GeminiResponseMapper;
 import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
 import com.cuoco.application.usecase.model.Ingredient;
+import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.RecipeFilter;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -13,56 +19,76 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
+@Slf4j
 @RestController
-@RequestMapping("/api/generate-recipes")
+@RequestMapping("/recipes")
 public class RecipeControllerAdapter {
 
-    static final Logger log = LoggerFactory.getLogger(RecipeControllerAdapter.class);
-
     private final GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand;
-    private final GeminiResponseMapper geminiResponseMapper;
 
-    public RecipeControllerAdapter(GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand,
-                                                        GeminiResponseMapper geminiResponseMapper) {
+    public RecipeControllerAdapter(GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand) {
         this.getRecipesFromIngredientsCommand = getRecipesFromIngredientsCommand;
-        this.geminiResponseMapper = geminiResponseMapper;
     }
 
     @PostMapping()
-    public ResponseEntity<?> generate(@RequestBody RecipeRequest recipeRequest) {
-        try {
-            log.info("Executing GET recipes from ingredients with body {}", recipeRequest);
+    public ResponseEntity<List<RecipeResponse>> generate(@RequestBody RecipeRequest recipeRequest) {
 
-            String recipes = getRecipesFromIngredientsCommand.execute(buildGenerateRecipeCommand(recipeRequest));
+        log.info("Executing GET recipes from ingredients with body {}", recipeRequest);
 
-            log.info("Successfully generated recipes");
+        List<Recipe> recipes = getRecipesFromIngredientsCommand.execute(buildGenerateRecipeCommand(recipeRequest));
 
-            // Use dedicated mapper to parse Gemini response
-            Object jsonResponse = geminiResponseMapper.parseToJson(recipes);
-            return ResponseEntity.ok(jsonResponse);
-        } catch (Exception e) {
-            log.error("Error generating recipes: {}", e.getMessage());
-            return ResponseEntity.internalServerError().body("Error al generar la receta: " + e.getMessage());
-        }
+        List<RecipeResponse> recipesResponse = recipes.stream().map(this::buildResponse).toList();
+
+        log.info("Successfully generated recipes");
+        return ResponseEntity.ok(recipesResponse);
     }
 
     private GetRecipesFromIngredientsCommand.Command buildGenerateRecipeCommand(RecipeRequest recipeRequest) {
-        return new GetRecipesFromIngredientsCommand.Command(
-                recipeRequest.getFilters() != null ?
-                        new RecipeFilter(
-                                recipeRequest.getFilters().getTime(),
-                                recipeRequest.getFilters().getDifficulty(),
-                                recipeRequest.getFilters().getTypes(),
-                                recipeRequest.getFilters().getDiet(),
-                                recipeRequest.getFilters().getQuantity()
-                        ) : null,
-                recipeRequest.getIngredients().stream().map(ingredient ->
-                        new Ingredient(
-                                ingredient.getName(),
-                                ingredient.getSource(),
-                                ingredient.isConfirmed()
-                        )
-                ).toList()
-        );
+        return GetRecipesFromIngredientsCommand.Command.builder()
+                .filters(recipeRequest.getFilters() != null ? buildFilter(recipeRequest.getFilters()) : null)
+                .ingredients(recipeRequest.getIngredients().stream().map(this::buildIngredient).toList())
+                .build();
+    }
+
+    private RecipeFilter buildFilter(RecipeFilterRequest filter) {
+        return RecipeFilter.builder()
+                .time(filter.getTime())
+                .difficulty(filter.getDifficulty())
+                .types(filter.getTypes())
+                .diet(filter.getDiet())
+                .quantity(filter.getQuantity())
+                .build();
+    }
+
+    private Ingredient buildIngredient(IngredientRequest ingredientRequest) {
+        return Ingredient.builder()
+                .name(ingredientRequest.getName())
+                .source(ingredientRequest.getSource())
+                .confirmed(ingredientRequest.isConfirmed())
+                .build();
+    }
+
+    private RecipeResponse buildResponse(Recipe recipe) {
+        return RecipeResponse.builder()
+                .name(recipe.getName())
+                .preparationTime(recipe.getPreparationTime())
+                .image(recipe.getImage())
+                .subtitle(recipe.getSubtitle())
+                .description(recipe.getDescription())
+                .ingredients(
+                        recipe.getIngredients().stream().map(this::buildIngredientResponse).toList()
+                )
+                .instructions(recipe.getInstructions())
+                .build();
+    }
+
+    private IngredientResponse buildIngredientResponse(Ingredient ingredient) {
+        return IngredientResponse.builder()
+                .name(ingredient.getName())
+                .quantity(ingredient.getQuantity())
+                .unit(ingredient.getUnit())
+                .build();
     }
 }

@@ -25,7 +25,7 @@ public class DietControllerAdapter {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<List<ParametricResponse>> getAll() {
         log.info("GET all diets");
         List<Diet> diets = getDietsQuery.execute();
         List<ParametricResponse> response = diets.stream().map(this::buildParametricResponse).toList();

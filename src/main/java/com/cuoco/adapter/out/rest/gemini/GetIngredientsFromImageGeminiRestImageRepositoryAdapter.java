@@ -1,10 +1,15 @@
-package com.cuoco.adapter.out.rest.model.gemini;
+package com.cuoco.adapter.out.rest.gemini;
 
-import com.cuoco.application.port.out.GetIngredientsFromRepository;
+import com.cuoco.adapter.out.rest.gemini.model.wrapper.ContentGeminiRequestModel;
+import com.cuoco.adapter.out.rest.gemini.model.wrapper.GenerationConfigurationGeminiRequestModel;
+import com.cuoco.adapter.out.rest.gemini.model.wrapper.InlineDataGeminiRequestModel;
+import com.cuoco.adapter.out.rest.gemini.model.wrapper.PartGeminiRequestModel;
+import com.cuoco.adapter.out.rest.gemini.model.wrapper.PromptBodyGeminiRequestModel;
+import com.cuoco.adapter.out.rest.model.gemini.GeminiResponseMapper;
+import com.cuoco.application.port.out.GetIngredientsFromImageRepository;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.shared.FileReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -16,12 +21,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Component
-public class GeminiImageToIngredientsRepositoryAdapter implements GetIngredientsFromRepository {
+public class GetIngredientsFromImageGeminiRestImageRepositoryAdapter implements GetIngredientsFromImageRepository {
 
-    static final Logger log = LoggerFactory.getLogger(GeminiImageToIngredientsRepositoryAdapter.class);
-
-    private final String PROMPT = FileReader.execute("prompt/generateIngredients.txt");
+    private final String PROMPT = FileReader.execute("prompt/recognizeIngredientsFromImage.txt");
 
     @Value("${gemini.api.url}")
     private String url;
@@ -29,10 +33,13 @@ public class GeminiImageToIngredientsRepositoryAdapter implements GetIngredients
     @Value("${gemini.api.key}")
     private String apiKey;
 
+    @Value("${gemini.temperature}")
+    private Double temperature;
+
     private final RestTemplate restTemplate;
     private final GeminiResponseMapper geminiResponseMapper;
 
-    public GeminiImageToIngredientsRepositoryAdapter(RestTemplate restTemplate, GeminiResponseMapper geminiResponseMapper) {
+    public GetIngredientsFromImageGeminiRestImageRepositoryAdapter(RestTemplate restTemplate, GeminiResponseMapper geminiResponseMapper) {
         this.restTemplate = restTemplate;
         this.geminiResponseMapper = geminiResponseMapper;
     }
@@ -46,7 +53,10 @@ public class GeminiImageToIngredientsRepositoryAdapter implements GetIngredients
 
         for (MultipartFile file : files) {
             try {
-                PromptBodyGeminiRequestModel prompt = buildPromptBody(file);
+                String imageBase64 = Base64.getEncoder().encodeToString(file.getBytes());
+                String mimeType = file.getContentType() != null ? file.getContentType() : "image/jpeg";
+
+                PromptBodyGeminiRequestModel prompt = buildPromptBody(imageBase64, mimeType, PROMPT);
 
                 String geminiUrl = url + "?key=" + apiKey;
 
@@ -75,7 +85,10 @@ public class GeminiImageToIngredientsRepositoryAdapter implements GetIngredients
             try {
                 String filename = file.getOriginalFilename() != null ? file.getOriginalFilename() : "unknown_" + System.currentTimeMillis();
 
-                PromptBodyGeminiRequestModel prompt = buildPromptBody(file);
+                String imageBase64 = Base64.getEncoder().encodeToString(file.getBytes());
+                String mimeType = file.getContentType() != null ? file.getContentType() : "image/jpeg";
+
+                PromptBodyGeminiRequestModel prompt = buildPromptBody(imageBase64, mimeType, PROMPT);
 
                 String geminiUrl = url + "?key=" + apiKey;
 
@@ -97,42 +110,29 @@ public class GeminiImageToIngredientsRepositoryAdapter implements GetIngredients
         return ingredientsByImage;
     }
 
-    private PromptBodyGeminiRequestModel buildPromptBody(MultipartFile file) {
-        return new PromptBodyGeminiRequestModel(
-                buildContentRequest(file),
-                new GenerationConfigurationGeminiRequestModel(
-                        0.2
-                )
-        );
+    private PromptBodyGeminiRequestModel buildPromptBody(String imageBase64, String mimeType, String prompt) {
+        return PromptBodyGeminiRequestModel.builder()
+                .contents(List.of(ContentGeminiRequestModel.builder().parts(buildPartsRequest(imageBase64, mimeType, prompt)).build()))
+                .generationConfig(GenerationConfigurationGeminiRequestModel.builder().temperature(temperature).build())
+                .build();
     }
 
-    private List<ContentGeminiRequestModel> buildContentRequest(MultipartFile file) {
-        return List.of(
-                new ContentGeminiRequestModel(buildPartsRequest(file))
-        );
-    }
-
-    private List<PartGeminiRequestModel> buildPartsRequest(MultipartFile file) {
-        try {
-            String imageBase64 = Base64.getEncoder().encodeToString(file.getBytes());
-            String mimeType = file.getContentType();
-
+    private List<PartGeminiRequestModel> buildPartsRequest(String imageBase64, String mimeType, String prompt) {
             return List.of(
-                    new PartGeminiRequestModel(
-                            null,
-                            PROMPT
-                    ),
-                    new PartGeminiRequestModel(
-                            new InlineDataGeminiRequestModel(
-                                    mimeType != null ? mimeType : "image/jpeg",
-                                    imageBase64
-                            ),
-                            null
-                    )
+                    PartGeminiRequestModel.builder()
+                            .text(prompt)
+                            .build(),
+                    PartGeminiRequestModel.builder()
+                            .inlineData(buildInlineData(imageBase64, mimeType))
+                            .build()
             );
-        } catch (Exception e) {
-            throw new RuntimeException("Error processing image file: " + e.getMessage(), e);
-        }
+    }
+
+    private InlineDataGeminiRequestModel buildInlineData(String imageBase64, String mimeType) {
+        return InlineDataGeminiRequestModel.builder()
+                .mimeType(mimeType)
+                .data(imageBase64)
+                .build();
     }
 
     private List<Ingredient> parseIngredientsFromResponse(String response) {
@@ -158,7 +158,12 @@ public class GeminiImageToIngredientsRepositoryAdapter implements GetIngredients
         for (String name : ingredientNames) {
             String cleanName = name.trim().toLowerCase();
             if (!cleanName.isEmpty()) {
-                ingredients.add(new Ingredient(cleanName, "imagen", false));
+                ingredients.add(Ingredient.builder()
+                        .name(cleanName)
+                        .source("image")
+                        .confirmed(false)
+                        .build()
+                );
             }
         }
 

@@ -1,7 +1,7 @@
 package com.cuoco.application.usecase;
 
 import com.cuoco.application.port.in.GetIngredientsFromVoiceCommand;
-import com.cuoco.application.port.out.GetIngredientsFromVoiceRepository;
+import com.cuoco.application.port.out.GetIngredientsFromAudioRepository;
 import com.cuoco.application.usecase.model.Ingredient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,13 +21,13 @@ import static org.mockito.Mockito.*;
 class GetIngredientsFromVoiceUseCaseUnitTest {
 
     @Mock
-    private GetIngredientsFromVoiceRepository getIngredientsFromVoiceRepository;
+    private GetIngredientsFromAudioRepository getIngredientsFromAudioRepository;
 
     private GetIngredientsFromVoiceUseCase getIngredientsFromVoiceUseCase;
 
     @BeforeEach
     void setUp() {
-        getIngredientsFromVoiceUseCase = new GetIngredientsFromVoiceUseCase(getIngredientsFromVoiceRepository);
+        getIngredientsFromVoiceUseCase = new GetIngredientsFromVoiceUseCase(getIngredientsFromAudioRepository);
     }
 
     @Test
@@ -45,7 +45,7 @@ class GetIngredientsFromVoiceUseCaseUnitTest {
                 new Ingredient("ajo", "voz", false)
         );
 
-        when(getIngredientsFromVoiceRepository.processVoice(audioBase64, format, language))
+        when(getIngredientsFromAudioRepository.processVoice(audioBase64, format, language))
                 .thenReturn(expectedIngredients);
 
         // When
@@ -58,7 +58,7 @@ class GetIngredientsFromVoiceUseCaseUnitTest {
         assertEquals("voz", result.get(0).getSource());
         assertFalse(result.get(0).isConfirmed());
 
-        verify(getIngredientsFromVoiceRepository).processVoice(audioBase64, format, language);
+        verify(getIngredientsFromAudioRepository).processVoice(audioBase64, format, language);
     }
 
     @Test
@@ -72,7 +72,7 @@ class GetIngredientsFromVoiceUseCaseUnitTest {
 
         List<Ingredient> emptyIngredients = List.of();
 
-        when(getIngredientsFromVoiceRepository.processVoice(audioBase64, format, language))
+        when(getIngredientsFromAudioRepository.processVoice(audioBase64, format, language))
                 .thenReturn(emptyIngredients);
 
         // When
@@ -82,7 +82,7 @@ class GetIngredientsFromVoiceUseCaseUnitTest {
         assertNotNull(result);
         assertTrue(result.isEmpty());
 
-        verify(getIngredientsFromVoiceRepository).processVoice(audioBase64, format, language);
+        verify(getIngredientsFromAudioRepository).processVoice(audioBase64, format, language);
     }
 
     @Test
@@ -101,7 +101,7 @@ class GetIngredientsFromVoiceUseCaseUnitTest {
 
         CompletableFuture<List<Ingredient>> futureIngredients = CompletableFuture.completedFuture(expectedIngredients);
 
-        when(getIngredientsFromVoiceRepository.processVoiceAsync(audioBase64, format, language))
+        when(getIngredientsFromAudioRepository.processVoiceAsync(audioBase64, format, language))
                 .thenReturn(futureIngredients);
 
         // When
@@ -112,7 +112,7 @@ class GetIngredientsFromVoiceUseCaseUnitTest {
         assertTrue(result.isDone());
         assertEquals(expectedIngredients, result.join());
 
-        verify(getIngredientsFromVoiceRepository).processVoiceAsync(audioBase64, format, language);
+        verify(getIngredientsFromAudioRepository).processVoiceAsync(audioBase64, format, language);
     }
 
     @Test
@@ -129,7 +129,7 @@ class GetIngredientsFromVoiceUseCaseUnitTest {
                 new Ingredient("choclo", "voz", false)
         );
 
-        when(getIngredientsFromVoiceRepository.processVoice(audioBase64, format, language))
+        when(getIngredientsFromAudioRepository.processVoice(audioBase64, format, language))
                 .thenReturn(expectedIngredients);
 
         // When
@@ -140,7 +140,7 @@ class GetIngredientsFromVoiceUseCaseUnitTest {
         assertEquals("palta", result.get(0).getName());
         assertEquals("choclo", result.get(1).getName());
 
-        verify(getIngredientsFromVoiceRepository).processVoice(audioBase64, format, language);
+        verify(getIngredientsFromAudioRepository).processVoice(audioBase64, format, language);
     }
 
     @Test
@@ -155,7 +155,7 @@ class GetIngredientsFromVoiceUseCaseUnitTest {
         CompletableFuture<List<Ingredient>> failedFuture = new CompletableFuture<>();
         failedFuture.completeExceptionally(new RuntimeException("Repository error"));
 
-        when(getIngredientsFromVoiceRepository.processVoiceAsync(audioBase64, format, language))
+        when(getIngredientsFromAudioRepository.processVoiceAsync(audioBase64, format, language))
                 .thenReturn(failedFuture);
 
         // When
@@ -165,6 +165,6 @@ class GetIngredientsFromVoiceUseCaseUnitTest {
         assertNotNull(result);
         assertTrue(result.isCompletedExceptionally());
 
-        verify(getIngredientsFromVoiceRepository).processVoiceAsync(audioBase64, format, language);
+        verify(getIngredientsFromAudioRepository).processVoiceAsync(audioBase64, format, language);
     }
 }

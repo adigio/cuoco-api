@@ -1,7 +1,7 @@
 package com.cuoco.application.usecase;
 
 import com.cuoco.application.port.in.GetIngredientsFromFileCommand;
-import com.cuoco.application.port.out.GetIngredientsFromRepository;
+import com.cuoco.application.port.out.GetIngredientsFromImageRepository;
 import com.cuoco.application.usecase.model.Ingredient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 class GetIngredientsFromFileUseCaseUnitTest {
 
     @Mock
-    private GetIngredientsFromRepository repository;
+    private GetIngredientsFromImageRepository repository;
 
     private GetIngredientsFromFileUseCase useCase;
 

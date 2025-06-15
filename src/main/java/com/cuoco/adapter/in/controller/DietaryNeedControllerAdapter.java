@@ -25,7 +25,7 @@ public class DietaryNeedControllerAdapter {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<List<ParametricResponse>> getAll() {
         log.info("GET all dietary needs");
 
         List<DietaryNeed> dietaryNeeds = getAllDietaryNeedsQuery.execute();

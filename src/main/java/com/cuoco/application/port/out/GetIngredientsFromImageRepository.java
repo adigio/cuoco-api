@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Map;
 
-public interface GetIngredientsFromRepository {
+public interface GetIngredientsFromImageRepository {
 
 
     List<Ingredient> execute(List<MultipartFile> files);

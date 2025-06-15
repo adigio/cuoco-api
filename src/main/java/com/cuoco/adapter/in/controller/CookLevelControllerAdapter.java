@@ -27,6 +27,7 @@ public class CookLevelControllerAdapter {
     @GetMapping
     public ResponseEntity<List<ParametricResponse>> getAll() {
         log.info("GET all cook levels");
+
         List<CookLevel> cookLevels = getCookLevelsQuery.execute();
         List<ParametricResponse> response = cookLevels.stream().map(this::buildParametricResponse).toList();
 

@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 import java.util.List;
@@ -18,5 +16,5 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RecipeRequest {
     private List<IngredientRequest> ingredients;
-    private FilterRequest filters;
+    private RecipeFilterRequest filters;
 }

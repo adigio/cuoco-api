@@ -45,7 +45,7 @@ public class AuthenticationControllerAdapter {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
 
         log.info("Executing POST login for email {}", request.getEmail());
 
@@ -64,7 +64,7 @@ public class AuthenticationControllerAdapter {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody @Valid UserRequest request) {
+    public ResponseEntity<UserResponse> register(@RequestBody @Valid UserRequest request) {
         log.info("Executing POST register with email {}", request.getEmail());
 
         User user = createUserCommand.execute(buildCreateCommand(request));

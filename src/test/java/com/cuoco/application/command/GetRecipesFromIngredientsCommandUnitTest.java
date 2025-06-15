@@ -25,9 +25,9 @@ class GetRecipesFromIngredientsCommandUnitTest {
         GetRecipesFromIngredientsCommand.Command command = new GetRecipesFromIngredientsCommand.Command(filter, ingredients);
 
         // Then
-        assertEquals(filter, command.getFilters());
-        assertEquals(ingredients, command.getIngredients());
-        assertEquals(2, command.getIngredients().size());
+        assertEquals(filter, command.filters());
+        assertEquals(ingredients, command.ingredients());
+        assertEquals(2, command.ingredients().size());
     }
 
     @Test
@@ -39,8 +39,8 @@ class GetRecipesFromIngredientsCommandUnitTest {
         GetRecipesFromIngredientsCommand.Command command = new GetRecipesFromIngredientsCommand.Command(null, ingredients);
 
         // Then
-        assertNull(command.getFilters());
-        assertEquals(ingredients, command.getIngredients());
+        assertNull(command.filters());
+        assertEquals(ingredients, command.ingredients());
     }
 
     @Test
@@ -53,8 +53,8 @@ class GetRecipesFromIngredientsCommandUnitTest {
         GetRecipesFromIngredientsCommand.Command command = new GetRecipesFromIngredientsCommand.Command(filter, emptyIngredients);
 
         // Then
-        assertEquals(filter, command.getFilters());
-        assertTrue(command.getIngredients().isEmpty());
+        assertEquals(filter, command.filters());
+        assertTrue(command.ingredients().isEmpty());
     }
 
     @Test
@@ -89,9 +89,9 @@ class GetRecipesFromIngredientsCommandUnitTest {
         GetRecipesFromIngredientsCommand.Command command = new GetRecipesFromIngredientsCommand.Command(complexFilter, multipleIngredients);
 
         // Then
-        assertEquals(complexFilter, command.getFilters());
-        assertEquals(3, command.getIngredients().size());
-        assertEquals("vegano", command.getFilters().getDiet());
-        assertEquals(3, command.getFilters().getTypes().size());
+        assertEquals(complexFilter, command.filters());
+        assertEquals(3, command.ingredients().size());
+        assertEquals("vegano", command.filters().getDiet());
+        assertEquals(3, command.filters().getTypes().size());
     }
 }

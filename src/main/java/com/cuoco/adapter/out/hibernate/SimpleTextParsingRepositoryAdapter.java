@@ -28,7 +28,11 @@ public class SimpleTextParsingRepositoryAdapter implements GetIngredientsFromTex
         List<Ingredient> ingredients = Arrays.stream(text.split(","))
                 .map(String::trim)
                 .filter(ingredient -> !ingredient.isEmpty())
-                .map(ingredient -> new Ingredient(ingredient, "text", false))
+                .map(ingredient -> Ingredient.builder()
+                        .name(ingredient)
+                        .source("text")
+                        .confirmed(false)
+                        .build())
                 .collect(Collectors.toList());
 
         log.info("Successfully parsed {} ingredients from text", ingredients.size());

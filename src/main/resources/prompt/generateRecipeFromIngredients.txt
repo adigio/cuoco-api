@@ -10,11 +10,17 @@ Devuelve solo el array JSON sin ```json ni explicaciones."
   {
     "id": "recipe-1",
     "name": "Nombre de la receta",
-    "preparationTime": "25'",
+    "preparation_time": "25'",
     "image": "https://ejemplo.com/imagen.jpg",
     "subtitle": "Descripción breve y atractiva",
     "description": "Descripción detallada del plato y su sabor",
-    "ingredients": " 200g ingrediente1, 100ml ingrediente2,  1 cucharada ingrediente3",
-    "instructions": "1. Paso detallado uno, 2. Paso detallado dos, 3. Paso detallado tres"} ]
+    "ingredients": [
+        { "name": "ingrediente1", "quantity": 200, "unit": "gr", "optional": false },
+        { "name": "ingrediente2", "quantity": 100, "unit": "ml", "optional": false },
+        { "name": "ingrediente3", "quantity": 1, "unit": "cucharada", "optional": true },
+    ],
+    "instructions": "1. Paso detallado uno, 2. Paso detallado dos, 3. Paso detallado tres"
+  }
+]
 
 Usar ID únicos tipo string (recipe-1, recipe-2, etc.). No agregar texto adicional, solo el JSON.

@@ -1,4 +1,4 @@
-package com.cuoco.application.usecase.model;
+package com.cuoco.adapter.out.rest.gemini.model.wrapper;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -10,15 +10,8 @@ import lombok.Data;
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Ingredient {
-
-    private String name;
-    private Double quantity;
-    private String unit;
-    private Boolean optional;
-    private String source;
-    private boolean confirmed;
-
+public class CandidateGeminiResponseModel {
+    private ContentGeminiRequestModel content;
 }

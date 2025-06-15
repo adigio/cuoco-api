@@ -1,9 +1,10 @@
 package com.cuoco.application.port.out;
 
 import com.cuoco.application.usecase.model.Ingredient;
+import com.cuoco.application.usecase.model.Recipe;
 
 import java.util.List;
 
 public interface GetRecipesFromIngredientsRepository {
-    String execute(List<Ingredient> ingredients);
+    List<Recipe> execute(List<Ingredient> ingredients);
 }

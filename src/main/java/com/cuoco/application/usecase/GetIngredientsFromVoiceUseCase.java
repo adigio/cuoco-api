@@ -1,7 +1,7 @@
 package com.cuoco.application.usecase;
 
 import com.cuoco.application.port.in.GetIngredientsFromVoiceCommand;
-import com.cuoco.application.port.out.GetIngredientsFromVoiceRepository;
+import com.cuoco.application.port.out.GetIngredientsFromAudioRepository;
 import com.cuoco.application.usecase.model.Ingredient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +15,10 @@ public class GetIngredientsFromVoiceUseCase implements GetIngredientsFromVoiceCo
 
     private static final Logger log = LoggerFactory.getLogger(GetIngredientsFromVoiceUseCase.class);
 
-    private final GetIngredientsFromVoiceRepository getIngredientsFromVoiceRepository;
+    private final GetIngredientsFromAudioRepository getIngredientsFromAudioRepository;
 
-    public GetIngredientsFromVoiceUseCase(GetIngredientsFromVoiceRepository getIngredientsFromVoiceRepository) {
-        this.getIngredientsFromVoiceRepository = getIngredientsFromVoiceRepository;
+    public GetIngredientsFromVoiceUseCase(GetIngredientsFromAudioRepository getIngredientsFromAudioRepository) {
+        this.getIngredientsFromAudioRepository = getIngredientsFromAudioRepository;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class GetIngredientsFromVoiceUseCase implements GetIngredientsFromVoiceCo
         log.info("Executing get ingredients from voice use case - format: {}, language: {}",
                 command.getFormat(), command.getLanguage());
 
-        List<Ingredient> ingredients = getIngredientsFromVoiceRepository.processVoice(
+        List<Ingredient> ingredients = getIngredientsFromAudioRepository.processVoice(
                 command.getAudioBase64(),
                 command.getFormat(),
                 command.getLanguage()
@@ -42,7 +42,7 @@ public class GetIngredientsFromVoiceUseCase implements GetIngredientsFromVoiceCo
         log.info("Executing get ingredients from voice use case ASYNC - format: {}, language: {}",
                 command.getFormat(), command.getLanguage());
 
-        return getIngredientsFromVoiceRepository.processVoiceAsync(
+        return getIngredientsFromAudioRepository.processVoiceAsync(
                 command.getAudioBase64(),
                 command.getFormat(),
                 command.getLanguage()

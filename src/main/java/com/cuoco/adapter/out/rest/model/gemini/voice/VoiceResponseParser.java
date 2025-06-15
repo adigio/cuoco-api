@@ -56,13 +56,17 @@ public class VoiceResponseParser {
         for (String name : ingredientNames) {
             String cleanName = name.trim().toLowerCase();
 
-            // Filtrar nombres muy cortos o inválidos
-            if (!cleanName.isEmpty() && cleanName.length() > 1) {
-                ingredients.add(new Ingredient(cleanName, "voz", false));
+            if (!cleanName.isEmpty()) {
+                ingredients.add(
+                        Ingredient.builder()
+                                .name(cleanName)
+                                .source("voice")
+                                .confirmed(false)
+                                .build());
             }
         }
 
-        log.info("📝 Parsed {} ingredients from text", ingredients.size());
+        log.info("Parsed {} ingredients from text", ingredients.size());
         return ingredients;
     }
 }

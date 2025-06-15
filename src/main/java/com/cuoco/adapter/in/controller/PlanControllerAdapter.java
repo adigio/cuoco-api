@@ -25,7 +25,7 @@ public class PlanControllerAdapter {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<List<ParametricResponse>> getAll() {
         log.info("GET all available plans");
         List<Plan> plans = getPlansQuery.execute();
         List<ParametricResponse> response = plans.stream().map(this::buildParametricResponse).toList();
