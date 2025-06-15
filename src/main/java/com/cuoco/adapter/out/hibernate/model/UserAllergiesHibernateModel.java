@@ -1,20 +1,25 @@
 package com.cuoco.adapter.out.hibernate.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import java.time.LocalDateTime;
 
-@Entity
-@Getter
-@Setter
+@Entity(name = "user_allergies")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserAllergiesHibernateModel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private UserHibernateModel user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "allergies_id", nullable = false)
-    private AllergiesHibernateModel allergies;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "allergy_id", referencedColumnName = "id")
+    private AllergyHibernateModel allergy;
 }

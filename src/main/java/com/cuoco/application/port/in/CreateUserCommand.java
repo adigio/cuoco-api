@@ -1,6 +1,5 @@
 package com.cuoco.application.port.in;
 
-import com.cuoco.application.usecase.model.DietaryNeeds;
 import com.cuoco.application.usecase.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,23 +18,13 @@ public interface CreateUserCommand {
     class Command {
 
         private String name;
-
         private String email;
-
         private String password;
+        private Integer planId;
+        private Integer cookLevelId;
+        private Integer dietId;
 
-        private LocalDate registerDate;
-
-        private String plan;
-
-        private Boolean isValid;
-
-        private String cookLevel;
-
-        private String diet;
-
-        private List<String> dietaryNeeds;
-
-        private List<String> allergies;
+        private List<Integer> dietaryNeeds;
+        private List<Integer> allergies;
     }
 }

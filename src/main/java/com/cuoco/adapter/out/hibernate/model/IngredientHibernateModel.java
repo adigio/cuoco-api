@@ -1,57 +1,33 @@
 package com.cuoco.adapter.out.hibernate.model;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "ingredientes")
-@Getter
-@Setter
+@Entity(name = "ingredient")
+@Data
+@Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class IngredientHibernateModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
 
-    @Column(unique = true, nullable = false)
-    private String nombre;
+    @ManyToOne
+    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    private CategoryHibernateModel category;
 
-    private String fuente;
-
-    private boolean confirmado;
-
-    public IngredientHibernateModel(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getFuente() {
-        return fuente;
-    }
-
-    public void setFuente(String fuente) {
-        this.fuente = fuente;
-    }
-
-    public boolean isConfirmado() {
-        return confirmado;
-    }
-
-    public void setConfirmado(boolean confirmado) {
-        this.confirmado = confirmado;
-    }
-
-    public IngredientHibernateModel() {
-
-
-
-    }
+    @ManyToOne
+    @JoinColumn(name = "measure_unit_id", referencedColumnName = "id")
+    private MeasureUnitHibernateModel measureUnit;
 }

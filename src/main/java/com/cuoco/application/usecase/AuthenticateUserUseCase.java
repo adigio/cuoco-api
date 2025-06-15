@@ -1,9 +1,11 @@
 package com.cuoco.application.usecase;
 
+import com.cuoco.application.exception.UnauthorizedException;
 import com.cuoco.application.port.in.AuthenticateUserCommand;
 import com.cuoco.application.port.out.GetUserByEmailRepository;
 import com.cuoco.application.usecase.model.AuthenticatedUser;
 import com.cuoco.application.usecase.model.User;
+import com.cuoco.shared.model.ErrorDescription;
 import com.cuoco.shared.utils.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,8 @@ public class AuthenticateUserUseCase implements AuthenticateUserCommand {
 
     static final Logger log = LoggerFactory.getLogger(AuthenticateUserUseCase.class);
 
+    static final String BEARER_PREFIX = "Bearer ";
+
     private final JwtUtil jwtUtil;
     private final GetUserByEmailRepository getUserByEmailRepository;
 
@@ -28,23 +32,28 @@ public class AuthenticateUserUseCase implements AuthenticateUserCommand {
     @Override
     public AuthenticatedUser execute(Command command) {
 
+        log.info("Executing authenticate user usecase");
+
         String authHeader = command.getAuthHeader();
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return null;
+        if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
+            log.info("User don't have a valid auth header");
+            throw new UnauthorizedException(ErrorDescription.UNAUTHORIZED.getValue());
         }
 
-        String jwt = authHeader.substring(7);
-        String email = jwtUtil.extractEmail(jwt);
+        String receivedJwt = authHeader.substring(7);
+        String email = jwtUtil.extractEmail(receivedJwt);
 
         if (email == null || SecurityContextHolder.getContext().getAuthentication() != null) {
-            return null;
+            log.info("Token is not valid. The email is not present.");
+            throw new UnauthorizedException(ErrorDescription.INVALID_TOKEN.getValue());
         }
 
         User user = getUserByEmailRepository.execute(email);
 
-        if (user == null || !jwtUtil.validateToken(jwt, user)) {
-            return null;
+        if (user == null || !jwtUtil.validateToken(receivedJwt, user)) {
+            log.info("Token or user with email {} are not valid", email);
+            throw new UnauthorizedException(ErrorDescription.INVALID_TOKEN.getValue());
         }
 
         return buildAuthenticatedUser(user);

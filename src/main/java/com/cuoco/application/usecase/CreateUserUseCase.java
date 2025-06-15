@@ -1,19 +1,28 @@
 package com.cuoco.application.usecase;
 
+import com.cuoco.application.exception.BadRequestException;
 import com.cuoco.application.port.in.CreateUserCommand;
-import com.cuoco.application.port.out.*;
-import com.cuoco.application.usecase.model.Allergies;
-import com.cuoco.application.usecase.model.DietaryNeeds;
+import com.cuoco.application.port.out.CreateUserRepository;
+import com.cuoco.application.port.out.GetAllergiesByIdRepository;
+import com.cuoco.application.port.out.GetCookLevelByIdRepository;
+import com.cuoco.application.port.out.GetDietByIdRepository;
+import com.cuoco.application.port.out.GetDietaryNeedsByIdRepository;
+import com.cuoco.application.port.out.GetPlanByIdRepository;
+import com.cuoco.application.port.out.UserExistsByEmailRepository;
+import com.cuoco.application.usecase.model.Allergy;
+import com.cuoco.application.usecase.model.CookLevel;
+import com.cuoco.application.usecase.model.Diet;
+import com.cuoco.application.usecase.model.DietaryNeed;
+import com.cuoco.application.usecase.model.Plan;
 import com.cuoco.application.usecase.model.User;
-
 import com.cuoco.application.usecase.model.UserPreferences;
+import com.cuoco.shared.model.ErrorDescription;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,26 +34,30 @@ public class CreateUserUseCase implements CreateUserCommand {
     private final PasswordEncoder passwordEncoder;
     private final CreateUserRepository createUserRepository;
     private final UserExistsByEmailRepository userExistsByEmailRepository;
-    private final CreateUserDietaryNeedRepository createUserDietaryNeedRepository;
-    private final FindDietaryNeedsByNameRepository findDietaryNeedsByNameRepository;
-    private final FindAllergiesByNameRepository findAllergiesByNameRepository;
-    private final CreateUserAllergieRepository createUserAllergieRepository;
+    private final GetPlanByIdRepository getPlanByIdRepository;
+    private final GetDietByIdRepository getDietByIdRepository;
+    private final GetCookLevelByIdRepository getCookLevelByIdRepository;
+    private final GetDietaryNeedsByIdRepository getDietaryNeedsByIdRepository;
+    private final GetAllergiesByIdRepository getAllergiesByIdRepository;
 
-
-    public CreateUserUseCase(PasswordEncoder passwordEncoder,
-                             CreateUserRepository createUserRepository,
-                             UserExistsByEmailRepository userExistsByEmailRepository,
-                             CreateUserDietaryNeedRepository createUserDietaryNeedRepository,
-                             FindDietaryNeedsByNameRepository findDietaryNeedsByNameRepository,
-                             FindAllergiesByNameRepository findAllergiesByNameRepository,
-                             CreateUserAllergieRepository createUserAllergieRepository) {
+    public CreateUserUseCase(
+            PasswordEncoder passwordEncoder,
+            CreateUserRepository createUserRepository,
+            UserExistsByEmailRepository userExistsByEmailRepository,
+            GetPlanByIdRepository getPlanByIdRepository,
+            GetDietByIdRepository getDietByIdRepository,
+            GetCookLevelByIdRepository getCookLevelByIdRepository,
+            GetDietaryNeedsByIdRepository getDietaryNeedsByIdRepository,
+            GetAllergiesByIdRepository getAllergiesByIdRepository
+    ) {
         this.passwordEncoder = passwordEncoder;
         this.createUserRepository = createUserRepository;
         this.userExistsByEmailRepository = userExistsByEmailRepository;
-        this.createUserDietaryNeedRepository = createUserDietaryNeedRepository;
-        this.findDietaryNeedsByNameRepository = findDietaryNeedsByNameRepository;
-        this.findAllergiesByNameRepository = findAllergiesByNameRepository;
-        this.createUserAllergieRepository = createUserAllergieRepository;
+        this.getPlanByIdRepository = getPlanByIdRepository;
+        this.getDietByIdRepository = getDietByIdRepository;
+        this.getCookLevelByIdRepository = getCookLevelByIdRepository;
+        this.getDietaryNeedsByIdRepository = getDietaryNeedsByIdRepository;
+        this.getAllergiesByIdRepository = getAllergiesByIdRepository;
     }
 
     @Transactional
@@ -53,59 +66,101 @@ public class CreateUserUseCase implements CreateUserCommand {
 
         if(userExistsByEmailRepository.execute(command.getEmail())) {
             log.info("Email {} already exists", command.getEmail());
-            throw new RuntimeException("El email de usuario ya existe.");
+            throw new BadRequestException(ErrorDescription.USER_DUPLICATED.getValue());
         }
 
-        List<DietaryNeeds> existingNeeds = Collections.emptyList();
+        List<DietaryNeed> existingNeeds = getDietaryNeeds(command);
+        List<Allergy> existingAlergies = getAllergies(command);
 
-        if(command.getDietaryNeeds() != null && !command.getDietaryNeeds().isEmpty()) {
-            existingNeeds = findDietaryNeedsByNameRepository.execute(command.getDietaryNeeds());
-            if (existingNeeds.size() != command.getDietaryNeeds().size()) {
-                throw new RuntimeException("Las preferencias de usuario no existen.");
-            }
-        }
+        Plan plan = getPlan(command.getPlanId());
+        CookLevel cookLevel = getCookLevel(command.getCookLevelId());
+        Diet diet = getDiet(command.getDietId());
 
-        List<Allergies> existingAlergies = Collections.emptyList();
-
-        if(command.getAllergies() != null && !command.getAllergies().isEmpty()) {
-            existingAlergies = findAllergiesByNameRepository.execute(command.getAllergies());
-            if (existingAlergies.size() != command.getAllergies().size()) {
-                throw new RuntimeException("Las allergias de usuario no existen.");
-            }
-        }
-
-        User userToSave = buildUser(command, existingNeeds, existingAlergies);
+        UserPreferences preferencesToSave = buildUserPreferences(cookLevel, diet);
+        User userToSave = buildUser(command, preferencesToSave, plan, existingNeeds, existingAlergies);
 
         User userCreated = createUserRepository.execute(userToSave);
-
-        createUserDietaryNeedRepository.execute(userCreated.getId(), existingNeeds);
-
-        createUserAllergieRepository.execute(userCreated.getId(), existingAlergies);
 
         userCreated.setPassword(null);
 
         return userCreated;
     }
 
+    private Plan getPlan(Integer planId) {
+        Plan plan = getPlanByIdRepository.execute(planId);
+        if(plan == null) throw new BadRequestException(ErrorDescription.PLAN_NOT_EXISTS.getValue());
+        return plan;
+    }
 
-    private User buildUser(CreateUserCommand.Command command, List<DietaryNeeds> existingNeeds, List<Allergies> existingAlergies) {
+    private Diet getDiet(Integer dietId) {
+        Diet diet = getDietByIdRepository.execute(dietId);
+        if(diet == null) throw new BadRequestException(ErrorDescription.DIET_NOT_EXISTS.getValue());
+        return diet;
+    }
+
+    private CookLevel getCookLevel(Integer cookLevelId) {
+        CookLevel cookLevel = getCookLevelByIdRepository.execute(cookLevelId);
+        if(cookLevel == null) throw new BadRequestException(ErrorDescription.COOK_LEVEL_NOT_EXISTS.getValue());
+        return cookLevel;
+    }
+
+    private List<DietaryNeed> getDietaryNeeds(Command command) {
+        List<DietaryNeed> existingNeeds = Collections.emptyList();
+
+        if(command.getDietaryNeeds() != null && !command.getDietaryNeeds().isEmpty()) {
+
+            existingNeeds = getDietaryNeedsByIdRepository.execute(command.getDietaryNeeds());
+
+            if (existingNeeds.size() != command.getDietaryNeeds().size()) {
+                throw new BadRequestException(ErrorDescription.DIETARY_NEEDS_NOT_EXISTS.getValue());
+            }
+
+        }
+        return existingNeeds;
+    }
+
+    private List<Allergy> getAllergies(Command command) {
+        List<Allergy> existingAlergies = Collections.emptyList();
+
+        if(command.getAllergies() != null && !command.getAllergies().isEmpty()) {
+
+            existingAlergies = getAllergiesByIdRepository.execute(command.getAllergies());
+
+            if (existingAlergies.size() != command.getAllergies().size()) {
+                throw new BadRequestException(ErrorDescription.ALLERGIES_NOT_EXISTS.getValue());
+            }
+
+        }
+        return existingAlergies;
+    }
+
+    private User buildUser(
+            CreateUserCommand.Command command,
+            UserPreferences preferences,
+            Plan plan,
+            List<DietaryNeed> existingNeeds,
+            List<Allergy> existingAlergies
+    ) {
+
         String encriptedPassword = passwordEncoder.encode(command.getPassword());
 
-        return new User(
-                null,
-                command.getName(),
-                command.getEmail(),
-                encriptedPassword,
-                LocalDate.now(),
-                command.getPlan() != null ? command.getPlan() : "free",
-                true,
-                new UserPreferences(
-                        command.getCookLevel(),
-                        command.getDiet(),
-                        existingNeeds,
-                        existingAlergies
-                )
-        );
+        return User.builder()
+                .name(command.getName())
+                .email(command.getEmail())
+                .password(encriptedPassword)
+                .plan(plan)
+                .active(true)
+                .preferences(preferences)
+                .dietaryNeeds(existingNeeds)
+                .allergies(existingAlergies)
+                .build();
+    }
+
+    private UserPreferences buildUserPreferences(CookLevel cookLevel, Diet diet) {
+        return UserPreferences.builder()
+                .diet(diet)
+                .cookLevel(cookLevel)
+                .build();
     }
 
 }
