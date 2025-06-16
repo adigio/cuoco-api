@@ -1,12 +1,9 @@
-package com.cuoco.adapter.in;
+package com.cuoco.adapter.in.controller;
 
-import com.cuoco.adapter.in.controller.AllergyControllerAdapter;
-import com.cuoco.adapter.in.controller.DietControllerAdapter;
+
 import com.cuoco.application.port.in.AuthenticateUserCommand;
-import com.cuoco.application.port.in.GetAllCookLevelsQuery;
-import com.cuoco.application.port.in.GetAllDietsQuery;
-import com.cuoco.application.usecase.model.CookLevel;
-import com.cuoco.application.usecase.model.Diet;
+import com.cuoco.application.port.in.GetAllPlansQuery;
+import com.cuoco.application.usecase.model.Plan;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -22,35 +19,34 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(DietControllerAdapter.class)
-public class DietControllerAdapterTest {
+@WebMvcTest(PlanControllerAdapter.class)
+class PlanControllerAdapterTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockitoBean
-    private GetAllDietsQuery getAllDietsQuery;
+    private GetAllPlansQuery getAllPlansQuery;
 
     @MockitoBean
     private AuthenticateUserCommand authenticateUserCommand;
 
     @Test
     @WithMockUser
-    void GIVEN_existing_diets_WHEN_getAll_THEN_return_list_of_parametric_response() throws Exception {
-        List<Diet> diets = List.of(
-                Diet.builder().id(1).description("Diet 1").build(),
-                Diet.builder().id(2).description("Diet 2").build()
+    void GIVEN_existing_plans_WHEN_getAll_THEN_return_list_of_parametric_response() throws Exception {
+        List<Plan> plans = List.of(
+                Plan.builder().id(1).description("Free").build(),
+                Plan.builder().id(2).description("Pro").build()
         );
 
-        when(getAllDietsQuery.execute()).thenReturn(diets);
+        when(getAllPlansQuery.execute()).thenReturn(plans);
 
-        mockMvc.perform(get("/diets").contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/plans").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(2))
                 .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].description").value("Diet 1"))
+                .andExpect(jsonPath("$[0].description").value("Free"))
                 .andExpect(jsonPath("$[1].id").value(2))
-                .andExpect(jsonPath("$[1].description").value("Diet 2"));
+                .andExpect(jsonPath("$[1].description").value("Pro"));
     }
-
 }

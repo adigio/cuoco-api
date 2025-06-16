@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -17,9 +18,6 @@ public class IngredientRequest {
     private String source;
     private boolean confirmed;
 
-    public IngredientRequest(String name) {
-        this.name = name;
-    }
 }
 
 

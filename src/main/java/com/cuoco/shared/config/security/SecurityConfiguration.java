@@ -34,11 +34,11 @@ public class SecurityConfiguration {
                         .requestMatchers(
                                 "/auth/**",
                                 "/actuator/health",
-                                "/cook-level",
-                                "/plan",
-                                "/diet",
-                                "/dietary-need",
-                                "/allergy",
+                                "/cook-levels",
+                                "/plans",
+                                "/diets",
+                                "/dietary-needs",
+                                "/allergies",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"

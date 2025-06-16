@@ -1,13 +1,8 @@
-package com.cuoco.adapter.in;
+package com.cuoco.adapter.in.controller;
 
-
-import com.cuoco.adapter.in.controller.AllergyControllerAdapter;
-import com.cuoco.adapter.in.controller.PlanControllerAdapter;
 import com.cuoco.application.port.in.AuthenticateUserCommand;
 import com.cuoco.application.port.in.GetAllAllergiesQuery;
-import com.cuoco.application.port.in.GetAllPlansQuery;
 import com.cuoco.application.usecase.model.Allergy;
-import com.cuoco.application.usecase.model.Plan;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -23,34 +18,35 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(PlanControllerAdapter.class)
-class PlanControllerAdapterTest {
+@WebMvcTest(AllergyControllerAdapter.class)
+class AllergyControllerAdapterTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockitoBean
-    private GetAllPlansQuery getAllPlansQuery;
+    private GetAllAllergiesQuery getAllAllergiesQuery;
 
     @MockitoBean
     private AuthenticateUserCommand authenticateUserCommand;
 
     @Test
     @WithMockUser
-    void GIVEN_existing_plans_WHEN_getAll_THEN_return_list_of_parametric_response() throws Exception {
-        List<Plan> plans = List.of(
-                Plan.builder().id(1).description("Free").build(),
-                Plan.builder().id(2).description("Pro").build()
+    void GIVEN_existing_allergies_WHEN_getAll_THEN_return_list_of_parametric_response() throws Exception {
+        List<Allergy> allergies = List.of(
+                Allergy.builder().id(1).description("Mani").build(),
+                Allergy.builder().id(2).description("Almeja").build()
         );
 
-        when(getAllPlansQuery.execute()).thenReturn(plans);
+        when(getAllAllergiesQuery.execute()).thenReturn(allergies);
 
-        mockMvc.perform(get("/plans").contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/allergies").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(2))
                 .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].description").value("Free"))
+                .andExpect(jsonPath("$[0].description").value("Mani"))
                 .andExpect(jsonPath("$[1].id").value(2))
-                .andExpect(jsonPath("$[1].description").value("Pro"));
+                .andExpect(jsonPath("$[1].description").value("Almeja"));
     }
 }
+

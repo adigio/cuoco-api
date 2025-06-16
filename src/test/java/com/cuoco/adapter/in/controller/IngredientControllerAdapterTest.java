@@ -1,6 +1,5 @@
-package com.cuoco.adapter.in;
+package com.cuoco.adapter.in.controller;
 
-import com.cuoco.adapter.in.controller.IngredientControllerAdapter;
 import com.cuoco.application.port.in.AuthenticateUserCommand;
 import com.cuoco.application.port.in.GetIngredientsFromAudioCommand;
 import com.cuoco.application.port.in.GetIngredientsFromImagesGroupedCommand;

@@ -61,11 +61,11 @@ public class JwtAuthenticationFilterAdapter extends OncePerRequestFilter {
         AntPathMatcher matcher = new AntPathMatcher();
         return matcher.match("/auth/**", request.getRequestURI())
                 || matcher.match("/actuator/health", request.getRequestURI())
-                || matcher.match("/plan", request.getRequestURI())
-                || matcher.match("/allergy", request.getRequestURI())
-                || matcher.match("/diet", request.getRequestURI())
-                || matcher.match("/dietary-need", request.getRequestURI())
-                || matcher.match("/cook-level", request.getRequestURI())
+                || matcher.match("/plans", request.getRequestURI())
+                || matcher.match("/allergies", request.getRequestURI())
+                || matcher.match("/diets", request.getRequestURI())
+                || matcher.match("/dietary-needs", request.getRequestURI())
+                || matcher.match("/cook-levels", request.getRequestURI())
                 || matcher.match("/v3/api-docs/**", request.getRequestURI())
                 || matcher.match("/swagger-ui/**", request.getRequestURI())
                 || matcher.match("/swagger-ui.html", request.getRequestURI());
