@@ -16,7 +16,7 @@ spring:
       max-request-size: 100MB
 springdoc:
   swagger-ui:
-    path: /swagger/index.html
+    path: /swagger-ui/index.html
 jwt:
   secret: ${JWT_SECRET}
 gemini:
