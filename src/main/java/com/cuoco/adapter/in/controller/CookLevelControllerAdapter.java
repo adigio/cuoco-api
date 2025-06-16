@@ -1,7 +1,7 @@
 package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
-import com.cuoco.application.port.in.GetCookLevelsQuery;
+import com.cuoco.application.port.in.GetAllCookLevelsQuery;
 import com.cuoco.application.usecase.model.CookLevel;
 import com.cuoco.shared.GlobalExceptionHandler;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,13 +21,13 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/cook-level")
+@RequestMapping("/cook-levels")
 public class CookLevelControllerAdapter {
 
-    private final GetCookLevelsQuery getCookLevelsQuery;
+    private final GetAllCookLevelsQuery getAllCookLevelsQuery;
 
-    public CookLevelControllerAdapter(GetCookLevelsQuery getCookLevelsQuery) {
-        this.getCookLevelsQuery = getCookLevelsQuery;
+    public CookLevelControllerAdapter(GetAllCookLevelsQuery getAllCookLevelsQuery) {
+        this.getAllCookLevelsQuery = getAllCookLevelsQuery;
     }
 
     @GetMapping
@@ -54,7 +54,7 @@ public class CookLevelControllerAdapter {
     public ResponseEntity<List<ParametricResponse>> getAll() {
         log.info("GET all cook levels");
 
-        List<CookLevel> cookLevels = getCookLevelsQuery.execute();
+        List<CookLevel> cookLevels = getAllCookLevelsQuery.execute();
         List<ParametricResponse> response = cookLevels.stream().map(this::buildParametricResponse).toList();
 
         log.info("All cook levels are retrieved successfully");

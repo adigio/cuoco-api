@@ -1,7 +1,7 @@
 package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
-import com.cuoco.application.port.in.GetPlansQuery;
+import com.cuoco.application.port.in.GetAllPlansQuery;
 import com.cuoco.application.usecase.model.Plan;
 import com.cuoco.shared.GlobalExceptionHandler;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,13 +21,13 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/plan")
+@RequestMapping("/plans")
 public class PlanControllerAdapter {
 
-    private final GetPlansQuery getPlansQuery;
+    private final GetAllPlansQuery getAllPlansQuery;
 
-    public PlanControllerAdapter(GetPlansQuery getPlansQuery) {
-        this.getPlansQuery = getPlansQuery;
+    public PlanControllerAdapter(GetAllPlansQuery getAllPlansQuery) {
+        this.getAllPlansQuery = getAllPlansQuery;
     }
 
     @GetMapping
@@ -53,7 +53,7 @@ public class PlanControllerAdapter {
     })
     public ResponseEntity<List<ParametricResponse>> getAll() {
         log.info("GET all available plans");
-        List<Plan> plans = getPlansQuery.execute();
+        List<Plan> plans = getAllPlansQuery.execute();
         List<ParametricResponse> response = plans.stream().map(this::buildParametricResponse).toList();
 
         log.info("All plans are retrieved successfully");

@@ -11,11 +11,11 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public class GetCookLevelByIdDatabaseRepository implements GetCookLevelByIdRepository {
+public class GetCookLevelByIdDatabaseRepositoryAdapter implements GetCookLevelByIdRepository {
 
     private GetCookLevelByIdHibernateRepository getCookLevelByIdHibernateRepository;
 
-    public GetCookLevelByIdDatabaseRepository(GetCookLevelByIdHibernateRepository getCookLevelByIdHibernateRepository) {
+    public GetCookLevelByIdDatabaseRepositoryAdapter(GetCookLevelByIdHibernateRepository getCookLevelByIdHibernateRepository) {
         this.getCookLevelByIdHibernateRepository = getCookLevelByIdHibernateRepository;
     }
 

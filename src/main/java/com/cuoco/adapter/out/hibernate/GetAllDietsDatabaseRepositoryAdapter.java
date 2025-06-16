@@ -11,11 +11,11 @@ import java.util.List;
 
 @Slf4j
 @Repository
-public class GetAllDietsDatabaseRepository implements GetAllDietsRepository {
+public class GetAllDietsDatabaseRepositoryAdapter implements GetAllDietsRepository {
 
     private final GetAllDietsHibernateRepository getAllDietsHibernateRepository;
 
-    public GetAllDietsDatabaseRepository(GetAllDietsHibernateRepository getAllDietsHibernateRepository) {
+    public GetAllDietsDatabaseRepositoryAdapter(GetAllDietsHibernateRepository getAllDietsHibernateRepository) {
         this.getAllDietsHibernateRepository = getAllDietsHibernateRepository;
     }
 

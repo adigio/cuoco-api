@@ -21,7 +21,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/dietary-need")
+@RequestMapping("/dietary-needs")
 public class DietaryNeedControllerAdapter {
 
     private final GetAllDietaryNeedsQuery getAllDietaryNeedsQuery;

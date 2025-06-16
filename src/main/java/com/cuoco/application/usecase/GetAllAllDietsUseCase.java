@@ -1,6 +1,6 @@
 package com.cuoco.application.usecase;
 
-import com.cuoco.application.port.in.GetDietsQuery;
+import com.cuoco.application.port.in.GetAllDietsQuery;
 import com.cuoco.application.port.out.GetAllDietsRepository;
 import com.cuoco.application.usecase.model.Diet;
 import lombok.extern.slf4j.Slf4j;
@@ -10,11 +10,11 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class GetAllDietsUseCase implements GetDietsQuery {
+public class GetAllAllDietsUseCase implements GetAllDietsQuery {
 
     private GetAllDietsRepository getAllDietsRepository;
 
-    public GetAllDietsUseCase(GetAllDietsRepository getAllDietsRepository) {
+    public GetAllAllDietsUseCase(GetAllDietsRepository getAllDietsRepository) {
         this.getAllDietsRepository = getAllDietsRepository;
     }
 

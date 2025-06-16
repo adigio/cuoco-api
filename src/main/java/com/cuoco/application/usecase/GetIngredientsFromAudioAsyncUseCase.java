@@ -1,9 +1,8 @@
 package com.cuoco.application.usecase;
 
-import com.cuoco.adapter.exception.BadRequestException;
+import com.cuoco.application.exception.BadRequestException;
 import com.cuoco.application.port.in.GetIngredientsFromAudioAsyncCommand;
 import com.cuoco.application.port.out.GetIngredientsFromAudioAsyncRepository;
-import com.cuoco.application.usecase.domainservice.AudioFileDomainService;
 import com.cuoco.application.usecase.domainservice.FileDomainService;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.shared.model.ErrorDescription;

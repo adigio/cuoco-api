@@ -4,6 +4,6 @@ import com.cuoco.application.usecase.model.Diet;
 
 import java.util.List;
 
-public interface GetDietsQuery {
+public interface GetAllDietsQuery {
     List<Diet> execute();
 }

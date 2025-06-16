@@ -4,6 +4,6 @@ import com.cuoco.application.usecase.model.CookLevel;
 
 import java.util.List;
 
-public interface GetCookLevelsQuery {
+public interface GetAllCookLevelsQuery {
     List<CookLevel> execute();
 }

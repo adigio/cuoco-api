@@ -4,6 +4,6 @@ import com.cuoco.application.usecase.model.Plan;
 
 import java.util.List;
 
-public interface GetPlansQuery {
+public interface GetAllPlansQuery {
     List<Plan> execute();
 }

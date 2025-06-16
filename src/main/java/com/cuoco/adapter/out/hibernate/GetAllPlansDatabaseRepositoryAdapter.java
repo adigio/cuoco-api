@@ -11,11 +11,11 @@ import java.util.List;
 
 @Slf4j
 @Repository
-public class GetAllPlansDatabaseRepository implements GetAllPlansRepository {
+public class GetAllPlansDatabaseRepositoryAdapter implements GetAllPlansRepository {
 
     private final GetAllPlansHibernateRepository getAllPlansHibernateRepository;
 
-    public GetAllPlansDatabaseRepository(GetAllPlansHibernateRepository getAllPlansHibernateRepository) {
+    public GetAllPlansDatabaseRepositoryAdapter(GetAllPlansHibernateRepository getAllPlansHibernateRepository) {
         this.getAllPlansHibernateRepository = getAllPlansHibernateRepository;
     }
 

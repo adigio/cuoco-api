@@ -1,7 +1,7 @@
 package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
-import com.cuoco.application.port.in.GetDietsQuery;
+import com.cuoco.application.port.in.GetAllDietsQuery;
 import com.cuoco.application.usecase.model.Diet;
 import com.cuoco.shared.GlobalExceptionHandler;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,13 +21,13 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/diet")
+@RequestMapping("/diets")
 public class DietControllerAdapter {
 
-    private final GetDietsQuery getDietsQuery;
+    private final GetAllDietsQuery getAllDietsQuery;
 
-    public DietControllerAdapter(GetDietsQuery getDietsQuery) {
-        this.getDietsQuery = getDietsQuery;
+    public DietControllerAdapter(GetAllDietsQuery getAllDietsQuery) {
+        this.getAllDietsQuery = getAllDietsQuery;
     }
 
     @GetMapping
@@ -53,7 +53,7 @@ public class DietControllerAdapter {
     })
     public ResponseEntity<List<ParametricResponse>> getAll() {
         log.info("GET all diets");
-        List<Diet> diets = getDietsQuery.execute();
+        List<Diet> diets = getAllDietsQuery.execute();
         List<ParametricResponse> response = diets.stream().map(this::buildParametricResponse).toList();
 
         log.info("All diets are retrieved successfully");

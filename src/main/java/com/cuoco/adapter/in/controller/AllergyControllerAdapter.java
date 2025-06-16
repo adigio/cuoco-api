@@ -21,7 +21,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/allergy")
+@RequestMapping("/allergies")
 public class AllergyControllerAdapter {
 
     private final GetAllAllergiesQuery getAllAllergiesQuery;

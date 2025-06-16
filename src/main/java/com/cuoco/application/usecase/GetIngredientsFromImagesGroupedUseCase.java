@@ -47,7 +47,4 @@ public class GetIngredientsFromImagesGroupedUseCase implements GetIngredientsFro
 
         return ingredientsByImage;
     }
-
-
-
 }

@@ -21,10 +21,18 @@ public class CodingRulesTest {
     @ArchTest
     static final ArchRule use_cases_should_respect_naming_convention =
             ArchRuleDefinition.classes()
-                    .that().resideInAPackage("..usecase..")
+                    .that().resideInAPackage("..application.usecase..")
                     .and(DescribedPredicate.not(Predicates.resideInAnyPackage("..usecase.model..")))
+                    .and(DescribedPredicate.not(Predicates.resideInAnyPackage("..usecase.domainservice..")))
                     .and().haveNameNotMatching(".*\\$.*")
                     .should().haveSimpleNameEndingWith("UseCase");
+
+    @ArchTest
+    static final ArchRule domain_services_should_respect_naming_convention =
+            ArchRuleDefinition.classes()
+                    .that().resideInAPackage("..usecase.domainservice..")
+                    .and().haveNameNotMatching(".*\\$.*")
+                    .should().haveSimpleNameEndingWith("DomainService");
 
     @ArchTest
     static final ArchRule in_ports_should_respect_naming_convention =

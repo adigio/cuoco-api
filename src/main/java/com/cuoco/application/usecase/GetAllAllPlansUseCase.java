@@ -1,6 +1,6 @@
 package com.cuoco.application.usecase;
 
-import com.cuoco.application.port.in.GetPlansQuery;
+import com.cuoco.application.port.in.GetAllPlansQuery;
 import com.cuoco.application.port.out.GetAllPlansRepository;
 import com.cuoco.application.usecase.model.Plan;
 import lombok.extern.slf4j.Slf4j;
@@ -10,11 +10,11 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class GetAllPlansUseCase implements GetPlansQuery {
+public class GetAllAllPlansUseCase implements GetAllPlansQuery {
 
     private GetAllPlansRepository getAllPlansRepository;
 
-    public GetAllPlansUseCase(GetAllPlansRepository getAllPlansRepository) {
+    public GetAllAllPlansUseCase(GetAllPlansRepository getAllPlansRepository) {
         this.getAllPlansRepository = getAllPlansRepository;
     }
 

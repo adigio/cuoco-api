@@ -1,6 +1,6 @@
 package com.cuoco.application.usecase;
 
-import com.cuoco.application.port.in.GetCookLevelsQuery;
+import com.cuoco.application.port.in.GetAllCookLevelsQuery;
 import com.cuoco.application.port.out.GetAllCookLevelsRepository;
 import com.cuoco.application.usecase.model.CookLevel;
 import lombok.extern.slf4j.Slf4j;
@@ -10,11 +10,11 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class GetAllCookLevelsUseCase implements GetCookLevelsQuery {
+public class GetAllAllCookLevelsUseCase implements GetAllCookLevelsQuery {
 
     private GetAllCookLevelsRepository getAllCookLevelsRepository;
 
-    public GetAllCookLevelsUseCase(GetAllCookLevelsRepository getAllCookLevelsRepository) {
+    public GetAllAllCookLevelsUseCase(GetAllCookLevelsRepository getAllCookLevelsRepository) {
         this.getAllCookLevelsRepository = getAllCookLevelsRepository;
     }
 

@@ -11,11 +11,11 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public class GetPlanByIdDatabaseRepository implements GetPlanByIdRepository {
+public class GetPlanByIdDatabaseRepositoryAdapter implements GetPlanByIdRepository {
 
     private final GetPlanByIdHibernateRepositoryAdapter getPlanByIdHibernateRepositoryAdapter;
 
-    public GetPlanByIdDatabaseRepository(GetPlanByIdHibernateRepositoryAdapter getPlanByIdHibernateRepositoryAdapter) {
+    public GetPlanByIdDatabaseRepositoryAdapter(GetPlanByIdHibernateRepositoryAdapter getPlanByIdHibernateRepositoryAdapter) {
         this.getPlanByIdHibernateRepositoryAdapter = getPlanByIdHibernateRepositoryAdapter;
     }
 

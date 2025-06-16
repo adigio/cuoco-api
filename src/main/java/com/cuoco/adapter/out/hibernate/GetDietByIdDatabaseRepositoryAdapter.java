@@ -11,11 +11,11 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public class GetDietByIdDatabaseRepository implements GetDietByIdRepository {
+public class GetDietByIdDatabaseRepositoryAdapter implements GetDietByIdRepository {
 
     private GetDietByIdHibernateRepository getDietByIdHibernateRepository;
 
-    public GetDietByIdDatabaseRepository(GetDietByIdHibernateRepository getDietByIdHibernateRepository) {
+    public GetDietByIdDatabaseRepositoryAdapter(GetDietByIdHibernateRepository getDietByIdHibernateRepository) {
         this.getDietByIdHibernateRepository = getDietByIdHibernateRepository;
     }
 
