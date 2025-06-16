@@ -31,7 +31,7 @@ public class PlanControllerAdapter {
     }
 
     @GetMapping
-    @Tag(name = "Parametric")
+    @Tag(name = "Parametric Endpoints")
     @Operation(summary = "GET all the plans")
     @ApiResponses(value = {
             @ApiResponse(

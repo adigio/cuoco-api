@@ -31,7 +31,7 @@ public class DietControllerAdapter {
     }
 
     @GetMapping
-    @Tag(name = "Parametric")
+    @Tag(name = "Parametric Endpoints")
     @Operation(summary = "GET all the diets")
     @ApiResponses(value = {
             @ApiResponse(

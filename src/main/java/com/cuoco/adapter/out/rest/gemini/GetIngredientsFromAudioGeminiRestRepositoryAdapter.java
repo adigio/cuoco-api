@@ -1,37 +1,32 @@
 package com.cuoco.adapter.out.rest.gemini;
 
 import com.cuoco.adapter.exception.UnprocessableException;
-import com.cuoco.adapter.in.controller.model.IngredientResponse;
 import com.cuoco.adapter.out.rest.gemini.model.IngredientResponseGeminiModel;
-import com.cuoco.adapter.out.rest.gemini.model.RecipeResponseGeminiModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.ContentGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.GeminiResponseModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.GenerationConfigurationGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.InlineDataGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PartGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PromptBodyGeminiRequestModel;
-import com.cuoco.adapter.out.rest.model.gemini.voice.AudioMimeTypeMapper;
-import com.cuoco.adapter.out.rest.model.gemini.voice.VoiceResponseParser;
 import com.cuoco.adapter.utils.Utils;
 import com.cuoco.application.port.out.GetIngredientsFromAudioRepository;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.shared.FileReader;
+import com.cuoco.shared.utils.FileUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Component
 public class GetIngredientsFromAudioGeminiRestRepositoryAdapter implements GetIngredientsFromAudioRepository {
 
-    private final String VOICE_PROMPT = FileReader.execute("prompt/recognizeIngredientsFromVoice.txt");
+    private final String VOICE_PROMPT = FileReader.execute("prompt/recognizeIngredientsFromAudioPrompt.txt");
 
     @Value("${gemini.api.url}")
     private String url;
@@ -43,14 +38,9 @@ public class GetIngredientsFromAudioGeminiRestRepositoryAdapter implements GetIn
     private Double temperature;
 
     private final RestTemplate restTemplate;
-    private final VoiceResponseParser voiceResponseParser;
 
-    public GetIngredientsFromAudioGeminiRestRepositoryAdapter(
-            RestTemplate restTemplate,
-            VoiceResponseParser voiceResponseParser
-    ) {
+    public GetIngredientsFromAudioGeminiRestRepositoryAdapter(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        this.voiceResponseParser = voiceResponseParser;
     }
 
     @Override
@@ -103,7 +93,7 @@ public class GetIngredientsFromAudioGeminiRestRepositoryAdapter implements GetIn
     }
 
     private InlineDataGeminiRequestModel buildInlineData(String audioBase64, String format) {
-        String mimeType = AudioMimeTypeMapper.getMimeType(format);
+        String mimeType = FileUtils.getAudioMimeType(format);
 
         return InlineDataGeminiRequestModel.builder()
                 .mimeType(mimeType)

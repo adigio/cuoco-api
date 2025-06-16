@@ -1,9 +1,10 @@
 package com.cuoco.application.usecase.domainservice;
 
 import com.cuoco.adapter.exception.UnprocessableException;
-import com.cuoco.application.utils.AudioConstants;
+import com.cuoco.shared.utils.AudioConstants;
 import com.cuoco.shared.model.ErrorDescription;
 import com.cuoco.shared.utils.Constants;
+import com.cuoco.shared.utils.FileUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,7 +33,7 @@ public class FileDomainService {
 
         if (filename != null && filename.contains(Constants.SLASH.getValue())) {
             String extension = filename.substring(filename.lastIndexOf(Constants.DOT.getValue()) + 1).toLowerCase();
-            return !AudioConstants.SUPPORTED_EXTENSIONS.contains(extension);
+            return !FileUtils.SUPPORTED_EXTENSIONS.contains(extension);
         }
 
         return true;

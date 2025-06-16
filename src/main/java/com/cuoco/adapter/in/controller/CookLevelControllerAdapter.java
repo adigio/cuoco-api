@@ -31,7 +31,7 @@ public class CookLevelControllerAdapter {
     }
 
     @GetMapping
-    @Tag(name = "Parametric")
+    @Tag(name = "Parametric Endpoints")
     @Operation(summary = "GET all the cook levels")
     @ApiResponses(value = {
             @ApiResponse(

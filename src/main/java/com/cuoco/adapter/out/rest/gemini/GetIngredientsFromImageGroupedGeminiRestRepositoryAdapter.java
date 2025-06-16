@@ -8,9 +8,7 @@ import com.cuoco.adapter.out.rest.gemini.model.wrapper.GenerationConfigurationGe
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.InlineDataGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PartGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PromptBodyGeminiRequestModel;
-import com.cuoco.adapter.out.rest.model.gemini.GeminiResponseMapper;
 import com.cuoco.adapter.utils.Utils;
-import com.cuoco.application.port.out.GetIngredientsFromImageRepository;
 import com.cuoco.application.port.out.GetIngredientsFromImagesGroupedRepository;
 import com.cuoco.application.usecase.model.File;
 import com.cuoco.application.usecase.model.Ingredient;
@@ -22,10 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +30,7 @@ import java.util.Map;
 public class GetIngredientsFromImageGroupedGeminiRestRepositoryAdapter implements GetIngredientsFromImagesGroupedRepository {
 
     private final static String SOURCE = "image";
-    private final String PROMPT = FileReader.execute("prompt/recognizeIngredientsFromImage.txt");
+    private final String PROMPT = FileReader.execute("prompt/recognizeIngredientsFromImagePrompt.txt");
 
     @Value("${gemini.api.url}")
     private String url;
@@ -47,14 +42,9 @@ public class GetIngredientsFromImageGroupedGeminiRestRepositoryAdapter implement
     private Double temperature;
 
     private final RestTemplate restTemplate;
-    private final GeminiResponseMapper geminiResponseMapper;
 
-    public GetIngredientsFromImageGroupedGeminiRestRepositoryAdapter(
-            RestTemplate restTemplate,
-            GeminiResponseMapper geminiResponseMapper
-    ) {
+    public GetIngredientsFromImageGroupedGeminiRestRepositoryAdapter(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        this.geminiResponseMapper = geminiResponseMapper;
     }
 
     @Override

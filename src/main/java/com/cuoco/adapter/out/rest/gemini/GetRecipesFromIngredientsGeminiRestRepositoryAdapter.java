@@ -17,7 +17,6 @@ import com.cuoco.shared.model.ErrorDescription;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -29,7 +28,7 @@ import java.util.stream.Collectors;
 @Component
 public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements GetRecipesFromIngredientsRepository {
 
-    private final String PROMPT = FileReader.execute("prompt/generateRecipeFromIngredients.txt");
+    private final String PROMPT = FileReader.execute("prompt/generateRecipeFromIngredientsPrompt.txt");
 
     @Value("${gemini.api.url}")
     private String url;

@@ -48,7 +48,7 @@ public class IngredientControllerAdapter {
             @RequestParam("audio") @NotNull MultipartFile audioFile,
             @RequestParam(value = "language", defaultValue = "es-ES") String language
     ) {
-        log.info("Executing POST for voice file processing for get ingredients with audio file {} (size: {} bytes)", audioFile.getOriginalFilename(), audioFile.getSize());
+        log.info("Executing POST for audio processing to get ingredients with file {} (size: {} bytes)", audioFile.getOriginalFilename(), audioFile.getSize());
 
         List<Ingredient> ingredients = getIngredientsFromAudioCommand.execute(buildAudioCommand(audioFile, language));
         List<IngredientResponse> response = ingredients.stream().map(this::buildIngredientResponse).toList();

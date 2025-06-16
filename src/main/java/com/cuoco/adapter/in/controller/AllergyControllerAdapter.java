@@ -31,7 +31,7 @@ public class AllergyControllerAdapter {
     }
 
     @GetMapping
-    @Tag(name = "Parametric")
+    @Tag(name = "Parametric Endpoints", description = "Parametric values of immutable resources")
     @Operation(summary = "GET all the allergies")
     @ApiResponses(value = {
             @ApiResponse(
