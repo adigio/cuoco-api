@@ -38,7 +38,10 @@ public class SecurityConfiguration {
                                 "/plan",
                                 "/diet",
                                 "/dietary-need",
-                                "/allergy"
+                                "/allergy",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

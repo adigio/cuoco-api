@@ -29,5 +29,5 @@ public class IngredientHibernateModel {
 
     @ManyToOne
     @JoinColumn(name = "measure_unit_id", referencedColumnName = "id")
-    private MeasureUnitHibernateModel measureUnit;
+    private UnitHibernateModel measureUnit;
 }

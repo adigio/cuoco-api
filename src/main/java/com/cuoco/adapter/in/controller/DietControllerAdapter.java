@@ -3,6 +3,14 @@ package com.cuoco.adapter.in.controller;
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
 import com.cuoco.application.port.in.GetDietsQuery;
 import com.cuoco.application.usecase.model.Diet;
+import com.cuoco.shared.GlobalExceptionHandler;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +33,26 @@ public class DietControllerAdapter {
     }
 
     @GetMapping
+    @Tag(name = "Parametric")
+    @Operation(summary = "GET all the diets")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Return all the existent diets",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ParametricResponse.class))
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Service unavailable",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            )
+    })
     public ResponseEntity<List<ParametricResponse>> getAll() {
         log.info("GET all diets");
         List<Diet> diets = getDietsQuery.execute();

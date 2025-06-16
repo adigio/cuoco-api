@@ -65,6 +65,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 || matcher.match("/allergy", request.getRequestURI())
                 || matcher.match("/diet", request.getRequestURI())
                 || matcher.match("/dietary-need", request.getRequestURI())
-                || matcher.match("/cook-level", request.getRequestURI());
+                || matcher.match("/cook-level", request.getRequestURI())
+                || matcher.match("/v3/api-docs/**", request.getRequestURI())
+                || matcher.match("/swagger-ui/**", request.getRequestURI())
+                || matcher.match("/swagger-ui.html", request.getRequestURI());
     }
 }

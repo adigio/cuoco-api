@@ -9,16 +9,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "measure_unit")
+@Entity(name = "unit")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MeasureUnitHibernateModel {
+public class UnitHibernateModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String description;
     private String symbol;
+
 }
