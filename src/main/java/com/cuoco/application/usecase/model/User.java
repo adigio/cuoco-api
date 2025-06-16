@@ -3,6 +3,7 @@ package com.cuoco.application.usecase.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     private Long id;
@@ -23,6 +25,7 @@ public class User {
 
     private List<DietaryNeed> dietaryNeeds;
     private List<Allergy> allergies;
+
 }
 
 

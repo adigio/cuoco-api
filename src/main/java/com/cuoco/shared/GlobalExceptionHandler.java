@@ -5,8 +5,8 @@ import com.cuoco.adapter.exception.NotAvailableException;
 import com.cuoco.adapter.exception.UnprocessableException;
 import com.cuoco.application.exception.BadRequestException;
 import com.cuoco.application.exception.BusinessException;
-import com.cuoco.application.exception.NotFoundException;
 import com.cuoco.application.exception.ForbiddenException;
+import com.cuoco.application.exception.NotFoundException;
 import com.cuoco.application.exception.UnauthorizedException;
 import com.cuoco.application.usecase.model.MessageError;
 import com.cuoco.shared.model.ErrorDescription;
@@ -98,6 +98,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UnprocessableException.class)
     public ResponseEntity<ApiErrorResponse> handle(UnprocessableException ex) {
+        log.info(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(), ex);
+        return buildResponseError(HttpStatus.UNPROCESSABLE_ENTITY, ex);
+    }
+
+    @ExceptionHandler(com.cuoco.application.exception.UnprocessableException.class)
+    public ResponseEntity<ApiErrorResponse> handle(com.cuoco.application.exception.UnprocessableException ex) {
         log.info(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(), ex);
         return buildResponseError(HttpStatus.UNPROCESSABLE_ENTITY, ex);
     }

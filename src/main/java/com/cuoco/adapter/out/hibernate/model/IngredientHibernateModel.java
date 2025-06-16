@@ -28,6 +28,6 @@ public class IngredientHibernateModel {
     private CategoryHibernateModel category;
 
     @ManyToOne
-    @JoinColumn(name = "measure_unit_id", referencedColumnName = "id")
-    private MeasureUnitHibernateModel measureUnit;
+    @JoinColumn(name = "unit_id", referencedColumnName = "id")
+    private UnitHibernateModel measureUnit;
 }

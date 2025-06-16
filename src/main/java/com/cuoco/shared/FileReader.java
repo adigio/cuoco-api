@@ -1,5 +1,9 @@
 package com.cuoco.shared;
 
+import com.cuoco.adapter.exception.NotAvailableException;
+import com.cuoco.adapter.exception.UnprocessableException;
+import jakarta.servlet.UnavailableException;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -13,7 +17,7 @@ public class FileReader {
         try {
             return Files.readString(Paths.get(Objects.requireNonNull(contextClassLoader.getResource(path)).toURI()));
         } catch (IOException | URISyntaxException e) {
-            throw new RuntimeException("No se pudo leer el archivo: " + path, e);
+            throw new NotAvailableException("No se pudo leer el archivo: " + path);
         }
     }
 }

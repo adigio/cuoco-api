@@ -13,6 +13,11 @@ public enum ErrorDescription {
     INVALID_CREDENTIALS("Las credenciales no son válidas"),
     INVALID_TOKEN("El token no es valido"),
     EXPIRED_TOKEN("El token ha expirado"),
+
+    INVALID_AUDIO_FILE_EXTENSION("La extensión del archivo de audio no es valida"),
+    AUDIO_FILE_IS_REQUIRED("El archivo de audio no esta presente y es requerido"),
+    AUDIO_FILE_PROCESSING_ERROR("Error procesando el archivo de audio"),
+
     UNAUTHORIZED("El token no esta presente"),
     UNEXPECTED_ERROR("An unexpected error occurred: "),
     UNHANDLED("Ha ocurrido un error inesperado"),

@@ -1,8 +1,14 @@
 package com.cuoco.adapter.out.hibernate.model;
 
-import jakarta.persistence.*;
-import lombok.*;
-import java.time.LocalDateTime;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity(name = "recipe")
 @Data
@@ -19,5 +25,8 @@ public class RecipeHibernateModel {
     private String steps;
     private String imageUrl;
     private Integer estimatedTime;
-    private String difficulty;
+
+    @ManyToOne
+    private DifficultyHibernateModel difficulty;
+
 }

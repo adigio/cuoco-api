@@ -1,13 +1,13 @@
 package com.cuoco.adapter.out.hibernate;
 
-import com.cuoco.adapter.exception.NotFoundException;
+import com.cuoco.adapter.exception.ForbiddenException;
 import com.cuoco.adapter.exception.UnprocessableException;
+import com.cuoco.adapter.out.hibernate.model.UserHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.UserPreferencesHibernateModel;
 import com.cuoco.adapter.out.hibernate.repository.FindUserByEmailHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.FindUserPreferencesByIdHibernateRepositoryAdapter;
-import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.port.out.GetUserByEmailRepository;
-import com.cuoco.adapter.out.hibernate.model.UserHibernateModel;
+import com.cuoco.application.usecase.model.User;
 import com.cuoco.shared.model.ErrorDescription;
 import org.springframework.stereotype.Repository;
 
@@ -43,6 +43,6 @@ public class GetUserByEmailDatabaseRepositoryAdapter implements GetUserByEmailRe
                 return user;
 
             } else throw new UnprocessableException(ErrorDescription.UNEXPECTED_ERROR.getValue());
-        } else throw new NotFoundException(ErrorDescription.USER_NOT_EXISTS.getValue());
+        } else throw new ForbiddenException(ErrorDescription.INVALID_CREDENTIALS.getValue());
     }
 }

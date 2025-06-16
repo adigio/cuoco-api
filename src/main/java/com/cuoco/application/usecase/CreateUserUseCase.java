@@ -18,18 +18,16 @@ import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserPreferences;
 import com.cuoco.shared.model.ErrorDescription;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 @Component
 public class CreateUserUseCase implements CreateUserCommand {
-
-    static final Logger log = LoggerFactory.getLogger(CreateUserUseCase.class);
 
     private final PasswordEncoder passwordEncoder;
     private final CreateUserRepository createUserRepository;
