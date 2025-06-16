@@ -2,17 +2,15 @@ package com.cuoco.adapter.out.rest.model.gemini.voice;
 
 import com.cuoco.adapter.out.rest.model.gemini.GeminiResponseMapper;
 import com.cuoco.application.usecase.model.Ingredient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Component
 public class VoiceResponseParser {
-
-    private static final Logger log = LoggerFactory.getLogger(VoiceResponseParser.class);
 
     private final GeminiResponseMapper geminiResponseMapper;
 

@@ -14,8 +14,7 @@ import com.cuoco.shared.FileReader;
 import com.cuoco.shared.model.ErrorDescription;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -23,10 +22,9 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements GetRecipesFromIngredientsRepository {
-
-    static final Logger log = LoggerFactory.getLogger(GetRecipesFromIngredientsGeminiRestRepositoryAdapter.class);
 
     private final String PROMPT = FileReader.execute("prompt/generateRecipeFromIngredients.txt");
 

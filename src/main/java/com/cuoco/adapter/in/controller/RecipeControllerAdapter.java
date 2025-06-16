@@ -1,18 +1,15 @@
 package com.cuoco.adapter.in.controller;
 
+import com.cuoco.adapter.in.controller.model.IngredientRequest;
 import com.cuoco.adapter.in.controller.model.IngredientResponse;
 import com.cuoco.adapter.in.controller.model.RecipeFilterRequest;
-import com.cuoco.adapter.in.controller.model.IngredientRequest;
-import com.cuoco.adapter.in.controller.model.RecipeResponse;
-import com.cuoco.adapter.out.rest.model.gemini.GeminiResponseMapper;
 import com.cuoco.adapter.in.controller.model.RecipeRequest;
+import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.RecipeFilter;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

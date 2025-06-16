@@ -1,12 +1,11 @@
 package com.cuoco.adapter.in.controller;
 
-import com.cuoco.adapter.in.controller.model.TextRequest;
 import com.cuoco.adapter.in.controller.model.IngredientsResponse;
 import com.cuoco.adapter.in.controller.model.IngredientsResponseMapper;
+import com.cuoco.adapter.in.controller.model.TextRequest;
 import com.cuoco.application.port.in.GetIngredientsFromTextCommand;
 import com.cuoco.application.usecase.model.Ingredient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,11 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/analyze-text")
 public class TextControllerAdapter {
-
-    private static final Logger log = LoggerFactory.getLogger(TextControllerAdapter.class);
 
     private final GetIngredientsFromTextCommand getIngredientsFromTextCommand;
     private final IngredientsResponseMapper ingredientsResponseMapper;

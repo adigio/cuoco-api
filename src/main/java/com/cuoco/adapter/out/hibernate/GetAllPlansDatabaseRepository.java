@@ -4,16 +4,14 @@ import com.cuoco.adapter.out.hibernate.model.PlanHibernateModel;
 import com.cuoco.adapter.out.hibernate.repository.GetAllPlansHibernateRepository;
 import com.cuoco.application.port.out.GetAllPlansRepository;
 import com.cuoco.application.usecase.model.Plan;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Slf4j
 @Repository
 public class GetAllPlansDatabaseRepository implements GetAllPlansRepository {
-
-    static final Logger log = LoggerFactory.getLogger(GetAllPlansDatabaseRepository.class);
 
     private final GetAllPlansHibernateRepository getAllPlansHibernateRepository;
 

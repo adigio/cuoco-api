@@ -3,16 +3,14 @@ package com.cuoco.application.usecase;
 import com.cuoco.application.port.in.GetIngredientsFromTextCommand;
 import com.cuoco.application.port.out.GetIngredientsFromTextRepository;
 import com.cuoco.application.usecase.model.Ingredient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Slf4j
 @Component
 public class GetIngredientsFromTextUseCase implements GetIngredientsFromTextCommand {
-
-    static final Logger log = LoggerFactory.getLogger(GetIngredientsFromTextUseCase.class);
 
     private final GetIngredientsFromTextRepository getIngredientsFromTextRepository;
 

@@ -1,11 +1,10 @@
 package com.cuoco.adapter.in.controller;
 
-import com.cuoco.adapter.in.controller.model.IngredientsResponseMapper;
 import com.cuoco.adapter.in.controller.model.IngredientsResponse;
+import com.cuoco.adapter.in.controller.model.IngredientsResponseMapper;
 import com.cuoco.application.port.in.GetIngredientsFromFileCommand;
 import com.cuoco.application.usecase.model.Ingredient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +15,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/analyze-images")
 public class UploadControllerAdapter {
-
-    private static final Logger log = LoggerFactory.getLogger(UploadControllerAdapter.class);
 
     private final GetIngredientsFromFileCommand getIngredientsFromFileCommand;
     private final IngredientsResponseMapper ingredientsResponseMapper;

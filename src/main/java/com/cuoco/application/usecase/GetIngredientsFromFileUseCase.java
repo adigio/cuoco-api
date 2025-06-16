@@ -3,17 +3,15 @@ package com.cuoco.application.usecase;
 import com.cuoco.application.port.in.GetIngredientsFromFileCommand;
 import com.cuoco.application.port.out.GetIngredientsFromImageRepository;
 import com.cuoco.application.usecase.model.Ingredient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Component
 public class GetIngredientsFromFileUseCase implements GetIngredientsFromFileCommand {
-
-    static final Logger log = LoggerFactory.getLogger(GetIngredientsFromFileUseCase.class);
 
     private final GetIngredientsFromImageRepository getIngredientsFromImageRepository;
 

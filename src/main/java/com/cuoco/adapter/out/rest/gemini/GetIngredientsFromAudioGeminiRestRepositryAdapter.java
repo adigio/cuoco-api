@@ -5,9 +5,9 @@ import com.cuoco.adapter.out.rest.gemini.model.wrapper.ContentGeminiRequestModel
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.GenerationConfigurationGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.InlineDataGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PartGeminiRequestModel;
+import com.cuoco.adapter.out.rest.gemini.model.wrapper.PromptBodyGeminiRequestModel;
 import com.cuoco.adapter.out.rest.model.gemini.voice.AudioMimeTypeMapper;
 import com.cuoco.adapter.out.rest.model.gemini.voice.VoiceResponseParser;
-import com.cuoco.adapter.out.rest.gemini.model.wrapper.PromptBodyGeminiRequestModel;
 import com.cuoco.application.port.out.GetIngredientsFromAudioRepository;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.shared.FileReader;

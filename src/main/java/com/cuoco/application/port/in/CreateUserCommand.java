@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface CreateUserCommand {

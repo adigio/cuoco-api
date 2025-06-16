@@ -3,17 +3,15 @@ package com.cuoco.application.usecase;
 import com.cuoco.application.port.in.GetIngredientsFromVoiceCommand;
 import com.cuoco.application.port.out.GetIngredientsFromAudioRepository;
 import com.cuoco.application.usecase.model.Ingredient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+@Slf4j
 @Component
 public class GetIngredientsFromVoiceUseCase implements GetIngredientsFromVoiceCommand {
-
-    private static final Logger log = LoggerFactory.getLogger(GetIngredientsFromVoiceUseCase.class);
 
     private final GetIngredientsFromAudioRepository getIngredientsFromAudioRepository;
 

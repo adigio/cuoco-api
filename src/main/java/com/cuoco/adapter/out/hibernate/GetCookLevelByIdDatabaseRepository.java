@@ -6,7 +6,6 @@ import com.cuoco.application.exception.BadRequestException;
 import com.cuoco.application.port.out.GetCookLevelByIdRepository;
 import com.cuoco.application.usecase.model.CookLevel;
 import com.cuoco.shared.model.ErrorDescription;
-import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

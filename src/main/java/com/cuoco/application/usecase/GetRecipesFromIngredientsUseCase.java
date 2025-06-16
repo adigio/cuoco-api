@@ -3,16 +3,14 @@ package com.cuoco.application.usecase;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
 import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
 import com.cuoco.application.usecase.model.Recipe;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Slf4j
 @Component
 public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredientsCommand {
-
-    static final Logger log = LoggerFactory.getLogger(GetRecipesFromIngredientsUseCase.class);
 
     private final GetRecipesFromIngredientsRepository getRecipesFromIngredientsRepository;
 

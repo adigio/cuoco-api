@@ -2,16 +2,15 @@ package com.cuoco.adapter.out.rest.model.gemini;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class GeminiResponseMapper {
 
-    private static final Logger log = LoggerFactory.getLogger(GeminiResponseMapper.class);
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public Object parseToJson(String geminiResponse) {

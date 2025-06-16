@@ -3,16 +3,14 @@ package com.cuoco.application.usecase;
 import com.cuoco.application.port.in.GetPlansQuery;
 import com.cuoco.application.port.out.GetAllPlansRepository;
 import com.cuoco.application.usecase.model.Plan;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Slf4j
 @Component
 public class GetAllPlansUseCase implements GetPlansQuery {
-
-    static final Logger log = LoggerFactory.getLogger(GetAllPlansUseCase.class);
 
     private GetAllPlansRepository getAllPlansRepository;
 

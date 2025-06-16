@@ -3,16 +3,14 @@ package com.cuoco.application.usecase;
 import com.cuoco.application.port.in.GetDietsQuery;
 import com.cuoco.application.port.out.GetAllDietsRepository;
 import com.cuoco.application.usecase.model.Diet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Slf4j
 @Component
 public class GetAllDietsUseCase implements GetDietsQuery {
-
-    static final Logger log = LoggerFactory.getLogger(GetAllDietsUseCase.class);
 
     private GetAllDietsRepository getAllDietsRepository;
 

@@ -7,17 +7,15 @@ import com.cuoco.application.usecase.model.AuthenticatedUser;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.shared.model.ErrorDescription;
 import com.cuoco.shared.utils.JwtUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 
+@Slf4j
 @Component
 public class SignInUserUseCase implements SignInUserCommand {
-
-    static final Logger log = LoggerFactory.getLogger(SignInUserUseCase.class);
 
     private final GetUserByEmailRepository getUserByEmailRepository;
     private final JwtUtil jwtUtil;

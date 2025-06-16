@@ -3,16 +3,14 @@ package com.cuoco.application.usecase;
 import com.cuoco.application.port.in.GetCookLevelsQuery;
 import com.cuoco.application.port.out.GetAllCookLevelsRepository;
 import com.cuoco.application.usecase.model.CookLevel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Slf4j
 @Component
 public class GetAllCookLevelsUseCase implements GetCookLevelsQuery {
-
-    static final Logger log = LoggerFactory.getLogger(GetAllCookLevelsUseCase.class);
 
     private GetAllCookLevelsRepository getAllCookLevelsRepository;
 

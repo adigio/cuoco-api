@@ -16,15 +16,13 @@ import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserPreferences;
 import com.cuoco.shared.GlobalExceptionHandler;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,16 +32,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 @Tag(name = "Authentication", description = "Operations related to authenticate users")
 public class AuthenticationControllerAdapter {
 
-    static final Logger log = LoggerFactory.getLogger(AuthenticationControllerAdapter.class);
-
     private final SignInUserCommand signInUserCommand;
     private final CreateUserCommand createUserCommand;
-
 
     public AuthenticationControllerAdapter(
             SignInUserCommand signInUserCommand,

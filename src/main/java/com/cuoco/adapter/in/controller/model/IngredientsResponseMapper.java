@@ -1,6 +1,5 @@
 package com.cuoco.adapter.in.controller.model;
 
-import com.cuoco.adapter.in.controller.model.IngredientsResponse;
 import com.cuoco.application.usecase.model.Ingredient;
 import org.springframework.stereotype.Component;
 
