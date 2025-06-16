@@ -11,6 +11,7 @@ import com.cuoco.adapter.out.rest.gemini.model.wrapper.PromptBodyGeminiRequestMo
 import com.cuoco.adapter.out.rest.model.gemini.GeminiResponseMapper;
 import com.cuoco.adapter.utils.Utils;
 import com.cuoco.application.port.out.GetIngredientsFromImageRepository;
+import com.cuoco.application.port.out.GetIngredientsFromImagesGroupedRepository;
 import com.cuoco.application.usecase.model.File;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.shared.FileReader;
@@ -31,7 +32,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class GetIngredientsFromImageGeminiRestImageRepositoryAdapter implements GetIngredientsFromImageRepository {
+public class GetIngredientsFromImageGroupedGeminiRestRepositoryAdapter implements GetIngredientsFromImagesGroupedRepository {
 
     private final static String SOURCE = "image";
     private final String PROMPT = FileReader.execute("prompt/recognizeIngredientsFromImage.txt");
@@ -48,16 +49,19 @@ public class GetIngredientsFromImageGeminiRestImageRepositoryAdapter implements 
     private final RestTemplate restTemplate;
     private final GeminiResponseMapper geminiResponseMapper;
 
-    public GetIngredientsFromImageGeminiRestImageRepositoryAdapter(RestTemplate restTemplate, GeminiResponseMapper geminiResponseMapper) {
+    public GetIngredientsFromImageGroupedGeminiRestRepositoryAdapter(
+            RestTemplate restTemplate,
+            GeminiResponseMapper geminiResponseMapper
+    ) {
         this.restTemplate = restTemplate;
         this.geminiResponseMapper = geminiResponseMapper;
     }
 
     @Override
-    public List<Ingredient> execute(List<File> files) {
-        log.info("Getting all ingredients processed by Gemini from images");
+    public Map<String, List<Ingredient>> execute(List<File> files) {
+        log.info("Getting ingredients from Gemini grouped by image");
 
-        List<Ingredient> ingredients = new ArrayList<>();
+        Map<String, List<Ingredient>> ingredientsByImage = new LinkedHashMap<>();
 
         try {
             for (File file : files) {
@@ -76,16 +80,18 @@ public class GetIngredientsFromImageGeminiRestImageRepositoryAdapter implements 
 
                 List<Ingredient> ingredientsFromImage = ingredientsResponse.stream().map(IngredientResponseGeminiModel::toDomain).toList();
 
+                ingredientsFromImage.forEach(ingredient -> ingredient.setSource(SOURCE));
+
                 log.info("Extracted {} ingredients from image {}", ingredientsFromImage.size(), file.getFileName());
 
-                ingredients.addAll(ingredientsFromImage);
+                ingredientsByImage.put(file.getFileName(), ingredientsFromImage);
             }
 
-            ingredients.forEach(ingredient -> ingredient.setSource(SOURCE));
 
-            log.info("Successfully got all {} ingredients from images processed by Gemini", ingredients.size());
 
-            return ingredients;
+            log.info("Successfully got all ingredients grouped by image processed by Gemini");
+
+            return ingredientsByImage;
         } catch (Exception e) {
             log.error("Error sending images to Gemini to process ingredients: ", e);
             throw new NotAvailableException(ErrorDescription.NOT_AVAILABLE.getValue());

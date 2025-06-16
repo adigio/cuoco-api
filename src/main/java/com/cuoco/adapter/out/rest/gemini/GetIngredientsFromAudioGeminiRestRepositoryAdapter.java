@@ -1,16 +1,23 @@
 package com.cuoco.adapter.out.rest.gemini;
 
 import com.cuoco.adapter.exception.UnprocessableException;
+import com.cuoco.adapter.in.controller.model.IngredientResponse;
+import com.cuoco.adapter.out.rest.gemini.model.IngredientResponseGeminiModel;
+import com.cuoco.adapter.out.rest.gemini.model.RecipeResponseGeminiModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.ContentGeminiRequestModel;
+import com.cuoco.adapter.out.rest.gemini.model.wrapper.GeminiResponseModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.GenerationConfigurationGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.InlineDataGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PartGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PromptBodyGeminiRequestModel;
 import com.cuoco.adapter.out.rest.model.gemini.voice.AudioMimeTypeMapper;
 import com.cuoco.adapter.out.rest.model.gemini.voice.VoiceResponseParser;
+import com.cuoco.adapter.utils.Utils;
 import com.cuoco.application.port.out.GetIngredientsFromAudioRepository;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.shared.FileReader;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -22,7 +29,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Component
-public class GetIngredientsFromAudioGeminiRestRepositryAdapter implements GetIngredientsFromAudioRepository {
+public class GetIngredientsFromAudioGeminiRestRepositoryAdapter implements GetIngredientsFromAudioRepository {
 
     private final String VOICE_PROMPT = FileReader.execute("prompt/recognizeIngredientsFromVoice.txt");
 
@@ -38,7 +45,7 @@ public class GetIngredientsFromAudioGeminiRestRepositryAdapter implements GetIng
     private final RestTemplate restTemplate;
     private final VoiceResponseParser voiceResponseParser;
 
-    public GetIngredientsFromAudioGeminiRestRepositryAdapter(
+    public GetIngredientsFromAudioGeminiRestRepositoryAdapter(
             RestTemplate restTemplate,
             VoiceResponseParser voiceResponseParser
     ) {
@@ -47,7 +54,7 @@ public class GetIngredientsFromAudioGeminiRestRepositryAdapter implements GetIng
     }
 
     @Override
-    public List<Ingredient> processVoice(String audioBase64, String format, String language) {
+    public List<Ingredient> execute(String audioBase64, String format, String language) {
         log.info("Executing voice processing with Gemini with format {} and language {}", format, language);
 
         try {
@@ -55,32 +62,26 @@ public class GetIngredientsFromAudioGeminiRestRepositryAdapter implements GetIng
 
             String geminiUrl = url + "?key=" + apiKey;
 
-            String response = restTemplate.postForObject(geminiUrl, request, String.class);
+            GeminiResponseModel response = restTemplate.postForObject(geminiUrl, request, GeminiResponseModel.class);
 
-            List<Ingredient> ingredients = voiceResponseParser.parseIngredientsFromResponse(response);
+            String recipeResponseText = Utils.sanitizeJsonResponse(response);
 
-            log.info("Successfully extracted {} ingredients from voice", ingredients.size());
+            ObjectMapper mapper = new ObjectMapper();
+
+            List<IngredientResponseGeminiModel> ingredientsResponse = mapper.readValue(
+                    recipeResponseText,
+                    new TypeReference<>() {}
+            );
+
+            List<Ingredient> ingredients = ingredientsResponse.stream().map(IngredientResponseGeminiModel::toDomain).toList();
+
+            log.info("Successfully extracted {} ingredients from audio", ingredients.size());
 
             return ingredients;
         } catch (Exception e) {
             log.error("Error processing voice with Gemini: {}", e.getMessage(), e);
             throw new UnprocessableException("Error processing voice: " + e.getMessage());
         }
-    }
-
-    @Override
-    @Async
-    public CompletableFuture<List<Ingredient>> processVoiceAsync(String audioBase64, String format, String language) {
-        log.info("Executing asynchronous voice processing in Gemini with format {} and language {}", format, language);
-
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                return processVoice(audioBase64, format, language);
-            } catch (Exception e) {
-                log.error("Async error processing voice: {}", e.getMessage(), e);
-                throw new RuntimeException("Async error processing voice: " + e.getMessage(), e);
-            }
-        });
     }
 
     private PromptBodyGeminiRequestModel buildPromptBody(String audioBase64, String format, String prompt) {

@@ -23,7 +23,7 @@ public class VoiceResponseParser {
      */
     public List<Ingredient> parseIngredientsFromResponse(String response) {
         if (response == null || response.trim().isEmpty()) {
-            log.warn("⚠️ Empty response from Gemini");
+            log.warn("Empty response from Gemini");
             return new ArrayList<>();
         }
 
@@ -35,11 +35,11 @@ public class VoiceResponseParser {
                 return parseIngredientNamesFromText(extractedText);
             }
 
-            log.warn("⚠️ No text extracted from Gemini response");
+            log.warn("No text extracted from Gemini response");
             return new ArrayList<>();
 
         } catch (Exception e) {
-            log.error("❌ Error parsing Gemini response: {}", e.getMessage(), e);
+            log.error("Error parsing Gemini response: {}", e.getMessage(), e);
             return new ArrayList<>();
         }
     }

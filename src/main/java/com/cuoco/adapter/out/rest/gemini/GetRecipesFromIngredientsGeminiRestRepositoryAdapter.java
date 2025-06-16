@@ -1,12 +1,14 @@
 package com.cuoco.adapter.out.rest.gemini;
 
 import com.cuoco.adapter.exception.NotAvailableException;
+import com.cuoco.adapter.exception.UnprocessableException;
 import com.cuoco.adapter.out.rest.gemini.model.RecipeResponseGeminiModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.ContentGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.GeminiResponseModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.GenerationConfigurationGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PartGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PromptBodyGeminiRequestModel;
+import com.cuoco.adapter.utils.Utils;
 import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.Recipe;
@@ -15,6 +17,7 @@ import com.cuoco.shared.model.ErrorDescription;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -56,17 +59,16 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
 
             GeminiResponseModel response = restTemplate.postForObject(geminiUrl, prompt, GeminiResponseModel.class);
 
-            String recipeResponseText = response.getCandidates().get(0).getContent().getParts().get(0).getText();
+            if(response == null) {
+                throw new UnprocessableException(ErrorDescription.NOT_AVAILABLE.getValue());
+            }
 
-            String cleanedRecipeResponseText = recipeResponseText
-                    .replaceAll("```json", "")
-                    .replaceAll("```", "")
-                    .trim();
+            String recipeResponseText = Utils.sanitizeJsonResponse(response);
 
             ObjectMapper mapper = new ObjectMapper();
 
             List<RecipeResponseGeminiModel> recipesResponseFromGemini = mapper.readValue(
-                    cleanedRecipeResponseText,
+                    recipeResponseText,
                     new TypeReference<>() {}
             );
 
@@ -81,6 +83,7 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
         }
     }
 
+
     private PromptBodyGeminiRequestModel buildPromptBody(String prompt) {
         return PromptBodyGeminiRequestModel.builder()
                 .contents(List.of(ContentGeminiRequestModel.builder().parts(buildPartsRequest(prompt)).build()))
@@ -91,4 +94,5 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
     private List<PartGeminiRequestModel> buildPartsRequest(String prompt) {
         return List.of(PartGeminiRequestModel.builder().text(prompt).build());
     }
+
 }

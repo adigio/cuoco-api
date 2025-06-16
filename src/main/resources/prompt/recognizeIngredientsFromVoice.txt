@@ -7,24 +7,38 @@ INSTRUCCIONES:
 2. Identifica ÚNICAMENTE ingredientes de cocina (alimentos, especias, condimentos)
 3. Ignora palabras que NO sean ingredientes (utensilios, acciones, cantidades, etc.)
 4. Usa los nombres más comunes en Argentina (ej: "palta" no "aguacate", "choclo" no "maíz")
-5. Devuelve cada ingrediente en una línea separada
+5. Devuelve cada ingrediente en un objeto separado
 6. Si no escuchas ingredientes claros, devuelve una lista vacía
 
 FORMATO DE RESPUESTA:
-- Un ingrediente por línea
-- Solo el nombre del ingrediente, sin cantidades ni descripciones
+- Devuelve un array JSON con un ingrediente por objeto
+- SOLO el nombre del ingrediente, sin cantidades ni descripciones
 - En minúsculas
 - Sin números, sin "kg", "gramos", etc.
+- La estructura del objeto debe ser asi:
+
+[
+    { "name": "ingrediente1" },
+    { "name": "ingrediente2" }
+]
+
 
 EJEMPLOS:
 Si escuchas: "Necesito tomate, cebolla y un poco de ajo para la salsa"
 Responde:
-tomate
-cebolla
-ajo
+
+[
+    { "name": "tomate" },
+    { "name": "cebolla" },
+    { "name": "ajo" },
+]
+
 
 Si escuchas: "Voy a cocinar con aceite en la sartén"
 Responde:
-aceite
+
+[
+    { "name": "aceite" }
+]
 
 Analiza el siguiente audio y extrae los ingredientes:

@@ -1,5 +1,41 @@
-"Analiza esta imagen y extrae SOLO los nombres de ingredientes visibles en español argentino. 
-Devuelve una lista separada por comas, sin palabras adicionales ni explicaciones. 
-Enfócate únicamente en ingredientes de comida, no en platos preparados. 
-Usa nombres comunes argentinos: papa (no patata), palta (no aguacate), choclo (no maíz).
-Ejemplos: tomate, papa, cebolla, palta, choclo"
+Analiza esta imagen y extrae SOLO los nombres de ingredientes visibles en español argentino.
+
+INSTRUCCIONES:
+1. Revisa atentamente la imagen
+2. Identifica ÚNICAMENTE ingredientes de cocina (alimentos, especias, condimentos), no alimentos preparados
+3. Ignora elementos que NO sean ingredientes (utensilios, electrodomesticos, muebles, etc.)
+4. Usa los nombres más comunes en Argentina (ej: "palta" no "aguacate", "choclo" no "maíz")
+5. Devuelve cada ingrediente en una línea separada
+6. Si no encuentras ingredientes claros, devuelve una lista vacía
+
+FORMATO DE RESPUESTA:
+- Devuelve un array JSON con un ingrediente por objeto
+- Determina la cantidad posible en Double y la unidad de medicion por simbolo (gr por gramo, ml por mililitro, etc)
+- Si el elemento no tiene cantidad posible, determina la unidad como "unidad". Si no puedes considerar la cantidad, no lo agregues.
+- En minúsculas
+- La estructura del objeto debe ser asi:
+
+[
+    { "name": "ingrediente1", "quantity": "500", "unit": "gr" },
+    { "name": "ingrediente2", "quantity": "1", "unit": "unidad" },
+    { "name": "ingrediente3" }
+]
+
+EJEMPLOS:
+Si ves una banana, una botella de salsa de tomate por la mitad y 3 huevos, responde:
+
+[
+    { "name": "banana", "quantity": 1, "unit": "unidad" },
+    { "name": "salsa de tomate", "quantity": 500, "unit": "ml" },
+    { "name": "huevo", "quantity": 3, "unit": "unidad" },
+]
+
+
+Si ves una botella de leche pero no sabes la cantidad exacta, entonces responde:
+
+[
+    { "name": "leche" }
+]
+
+
+No des explicaciones, solo devuelve el JSON correspondiente.

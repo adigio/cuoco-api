@@ -3,20 +3,17 @@ package com.cuoco.application.port.in;
 import com.cuoco.application.usecase.model.Ingredient;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Service
-public interface GetIngredientsFromTextCommand {
+public interface GetIngredientsFromImagesCommand {
 
     List<Ingredient> execute(Command command);
 
     @Data
     @Builder
     class Command {
-        private final String text;
-        private final String source;
+        private final List<MultipartFile> images;
     }
 }
