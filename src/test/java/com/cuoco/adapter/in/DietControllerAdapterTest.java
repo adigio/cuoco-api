@@ -44,7 +44,7 @@ public class DietControllerAdapterTest {
 
         when(getAllDietsQuery.execute()).thenReturn(diets);
 
-        mockMvc.perform(get("/diet").contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/diets").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(2))
                 .andExpect(jsonPath("$[0].id").value(1))

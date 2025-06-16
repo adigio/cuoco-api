@@ -16,6 +16,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -81,10 +82,6 @@ public class IngredientControllerAdapterTest {
         Ingredient ingredient1 = Ingredient.builder().name("Sal").quantity(1.0).unit("tsp").confirmed(true).source("image").build();
         Ingredient ingredient2 = Ingredient.builder().name("Pimienta").quantity(0.5).unit("tsp").confirmed(false).source("image").build();
 
-        when(getIngredientsFromImagesGroupedCommand.execute(any())).thenReturn(
-                Map.of("image1.jpg", List.of(ingredient1), "image2.jpg", List.of(ingredient2))
-        );
-
         MockMultipartFile image1 = new MockMultipartFile(
                 "image",
                 "image1.jpg",
@@ -97,6 +94,12 @@ public class IngredientControllerAdapterTest {
                 MediaType.IMAGE_JPEG_VALUE,
                 "dummy image content 2".getBytes(StandardCharsets.UTF_8)
         );
+
+        Map<String, List<Ingredient>> ingredientsByImage = new LinkedHashMap<>();
+        ingredientsByImage.put("image1.jpg", List.of(ingredient1));
+        ingredientsByImage.put("image2.jpg", List.of(ingredient2));
+
+        when(getIngredientsFromImagesGroupedCommand.execute(any())).thenReturn(ingredientsByImage);
 
         mockMvc.perform(multipart("/ingredients/image")
                         .file(image1)

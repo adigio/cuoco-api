@@ -102,6 +102,12 @@ public class GlobalExceptionHandler {
         return buildResponseError(HttpStatus.UNPROCESSABLE_ENTITY, ex);
     }
 
+    @ExceptionHandler(com.cuoco.application.exception.UnprocessableException.class)
+    public ResponseEntity<ApiErrorResponse> handle(com.cuoco.application.exception.UnprocessableException ex) {
+        log.info(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(), ex);
+        return buildResponseError(HttpStatus.UNPROCESSABLE_ENTITY, ex);
+    }
+
     @ExceptionHandler(NotAvailableException.class)
     public ResponseEntity<ApiErrorResponse> handle(NotAvailableException ex) {
         log.error(HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase(), ex);

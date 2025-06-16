@@ -1,6 +1,6 @@
 package com.cuoco.application.usecase.domainservice;
 
-import com.cuoco.adapter.exception.UnprocessableException;
+import com.cuoco.application.exception.UnprocessableException;
 import com.cuoco.shared.utils.AudioConstants;
 import com.cuoco.shared.model.ErrorDescription;
 import com.cuoco.shared.utils.Constants;
