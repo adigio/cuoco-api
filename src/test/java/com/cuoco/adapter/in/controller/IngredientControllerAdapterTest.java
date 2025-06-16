@@ -2,7 +2,7 @@ package com.cuoco.adapter.in.controller;
 
 import com.cuoco.application.port.in.AuthenticateUserCommand;
 import com.cuoco.application.port.in.GetIngredientsFromAudioCommand;
-import com.cuoco.application.port.in.GetIngredientsFromImagesGroupedCommand;
+import com.cuoco.application.port.in.GetIngredientsGroupedFromImagesCommand;
 import com.cuoco.application.port.in.GetIngredientsFromTextCommand;
 import com.cuoco.application.usecase.model.Ingredient;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ public class IngredientControllerAdapterTest {
     private GetIngredientsFromAudioCommand getIngredientsFromAudioCommand;
 
     @MockitoBean
-    private GetIngredientsFromImagesGroupedCommand getIngredientsFromImagesGroupedCommand;
+    private GetIngredientsGroupedFromImagesCommand getIngredientsGroupedFromImagesCommand;
 
     @MockitoBean
     private GetIngredientsFromTextCommand getIngredientsFromTextCommand;
@@ -98,7 +98,7 @@ public class IngredientControllerAdapterTest {
         ingredientsByImage.put("image1.jpg", List.of(ingredient1));
         ingredientsByImage.put("image2.jpg", List.of(ingredient2));
 
-        when(getIngredientsFromImagesGroupedCommand.execute(any())).thenReturn(ingredientsByImage);
+        when(getIngredientsGroupedFromImagesCommand.execute(any())).thenReturn(ingredientsByImage);
 
         mockMvc.perform(multipart("/ingredients/image")
                         .file(image1)
