@@ -4,7 +4,7 @@ import com.cuoco.adapter.in.controller.model.ImageIngredientsResponse;
 import com.cuoco.adapter.in.controller.model.IngredientResponse;
 import com.cuoco.adapter.in.controller.model.TextRequest;
 import com.cuoco.application.port.in.GetIngredientsFromAudioCommand;
-import com.cuoco.application.port.in.GetIngredientsFromImagesGroupedCommand;
+import com.cuoco.application.port.in.GetIngredientsGroupedFromImagesCommand;
 import com.cuoco.application.port.in.GetIngredientsFromTextCommand;
 import com.cuoco.application.usecase.model.Ingredient;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,16 +30,16 @@ import java.util.Map;
 public class IngredientControllerAdapter {
 
     private final GetIngredientsFromAudioCommand getIngredientsFromAudioCommand;
-    private final GetIngredientsFromImagesGroupedCommand getIngredientsFromImagesGroupedCommand;
+    private final GetIngredientsGroupedFromImagesCommand getIngredientsGroupedFromImagesCommand;
     private final GetIngredientsFromTextCommand getIngredientsFromTextCommand;
 
     public IngredientControllerAdapter(
             GetIngredientsFromAudioCommand getIngredientsFromAudioCommand,
-            GetIngredientsFromImagesGroupedCommand getIngredientsFromImagesGroupedCommand,
+            GetIngredientsGroupedFromImagesCommand getIngredientsGroupedFromImagesCommand,
             GetIngredientsFromTextCommand getIngredientsFromTextCommand
     ) {
         this.getIngredientsFromAudioCommand = getIngredientsFromAudioCommand;
-        this.getIngredientsFromImagesGroupedCommand = getIngredientsFromImagesGroupedCommand;
+        this.getIngredientsGroupedFromImagesCommand = getIngredientsGroupedFromImagesCommand;
         this.getIngredientsFromTextCommand = getIngredientsFromTextCommand;
     }
 
@@ -61,7 +61,7 @@ public class IngredientControllerAdapter {
     public ResponseEntity<List<ImageIngredientsResponse>> getIngredients(@RequestParam("image") @NotNull List<MultipartFile> images) {
         log.info("Executing POST for image file processing to get ingredients, with {} images", images.size());
 
-        Map<String, List<Ingredient>> ingredientsByImage = getIngredientsFromImagesGroupedCommand.execute(buildImageCommand(images));
+        Map<String, List<Ingredient>> ingredientsByImage = getIngredientsGroupedFromImagesCommand.execute(buildImageCommand(images));
         List<ImageIngredientsResponse> response = buildImageIngredientsResponseList(ingredientsByImage);
 
         log.info("Successfully extracted ingredients from {} images with separation", ingredientsByImage.size());
@@ -86,8 +86,8 @@ public class IngredientControllerAdapter {
                 .build();
     }
 
-    private GetIngredientsFromImagesGroupedCommand.Command buildImageCommand(List<MultipartFile> images) {
-        return GetIngredientsFromImagesGroupedCommand.Command.builder()
+    private GetIngredientsGroupedFromImagesCommand.Command buildImageCommand(List<MultipartFile> images) {
+        return GetIngredientsGroupedFromImagesCommand.Command.builder()
                 .images(images)
                 .build();
     }

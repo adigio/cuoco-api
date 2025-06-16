@@ -9,7 +9,7 @@ import com.cuoco.adapter.out.rest.gemini.model.wrapper.InlineDataGeminiRequestMo
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PartGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PromptBodyGeminiRequestModel;
 import com.cuoco.adapter.utils.Utils;
-import com.cuoco.application.port.out.GetIngredientsFromImagesGroupedRepository;
+import com.cuoco.application.port.out.GetIngredientsGroupedFromImagesRepository;
 import com.cuoco.application.usecase.model.File;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.shared.FileReader;
@@ -27,7 +27,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class GetIngredientsFromImageGroupedGeminiRestRepositoryAdapter implements GetIngredientsFromImagesGroupedRepository {
+public class GetIngredientsGroupedFromImagesGeminiRestFromImagesRepositoryAdapter implements GetIngredientsGroupedFromImagesRepository {
 
     private final static String SOURCE = "image";
     private final String PROMPT = FileReader.execute("prompt/recognizeIngredientsFromImagePrompt.txt");
@@ -43,7 +43,7 @@ public class GetIngredientsFromImageGroupedGeminiRestRepositoryAdapter implement
 
     private final RestTemplate restTemplate;
 
-    public GetIngredientsFromImageGroupedGeminiRestRepositoryAdapter(RestTemplate restTemplate) {
+    public GetIngredientsGroupedFromImagesGeminiRestFromImagesRepositoryAdapter(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 

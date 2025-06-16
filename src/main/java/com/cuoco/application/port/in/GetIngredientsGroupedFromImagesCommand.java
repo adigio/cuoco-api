@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Map;
 
-public interface GetIngredientsFromImagesGroupedCommand {
+public interface GetIngredientsGroupedFromImagesCommand {
 
     Map<String, List<Ingredient>> execute(Command command);
 

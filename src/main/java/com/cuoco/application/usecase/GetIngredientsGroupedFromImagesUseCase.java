@@ -1,7 +1,7 @@
 package com.cuoco.application.usecase;
 
-import com.cuoco.application.port.in.GetIngredientsFromImagesGroupedCommand;
-import com.cuoco.application.port.out.GetIngredientsFromImagesGroupedRepository;
+import com.cuoco.application.port.in.GetIngredientsGroupedFromImagesCommand;
+import com.cuoco.application.port.out.GetIngredientsGroupedFromImagesRepository;
 import com.cuoco.application.usecase.domainservice.FileDomainService;
 import com.cuoco.application.usecase.model.File;
 import com.cuoco.application.usecase.model.Ingredient;
@@ -13,18 +13,18 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class GetIngredientsFromImagesGroupedUseCase implements GetIngredientsFromImagesGroupedCommand {
+public class GetIngredientsGroupedFromImagesUseCase implements GetIngredientsGroupedFromImagesCommand {
 
-    private final GetIngredientsFromImagesGroupedRepository getIngredientsFromImagesGroupedRepository;
+    private final GetIngredientsGroupedFromImagesRepository getIngredientsGroupedFromImagesRepository;
     private final FileDomainService fileDomainService;
 
-    public GetIngredientsFromImagesGroupedUseCase(GetIngredientsFromImagesGroupedRepository getIngredientsFromImagesGroupedRepository, FileDomainService fileDomainService) {
-        this.getIngredientsFromImagesGroupedRepository = getIngredientsFromImagesGroupedRepository;
+    public GetIngredientsGroupedFromImagesUseCase(GetIngredientsGroupedFromImagesRepository getIngredientsGroupedFromImagesRepository, FileDomainService fileDomainService) {
+        this.getIngredientsGroupedFromImagesRepository = getIngredientsGroupedFromImagesRepository;
         this.fileDomainService = fileDomainService;
     }
 
     @Override
-    public Map<String, List<Ingredient>> execute(GetIngredientsFromImagesGroupedCommand.Command command) {
+    public Map<String, List<Ingredient>> execute(GetIngredientsGroupedFromImagesCommand.Command command) {
         log.info("Executing get all ingredients grouped by image use case for {} files", command.getImages().size());
 
         List<File> images = command.getImages().stream().map(image -> {
@@ -41,7 +41,7 @@ public class GetIngredientsFromImagesGroupedUseCase implements GetIngredientsFro
 
         }).toList();
 
-        Map<String, List<Ingredient>> ingredientsByImage = getIngredientsFromImagesGroupedRepository.execute(images);
+        Map<String, List<Ingredient>> ingredientsByImage = getIngredientsGroupedFromImagesRepository.execute(images);
 
         log.info("Successfully extracted ingredients grouped by images");
 

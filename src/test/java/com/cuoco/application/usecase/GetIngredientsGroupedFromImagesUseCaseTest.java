@@ -1,7 +1,7 @@
 package com.cuoco.application.usecase;
 
-import com.cuoco.application.port.in.GetIngredientsFromImagesGroupedCommand;
-import com.cuoco.application.port.out.GetIngredientsFromImagesGroupedRepository;
+import com.cuoco.application.port.in.GetIngredientsGroupedFromImagesCommand;
+import com.cuoco.application.port.out.GetIngredientsGroupedFromImagesRepository;
 import com.cuoco.application.usecase.domainservice.FileDomainService;
 import com.cuoco.application.usecase.model.Ingredient;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,23 +18,23 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class GetIngredientsFromImagesGroupedUseCaseTest {
+class GetIngredientsGroupedFromImagesUseCaseTest {
 
-    private GetIngredientsFromImagesGroupedRepository getIngredientsFromImagesGroupedRepository;
+    private GetIngredientsGroupedFromImagesRepository getIngredientsGroupedFromImagesRepository;
     private FileDomainService fileDomainService;
     private MultipartFile imageFile1;
     private MultipartFile imageFile2;
 
-    private GetIngredientsFromImagesGroupedUseCase useCase;
+    private GetIngredientsGroupedFromImagesUseCase useCase;
 
     @BeforeEach
     void setup() {
-        getIngredientsFromImagesGroupedRepository = mock(GetIngredientsFromImagesGroupedRepository.class);
+        getIngredientsGroupedFromImagesRepository = mock(GetIngredientsGroupedFromImagesRepository.class);
         fileDomainService = mock(FileDomainService.class);
         imageFile1 = mock(MultipartFile.class);
         imageFile2 = mock(MultipartFile.class);
 
-        useCase = new GetIngredientsFromImagesGroupedUseCase(getIngredientsFromImagesGroupedRepository, fileDomainService);
+        useCase = new GetIngredientsGroupedFromImagesUseCase(getIngredientsGroupedFromImagesRepository, fileDomainService);
     }
 
     @Test
@@ -54,9 +54,9 @@ class GetIngredientsFromImagesGroupedUseCaseTest {
                 "image2.jpg", List.of(Ingredient.builder().name("Lettuce").build())
         );
 
-        when(getIngredientsFromImagesGroupedRepository.execute(anyList())).thenReturn(expectedMap);
+        when(getIngredientsGroupedFromImagesRepository.execute(anyList())).thenReturn(expectedMap);
 
-        GetIngredientsFromImagesGroupedCommand.Command command = GetIngredientsFromImagesGroupedCommand.Command.builder()
+        GetIngredientsGroupedFromImagesCommand.Command command = GetIngredientsGroupedFromImagesCommand.Command.builder()
                 .images(imageFiles)
                 .build();
 
@@ -70,11 +70,11 @@ class GetIngredientsFromImagesGroupedUseCaseTest {
 
     @Test
     void GIVEN_empty_image_list_WHEN_execute_THEN_return_empty_map() {
-        GetIngredientsFromImagesGroupedCommand.Command command = GetIngredientsFromImagesGroupedCommand.Command.builder()
+        GetIngredientsGroupedFromImagesCommand.Command command = GetIngredientsGroupedFromImagesCommand.Command.builder()
                 .images(List.of())
                 .build();
 
-        when(getIngredientsFromImagesGroupedRepository.execute(anyList())).thenReturn(Map.of());
+        when(getIngredientsGroupedFromImagesRepository.execute(anyList())).thenReturn(Map.of());
 
         Map<String, List<Ingredient>> result = useCase.execute(command);
 
