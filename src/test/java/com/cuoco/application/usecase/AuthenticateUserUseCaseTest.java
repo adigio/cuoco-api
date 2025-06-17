@@ -5,7 +5,7 @@ import com.cuoco.application.port.in.AuthenticateUserCommand;
 import com.cuoco.application.port.out.GetUserByEmailRepository;
 import com.cuoco.application.usecase.model.AuthenticatedUser;
 import com.cuoco.application.usecase.model.User;
-import com.cuoco.factory.UserFactory;
+import com.cuoco.factory.domain.UserFactory;
 import com.cuoco.shared.model.ErrorDescription;
 import com.cuoco.shared.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;

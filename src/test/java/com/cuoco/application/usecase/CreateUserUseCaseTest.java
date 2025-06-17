@@ -12,7 +12,7 @@ import com.cuoco.application.port.out.UserExistsByEmailRepository;
 import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.User;
-import com.cuoco.factory.UserFactory;
+import com.cuoco.factory.domain.UserFactory;
 import com.cuoco.shared.model.ErrorDescription;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

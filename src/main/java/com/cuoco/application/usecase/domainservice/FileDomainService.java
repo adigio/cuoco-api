@@ -1,8 +1,8 @@
 package com.cuoco.application.usecase.domainservice;
 
 import com.cuoco.application.exception.UnprocessableException;
-import com.cuoco.shared.utils.AudioConstants;
 import com.cuoco.shared.model.ErrorDescription;
+import com.cuoco.shared.utils.AudioConstants;
 import com.cuoco.shared.utils.Constants;
 import com.cuoco.shared.utils.FileUtils;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ public class FileDomainService {
     private final static String AUDIO_FOLDER = "audio/";
 
     public String getFileName(MultipartFile file) {
-        return file.getOriginalFilename() != null ? file.getOriginalFilename() : "unknown_" + System.currentTimeMillis();
+        return file.getOriginalFilename() != null && !file.getOriginalFilename().isBlank() ? file.getOriginalFilename() : "unknown_" + System.currentTimeMillis();
     }
 
     public String getMimeType(MultipartFile file) {

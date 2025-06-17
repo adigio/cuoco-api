@@ -5,13 +5,6 @@ CREATE TABLE `category`
     PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `difficulty`
-(
-    `id`          int NOT NULL AUTO_INCREMENT,
-    `description` varchar(255) DEFAULT NULL,
-    PRIMARY KEY (`id`)
-);
-
 CREATE TABLE `recipe`
 (
     `id`             bigint NOT NULL AUTO_INCREMENT,
@@ -21,9 +14,9 @@ CREATE TABLE `recipe`
     `image_url`      varchar(255) DEFAULT NULL,
     `steps`          varchar(255) DEFAULT NULL,
     `title`          varchar(255) DEFAULT NULL,
-    `difficulty_id`  int          DEFAULT NULL,
+    `cook_level_id`  int          DEFAULT NULL,
     PRIMARY KEY (`id`),
-    CONSTRAINT `FK_recipe_difficulty_id` FOREIGN KEY (`difficulty_id`) REFERENCES `difficulty` (`id`)
+    CONSTRAINT `FK_recipe_cook_level_id` FOREIGN KEY (`cook_level_id`) REFERENCES `cook_level` (`id`)
 );
 
 CREATE TABLE `unit`

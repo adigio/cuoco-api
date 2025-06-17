@@ -1,4 +1,4 @@
-package com.cuoco.factory;
+package com.cuoco.factory.domain;
 
 public class DietaryNeedFactory {
 }

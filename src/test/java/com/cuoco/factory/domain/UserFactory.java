@@ -1,4 +1,4 @@
-package com.cuoco.factory;
+package com.cuoco.factory.domain;
 
 import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.CookLevel;

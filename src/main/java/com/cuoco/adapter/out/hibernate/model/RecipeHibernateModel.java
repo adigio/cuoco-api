@@ -27,6 +27,6 @@ public class RecipeHibernateModel {
     private Integer estimatedTime;
 
     @ManyToOne
-    private DifficultyHibernateModel difficulty;
+    private CookLevelHibernateModel cookLevel;
 
 }

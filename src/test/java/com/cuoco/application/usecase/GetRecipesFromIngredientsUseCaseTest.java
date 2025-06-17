@@ -4,14 +4,17 @@ import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
 import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.factory.IngredientFactory;
+import com.cuoco.factory.domain.IngredientFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class GetRecipesFromIngredientsUseCaseTest {
 
@@ -27,7 +30,7 @@ class GetRecipesFromIngredientsUseCaseTest {
     @Test
     void GIVEN_valid_ingredients_WHEN_execute_THEN_return_recipe_list() {
         List<Ingredient> ingredients = List.of(
-                IngredientFactory.create()
+                IngredientFactory.create("jamon")
         );
 
         List<Recipe> expectedRecipes = List.of(
