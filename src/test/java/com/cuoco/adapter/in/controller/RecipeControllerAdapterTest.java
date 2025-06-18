@@ -4,7 +4,7 @@ import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.application.port.in.AuthenticateUserCommand;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.factory.RecipeFactory;
+import com.cuoco.factory.domain.RecipeFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +19,8 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = RecipeControllerAdapter.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
 public class RecipeControllerAdapterTest {

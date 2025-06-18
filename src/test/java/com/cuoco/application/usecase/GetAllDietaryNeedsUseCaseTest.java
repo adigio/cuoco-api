@@ -1,6 +1,5 @@
 package com.cuoco.application.usecase;
 
-import com.cuoco.application.port.out.GetAllCookLevelsRepository;
 import com.cuoco.application.port.out.GetAllDietaryNeedsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

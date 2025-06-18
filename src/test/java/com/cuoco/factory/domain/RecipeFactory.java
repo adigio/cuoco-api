@@ -1,4 +1,4 @@
-package com.cuoco.factory;
+package com.cuoco.factory.domain;
 
 import com.cuoco.adapter.in.controller.model.IngredientRequest;
 import com.cuoco.adapter.in.controller.model.RecipeRequest;

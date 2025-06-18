@@ -3,7 +3,7 @@ package com.cuoco.adapter.in.security;
 import com.cuoco.application.port.in.AuthenticateUserCommand;
 import com.cuoco.application.usecase.model.AuthenticatedUser;
 import com.cuoco.application.usecase.model.User;
-import com.cuoco.factory.UserFactory;
+import com.cuoco.factory.domain.UserFactory;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

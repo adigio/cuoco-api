@@ -2,8 +2,8 @@ package com.cuoco.adapter.in.controller;
 
 import com.cuoco.application.port.in.AuthenticateUserCommand;
 import com.cuoco.application.port.in.GetIngredientsFromAudioCommand;
-import com.cuoco.application.port.in.GetIngredientsGroupedFromImagesCommand;
 import com.cuoco.application.port.in.GetIngredientsFromTextCommand;
+import com.cuoco.application.port.in.GetIngredientsGroupedFromImagesCommand;
 import com.cuoco.application.usecase.model.Ingredient;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

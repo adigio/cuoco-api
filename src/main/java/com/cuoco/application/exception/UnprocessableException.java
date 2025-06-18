@@ -1,6 +1,5 @@
 package com.cuoco.application.exception;
 
-import com.cuoco.adapter.exception.AdapterException;
 import com.cuoco.application.usecase.model.MessageError;
 
 import java.util.List;
