@@ -7,7 +7,7 @@ spring:
     password: ${DB_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: false
   servlet:
     multipart:
@@ -27,6 +27,6 @@ gemini:
 shared:
   plan:
     free:
-      max-recipes: 3
+      max-recipes: ${FREE_MAX_RECIPES}
     premium:
-      max-recipes: 5
+      max-recipes: ${PREMIUM_MAX_RECIPES}

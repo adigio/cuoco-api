@@ -29,13 +29,13 @@ public class RecipeHibernateModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String imageUrl;
     private String subtitle;
     private String description;
+    private String preparationTime;
+    private String imageUrl;
     @Lob
     @Column(name = "instructions", columnDefinition = "TEXT")
     private String instructions;
-    private String preparationTime;
 
     @ManyToOne
     private CookLevelHibernateModel cookLevel;

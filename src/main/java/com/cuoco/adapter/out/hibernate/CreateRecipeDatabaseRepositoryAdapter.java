@@ -56,10 +56,9 @@ public class CreateRecipeDatabaseRepositoryAdapter implements CreateRecipeReposi
 
         List<RecipeIngredientsHibernateModel> recipeIngredientsHibernateModel = recipe.getIngredients().stream().map(ingredient -> buildRecipeIngredientHibernateModel(savedRecipe, ingredient)).toList();
         List<RecipeIngredientsHibernateModel> savedRecipeIngredients = createRecipeIngredientsHibernateRepositoryAdapter.saveAll(recipeIngredientsHibernateModel);
+        savedRecipe.setRecipeIngredients(savedRecipeIngredients);
 
         Recipe recipeResponse = savedRecipe.toDomain();
-        List<Ingredient> recipeIngredientsResponse = savedRecipeIngredients.stream().map(recipeIngredient -> recipeIngredient.getIngredient().toDomain()).toList();
-        recipeResponse.setIngredients(recipeIngredientsResponse);
 
         log.info("Successfully saved recipe and ingredients with ID {}", recipeResponse.getId());
 
