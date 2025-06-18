@@ -1,6 +1,7 @@
 package com.cuoco.adapter.out.rest.gemini.model;
 
 import com.cuoco.application.usecase.model.Ingredient;
+import com.cuoco.application.usecase.model.Unit;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -28,7 +29,10 @@ public class IngredientResponseGeminiModel {
         return Ingredient.builder()
                 .name(name)
                 .quantity(quantity)
-                .unit(unit)
+                .unit(Unit.builder()
+                        .symbol(unit)
+                        .build()
+                )
                 .optional(optional)
                 .build();
     }

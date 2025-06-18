@@ -15,12 +15,13 @@ import java.util.List;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RecipeResponse {
-    private String id;
+    private Long id;
     private String name;
-    private String preparationTime;
     private String image;
     private String subtitle;
     private String description;
-    private List<IngredientResponse> ingredients;
     private String instructions;
+    private String preparationTime;
+    private List<IngredientResponse> ingredients;
+    private ParametricResponse cookLevel;
 }

@@ -1,5 +1,6 @@
 package com.cuoco.adapter.out.hibernate.model;
 
+import com.cuoco.application.usecase.model.Unit;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,4 +23,11 @@ public class UnitHibernateModel {
     private String description;
     private String symbol;
 
+    public Unit toDomain() {
+        return Unit.builder()
+                .id(id)
+                .description(description)
+                .symbol(symbol)
+                .build();
+    }
 }

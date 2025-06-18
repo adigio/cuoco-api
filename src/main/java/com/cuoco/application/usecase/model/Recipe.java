@@ -15,7 +15,7 @@ public class Recipe {
     private String description;
     private String instructions;
     private String preparationTime;
-    private List<Ingredient> ingredients;
     private CookLevel cookLevel;
+    private List<Ingredient> ingredients;
     private RecipeFilter filters;
 }

@@ -53,7 +53,11 @@ public class RecipeHibernateModel {
                 .instructions(instructions)
                 .preparationTime(preparationTime)
                 .cookLevel(cookLevel.toDomain())
+                .ingredients(
+                        recipeIngredients.stream()
+                                .map(ri -> ri.getIngredient().toDomain())
+                                .toList()
+                )
                 .build();
     }
-
 }

@@ -5,4 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CreateIngredientHibernateRepository extends JpaRepository<IngredientHibernateModel, Long> {}
+public interface CreateIngredientHibernateRepositoryAdapter extends JpaRepository<IngredientHibernateModel, Long> {}

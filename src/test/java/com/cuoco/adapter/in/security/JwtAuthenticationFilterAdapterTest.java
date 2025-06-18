@@ -69,7 +69,7 @@ class JwtAuthenticationFilterAdapterTest {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         assertNotNull(auth);
-        assertEquals(user.getEmail(), auth.getPrincipal());
+        assertEquals(user, auth.getPrincipal());
         assertEquals(1, auth.getAuthorities().size());
         verify(filterChain).doFilter(request, response);
     }

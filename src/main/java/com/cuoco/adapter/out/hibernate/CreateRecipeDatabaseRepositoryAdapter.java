@@ -1,17 +1,16 @@
 package com.cuoco.adapter.out.hibernate;
 
-import com.cuoco.adapter.exception.NotAvailableException;
 import com.cuoco.adapter.exception.UnprocessableException;
 import com.cuoco.adapter.out.hibernate.model.CookLevelHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.IngredientHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.RecipeHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.RecipeIngredientsHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.UnitHibernateModel;
-import com.cuoco.adapter.out.hibernate.repository.CreateIngredientHibernateRepository;
-import com.cuoco.adapter.out.hibernate.repository.CreateRecipeHibernateRepository;
-import com.cuoco.adapter.out.hibernate.repository.CreateRecipeIngredientsHibernateRepository;
-import com.cuoco.adapter.out.hibernate.repository.FindIngredientByNameHibernateRepository;
-import com.cuoco.adapter.out.hibernate.repository.GetUnitBySymbolHibernateRepository;
+import com.cuoco.adapter.out.hibernate.repository.CreateIngredientHibernateRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.CreateRecipeHibernateRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.CreateRecipeIngredientsHibernateRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.GetIngredientByNameHibernateRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.GetUnitBySymbolHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.CreateRecipeRepository;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.Recipe;
@@ -29,54 +28,42 @@ import java.util.Optional;
 @Transactional
 public class CreateRecipeDatabaseRepositoryAdapter implements CreateRecipeRepository {
 
-    private final FindIngredientByNameHibernateRepository findIngredientByNameHibernateRepository;
-    private final CreateRecipeHibernateRepository createRecipeHibernateRepository;
-    private final CreateIngredientHibernateRepository createIngredientHibernateRepository;
-    private final CreateRecipeIngredientsHibernateRepository createRecipeIngredientsHibernateRepository;
-    private final GetUnitBySymbolHibernateRepository getUnitBySymbolHibernateRepository;
+    private final GetIngredientByNameHibernateRepositoryAdapter getIngredientByNameHibernateRepositoryAdapter;
+    private final CreateRecipeHibernateRepositoryAdapter createRecipeHibernateRepositoryAdapter;
+    private final CreateIngredientHibernateRepositoryAdapter createIngredientHibernateRepositoryAdapter;
+    private final CreateRecipeIngredientsHibernateRepositoryAdapter createRecipeIngredientsHibernateRepositoryAdapter;
+    private final GetUnitBySymbolHibernateRepositoryAdapter getUnitBySymbolHibernateRepositoryAdapter;
 
     public CreateRecipeDatabaseRepositoryAdapter(
-            FindIngredientByNameHibernateRepository findIngredientByNameHibernateRepository,
-            CreateRecipeHibernateRepository createRecipeHibernateRepository,
-            CreateIngredientHibernateRepository createIngredientHibernateRepository,
-            CreateRecipeIngredientsHibernateRepository createRecipeIngredientsHibernateRepository,
-            GetUnitBySymbolHibernateRepository getUnitBySymbolHibernateRepository
+            GetIngredientByNameHibernateRepositoryAdapter getIngredientByNameHibernateRepositoryAdapter,
+            CreateRecipeHibernateRepositoryAdapter createRecipeHibernateRepositoryAdapter,
+            CreateIngredientHibernateRepositoryAdapter createIngredientHibernateRepositoryAdapter,
+            CreateRecipeIngredientsHibernateRepositoryAdapter createRecipeIngredientsHibernateRepositoryAdapter,
+            GetUnitBySymbolHibernateRepositoryAdapter getUnitBySymbolHibernateRepositoryAdapter
     ) {
-        this.findIngredientByNameHibernateRepository = findIngredientByNameHibernateRepository;
-        this.createRecipeHibernateRepository = createRecipeHibernateRepository;
-        this.createIngredientHibernateRepository = createIngredientHibernateRepository;
-        this.createRecipeIngredientsHibernateRepository = createRecipeIngredientsHibernateRepository;
-        this.getUnitBySymbolHibernateRepository = getUnitBySymbolHibernateRepository;
+        this.getIngredientByNameHibernateRepositoryAdapter = getIngredientByNameHibernateRepositoryAdapter;
+        this.createRecipeHibernateRepositoryAdapter = createRecipeHibernateRepositoryAdapter;
+        this.createIngredientHibernateRepositoryAdapter = createIngredientHibernateRepositoryAdapter;
+        this.createRecipeIngredientsHibernateRepositoryAdapter = createRecipeIngredientsHibernateRepositoryAdapter;
+        this.getUnitBySymbolHibernateRepositoryAdapter = getUnitBySymbolHibernateRepositoryAdapter;
     }
 
     @Override
     public Recipe execute(Recipe recipe) {
         log.info("Saving recipe and ingredients in database: {}", recipe);
 
-        RecipeHibernateModel savedRecipe = createRecipeHibernateRepository.save(buildRecipeHibernateModel(recipe));
+        RecipeHibernateModel savedRecipe = createRecipeHibernateRepositoryAdapter.save(buildRecipeHibernateModel(recipe));
 
         List<RecipeIngredientsHibernateModel> recipeIngredientsHibernateModel = recipe.getIngredients().stream().map(ingredient -> buildRecipeIngredientHibernateModel(savedRecipe, ingredient)).toList();
-
-        recipeIngredientsHibernateModel = createRecipeIngredientsHibernateRepository.saveAll(recipeIngredientsHibernateModel);
+        List<RecipeIngredientsHibernateModel> savedRecipeIngredients = createRecipeIngredientsHibernateRepositoryAdapter.saveAll(recipeIngredientsHibernateModel);
 
         Recipe recipeResponse = savedRecipe.toDomain();
-        List<Ingredient> recipeIngredientsResponse = recipeIngredientsHibernateModel.stream().map(this::buildIngredientResponse).toList();
+        List<Ingredient> recipeIngredientsResponse = savedRecipeIngredients.stream().map(recipeIngredient -> recipeIngredient.getIngredient().toDomain()).toList();
         recipeResponse.setIngredients(recipeIngredientsResponse);
 
         log.info("Successfully saved recipe and ingredients with ID {}", recipeResponse.getId());
 
         return recipeResponse;
-    }
-
-    private Ingredient buildIngredientResponse(RecipeIngredientsHibernateModel recipeIngredientsHibernateModel) {
-        IngredientHibernateModel ingredient = recipeIngredientsHibernateModel.getIngredient();
-
-        return Ingredient.builder()
-                .name(ingredient.getName())
-                .quantity(recipeIngredientsHibernateModel.getQuantity())
-                .unit(ingredient.getUnit().getDescription())
-                .optional(recipeIngredientsHibernateModel.getOptional())
-                .build();
     }
 
     private RecipeHibernateModel buildRecipeHibernateModel(Recipe recipe) {
@@ -98,8 +85,8 @@ public class CreateRecipeDatabaseRepositoryAdapter implements CreateRecipeReposi
 
     @NotNull
     private RecipeIngredientsHibernateModel buildRecipeIngredientHibernateModel(RecipeHibernateModel savedRecipe, Ingredient ingredient) {
-        Optional<IngredientHibernateModel> oSavedIngredient = findIngredientByNameHibernateRepository.findByName(ingredient.getName());
-        IngredientHibernateModel savedIngredient = oSavedIngredient.orElseGet(() -> createIngredientHibernateRepository.save(buildIngredientHibernateModel(ingredient)));
+        Optional<IngredientHibernateModel> oSavedIngredient = getIngredientByNameHibernateRepositoryAdapter.findByName(ingredient.getName());
+        IngredientHibernateModel savedIngredient = oSavedIngredient.orElseGet(() -> createIngredientHibernateRepositoryAdapter.save(buildIngredientHibernateModel(ingredient)));
 
         return RecipeIngredientsHibernateModel.builder()
                 .recipe(savedRecipe)
@@ -110,7 +97,7 @@ public class CreateRecipeDatabaseRepositoryAdapter implements CreateRecipeReposi
     }
 
     private IngredientHibernateModel buildIngredientHibernateModel(Ingredient ingredient) {
-        Optional<UnitHibernateModel> unitHibernateModel = getUnitBySymbolHibernateRepository.findBySymbolEqualsIgnoreCase(ingredient.getUnit());
+        Optional<UnitHibernateModel> unitHibernateModel = getUnitBySymbolHibernateRepositoryAdapter.findBySymbolEqualsIgnoreCase(ingredient.getUnit().getSymbol());
 
         if (unitHibernateModel.isEmpty()) {
             log.warn("No unit found for symbol: {}", ingredient.getUnit());

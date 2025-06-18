@@ -1,8 +1,7 @@
-package com.cuoco.adapter.out.database;
+package com.cuoco.adapter.out.hibernate;
 
-import com.cuoco.adapter.out.hibernate.GetAllAllergiesDatabaseRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.model.AllergyHibernateModel;
-import com.cuoco.adapter.out.hibernate.repository.GetAllAllergiesHibernateRepository;
+import com.cuoco.adapter.out.hibernate.repository.GetAllAllergiesHibernateRepositoryAdapter;
 import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.factory.hibernate.AllergyHibernateModelFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +19,7 @@ import static org.mockito.Mockito.when;
 class GetAllAllergiesDatabaseRepositoryAdapterTest {
 
     @Mock
-    private GetAllAllergiesHibernateRepository getAllAllergiesHibernateRepository;
+    private GetAllAllergiesHibernateRepositoryAdapter getAllAllergiesHibernateRepository;
 
     @InjectMocks
     private GetAllAllergiesDatabaseRepositoryAdapter adapter;

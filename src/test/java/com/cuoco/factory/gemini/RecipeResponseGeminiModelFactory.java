@@ -1,5 +1,6 @@
 package com.cuoco.factory.gemini;
 
+import com.cuoco.adapter.out.rest.gemini.model.CookLevelResponseGeminiModel;
 import com.cuoco.adapter.out.rest.gemini.model.IngredientResponseGeminiModel;
 import com.cuoco.adapter.out.rest.gemini.model.RecipeResponseGeminiModel;
 
@@ -18,6 +19,7 @@ public class RecipeResponseGeminiModelFactory {
                         IngredientResponseGeminiModel.builder().name("Ingredient 1").quantity(2.0).unit("unit").build(),
                         IngredientResponseGeminiModel.builder().name("Ingredient 2").quantity(1.0).unit("unit").build()
                 ))
+                .cookLevel(CookLevelResponseGeminiModel.builder().id(1).description("bajo").build())
                 .instructions("Instructions")
                 .build();
     }

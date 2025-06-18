@@ -1,5 +1,6 @@
 package com.cuoco.adapter.out.hibernate.model;
 
+import com.cuoco.application.usecase.model.Ingredient;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,5 +31,12 @@ public class IngredientHibernateModel {
     @ManyToOne
     @JoinColumn(name = "unit_id", referencedColumnName = "id")
     private UnitHibernateModel unit;
+
+    public Ingredient toDomain() {
+        return Ingredient.builder()
+                .name(name)
+                .unit(unit.toDomain())
+                .build();
+    }
 
 }

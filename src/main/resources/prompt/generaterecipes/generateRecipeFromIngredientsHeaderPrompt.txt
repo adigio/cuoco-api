@@ -14,9 +14,10 @@ Objetivo:
     "subtitle": "Descripción breve y atractiva",
     "description": "Descripción detallada del plato y su sabor",
     "ingredients": [
-        { "name": "ingrediente1", "quantity": 200, "unit": "gr", "optional": false },
-        { "name": "ingrediente2", "quantity": 100, "unit": "ml", "optional": false },
-        { "name": "ingrediente3", "quantity": 1, "unit": "cucharada", "optional": true },
+        { "name": "ingrediente1", "quantity": 200.00, "unit": "gr", "optional": false },
+        { "name": "ingrediente2", "quantity": 100.00, "unit": "ml", "optional": false },
+        { "name": "ingrediente3", "quantity": 100.00, "unit": "ud", "optional": false },
+        { "name": "ingrediente4", "quantity": 1.50, "unit": "lata", "optional": true },
     ],
     "cook_level": {
         "id": 1,
@@ -31,11 +32,11 @@ Instrucciones:
 - Usa español argentino como por ejemplo papa (no patata), palta (no aguacate), choclo (no maíz).
 - Para las "instructions" de la receta usa texto plano sin \\n ni saltos de linea.
 - En quantity solo puede ir numeros Double, no pueden ir palabras
-- unit representa la unidad de medida de la cantidad, usar las medidas siguientes. Si tiene
-  simbolo que esta entre parentesis (Ejemplo gr en gramo), usarlo, sino el nombre de la unidad en singular y minuscula
+- unit representa la unidad de medida de la cantidad, usar las medidas de la siguiente lista.
+  Si tiene acrónimo o simbolo entre parentesis (Ejemplo (gr) en gramo) usar eso, sino el nombre de la unidad en singular y minuscula
 
     [Mililitro (ml), Gramo (gr), Kilogramo (kg), Litro (l), Cucharada (cda), Cucharadita (cdta), Unidad (ud), Taza (tz),
-    Pizca, Diente, Lata, Botella, Sobre, Rodaja, Rebanada, Puñado, Onza (oz), Libra (lb), Miligramo (mg), Centilitro (cl), Copa, Cucharón, Unidad]
+    pizca, diente, lata, botella, sobre, rodaja, rebanada, puñado, Onza (oz), Libra (lb), miligramo (mg), Centilitro (cl), copa, cucharon]
 
 - Incluye acentos correctos y ñ. Tiempo en formato '30 min' o '1 h 30 min'.
 - cook_level representa la dificultad de cocinar el plato, solo pueden ser 1:Bajo, 2:Medio, 3:Alto

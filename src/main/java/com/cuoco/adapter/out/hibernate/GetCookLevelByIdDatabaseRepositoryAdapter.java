@@ -1,7 +1,7 @@
 package com.cuoco.adapter.out.hibernate;
 
 import com.cuoco.adapter.out.hibernate.model.CookLevelHibernateModel;
-import com.cuoco.adapter.out.hibernate.repository.GetCookLevelByIdHibernateRepository;
+import com.cuoco.adapter.out.hibernate.repository.GetCookLevelByIdHibernateRepositoryAdapter;
 import com.cuoco.application.exception.BadRequestException;
 import com.cuoco.application.port.out.GetCookLevelByIdRepository;
 import com.cuoco.application.usecase.model.CookLevel;
@@ -13,16 +13,16 @@ import java.util.Optional;
 @Repository
 public class GetCookLevelByIdDatabaseRepositoryAdapter implements GetCookLevelByIdRepository {
 
-    private GetCookLevelByIdHibernateRepository getCookLevelByIdHibernateRepository;
+    private GetCookLevelByIdHibernateRepositoryAdapter getCookLevelByIdHibernateRepositoryAdapter;
 
-    public GetCookLevelByIdDatabaseRepositoryAdapter(GetCookLevelByIdHibernateRepository getCookLevelByIdHibernateRepository) {
-        this.getCookLevelByIdHibernateRepository = getCookLevelByIdHibernateRepository;
+    public GetCookLevelByIdDatabaseRepositoryAdapter(GetCookLevelByIdHibernateRepositoryAdapter getCookLevelByIdHibernateRepositoryAdapter) {
+        this.getCookLevelByIdHibernateRepositoryAdapter = getCookLevelByIdHibernateRepositoryAdapter;
     }
 
     @Override
     public CookLevel execute(Integer id) {
 
-        Optional<CookLevelHibernateModel> cookLevel = getCookLevelByIdHibernateRepository.findById(id);
+        Optional<CookLevelHibernateModel> cookLevel = getCookLevelByIdHibernateRepositoryAdapter.findById(id);
 
         if (cookLevel.isPresent()) {
             return cookLevel.get().toDomain();

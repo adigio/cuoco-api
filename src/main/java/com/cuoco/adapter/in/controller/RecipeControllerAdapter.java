@@ -2,9 +2,11 @@ package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.IngredientRequest;
 import com.cuoco.adapter.in.controller.model.IngredientResponse;
+import com.cuoco.adapter.in.controller.model.ParametricResponse;
 import com.cuoco.adapter.in.controller.model.RecipeFilterRequest;
 import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
+import com.cuoco.adapter.in.controller.model.UnitResponse;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
 import com.cuoco.application.usecase.model.CookLevel;
 import com.cuoco.application.usecase.model.Ingredient;
@@ -74,15 +76,22 @@ public class RecipeControllerAdapter {
 
     private RecipeResponse buildResponse(Recipe recipe) {
         return RecipeResponse.builder()
+                .id(recipe.getId())
                 .name(recipe.getName())
-                .preparationTime(recipe.getPreparationTime())
                 .image(recipe.getImage())
                 .subtitle(recipe.getSubtitle())
                 .description(recipe.getDescription())
+                .preparationTime(recipe.getPreparationTime())
+                .instructions(recipe.getInstructions())
                 .ingredients(
                         recipe.getIngredients().stream().map(this::buildIngredientResponse).toList()
                 )
-                .instructions(recipe.getInstructions())
+                .cookLevel(
+                        ParametricResponse.builder()
+                                .id(recipe.getCookLevel().getId())
+                                .description(recipe.getCookLevel().getDescription())
+                                .build()
+                )
                 .build();
     }
 
@@ -90,7 +99,12 @@ public class RecipeControllerAdapter {
         return IngredientResponse.builder()
                 .name(ingredient.getName())
                 .quantity(ingredient.getQuantity())
-                .unit(ingredient.getUnit())
+                .unit(UnitResponse.builder()
+                        .id(ingredient.getUnit().getId())
+                        .description(ingredient.getUnit().getDescription())
+                        .symbol(ingredient.getUnit().getSymbol())
+                        .build()
+                )
                 .build();
     }
 }

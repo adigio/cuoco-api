@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface FindIngredientByNameHibernateRepository extends JpaRepository<IngredientHibernateModel, Long> {
+public interface GetIngredientByNameHibernateRepositoryAdapter extends JpaRepository<IngredientHibernateModel, Long> {
     Optional<IngredientHibernateModel> findByName(String name);
 }

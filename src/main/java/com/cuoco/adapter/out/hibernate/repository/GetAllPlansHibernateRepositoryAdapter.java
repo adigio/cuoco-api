@@ -1,8 +1,8 @@
 package com.cuoco.adapter.out.hibernate.repository;
 
-import com.cuoco.adapter.out.hibernate.model.RecipeHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.PlanHibernateModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CreateRecipeHibernateRepository extends JpaRepository<RecipeHibernateModel, Long> {}
+public interface GetAllPlansHibernateRepositoryAdapter extends JpaRepository<PlanHibernateModel, Long> {}

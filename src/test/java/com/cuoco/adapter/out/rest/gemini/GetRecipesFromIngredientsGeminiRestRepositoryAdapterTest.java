@@ -7,6 +7,7 @@ import com.cuoco.adapter.out.rest.gemini.model.wrapper.GeminiResponseModel;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.factory.domain.IngredientFactory;
+import com.cuoco.factory.domain.RecipeFactory;
 import com.cuoco.factory.gemini.GeminiResponseModelFactory;
 import com.cuoco.factory.gemini.RecipeResponseGeminiModelFactory;
 import com.cuoco.shared.model.ErrorDescription;
@@ -44,25 +45,22 @@ class GetRecipesFromIngredientsGeminiRestRepositoryAdapterTest {
         ReflectionTestUtils.setField(adapter, "url", "https://gemini.api");
         ReflectionTestUtils.setField(adapter, "apiKey", "test-api-key");
         ReflectionTestUtils.setField(adapter, "temperature", 0.7);
-        ReflectionTestUtils.setField(adapter, "PROMPT", "Generate recipes for: %s");
+        ReflectionTestUtils.setField(adapter, "BASIC_PROMPT", "Generar recetas para {{INGREDIENTS}}, máximo {{MAX_RECIPES}}.");
+        ReflectionTestUtils.setField(adapter, "FILTERS_PROMPT", " Filtros: nivel {{COOK_LEVEL}}, tiempo {{COOK_TIME}}, tipos {{FOOD_TYPES}}, dieta {{DIET}}, cantidad {{QUANTITY}}.");
     }
 
     @Test
     void GIVEN_valid_ingredients_WHEN_execute_THEN_return_recipes() throws Exception {
+        Recipe recipe = RecipeFactory.createWithFilters();
 
         RecipeResponseGeminiModel recipeResponseModel = RecipeResponseGeminiModelFactory.create();
-
-        List<Ingredient> ingredients = recipeResponseModel.getIngredients().stream().map(IngredientResponseGeminiModel::toDomain).toList();
-
         String responseJson = new ObjectMapper().writeValueAsString(List.of(recipeResponseModel));
-
         GeminiResponseModel geminiResponseModel = GeminiResponseModelFactory.create(responseJson);
 
-        String expectedUrl = "https://gemini.api?key=test-api-key";
+        when(restTemplate.postForObject(anyString(), any(), eq(GeminiResponseModel.class)))
+                .thenReturn(geminiResponseModel);
 
-        when(restTemplate.postForObject(eq(expectedUrl), any(), eq(GeminiResponseModel.class))).thenReturn(geminiResponseModel);
-
-        List<Recipe> result = adapter.execute(ingredients);
+        List<Recipe> result = adapter.execute(recipe);
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -71,24 +69,25 @@ class GetRecipesFromIngredientsGeminiRestRepositoryAdapterTest {
 
     @Test
     void GIVEN_null_response_WHEN_execute_THEN_throw_UnprocessableException() {
-        List<Ingredient> ingredients = List.of(IngredientFactory.create("Tomato"));
+        Recipe recipe = RecipeFactory.create();
 
         when(restTemplate.postForObject(anyString(), any(), eq(GeminiResponseModel.class)))
                 .thenReturn(null);
 
-        NotAvailableException ex = assertThrows(NotAvailableException.class, () -> adapter.execute(ingredients));
+        NotAvailableException ex = assertThrows(NotAvailableException.class, () -> adapter.execute(recipe));
         assertEquals(ErrorDescription.NOT_AVAILABLE.getValue(), ex.getDescription());
     }
 
     @Test
     void GIVEN_invalid_json_WHEN_execute_THEN_throw_NotAvailableException() {
-        List<Ingredient> ingredients = List.of(IngredientFactory.create("Tomato"));
+        Recipe recipe = RecipeFactory.create();
 
         GeminiResponseModel geminiResponseModel = GeminiResponseModelFactory.create("INVALID JSON");
 
         when(restTemplate.postForObject(anyString(), any(), eq(GeminiResponseModel.class)))
                 .thenReturn(geminiResponseModel);
 
-        assertThrows(NotAvailableException.class, () -> adapter.execute(ingredients));
+        assertThrows(NotAvailableException.class, () -> adapter.execute(recipe));
     }
 }
+

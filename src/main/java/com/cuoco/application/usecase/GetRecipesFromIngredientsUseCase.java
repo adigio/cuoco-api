@@ -52,24 +52,28 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
         List<Recipe> foundedRecipes = getRecipesFromIngredientsRepository.execute(recipeToGenerate);
 
         if (!foundedRecipes.isEmpty() && foundedRecipes.size() >= maxRecipesToGenerate) {
-            log.info("Founded {} recipes with the provided ingredients and filters.", foundedRecipes.size());
+            log.info("Founded enough {} saved recipes with the provided ingredients and filters.", foundedRecipes.size());
             return foundedRecipes.stream().limit(maxRecipesToGenerate).toList();
         }
 
+        List<Recipe> recipesToSave;
+        List<Recipe> savedRecipes;
+
         if (!foundedRecipes.isEmpty()) {
-            log.info("Founded only {} saved recipes. Generating new ones to complete.", foundedRecipes.size());
+            int recipesNeeded = maxRecipesToGenerate - foundedRecipes.size();
 
-            List<Recipe> recipesToSave = getRecipesFromIngredientsProvider.execute(recipeToGenerate);
+            log.info("Founded only {} saved recipes. Generating {} new recipes to complete", foundedRecipes.size(), recipesNeeded);
 
-            List<Recipe> savedRecipes = recipesToSave.stream().map(createRecipeRepository::execute).toList();
+            recipesToSave = getRecipesFromIngredientsProvider.execute(recipeToGenerate);
+            savedRecipes = recipesToSave.stream().map(createRecipeRepository::execute).limit(recipesNeeded).toList();
 
             return Stream.concat(foundedRecipes.stream(), savedRecipes.stream()).toList();
         }
 
-        log.info("Generating new recipes with the provided ingredients and filters");
+        log.info("Can't find saved recipes with the provided ingredients and filters. Generating new ones");
 
-        List<Recipe> recipesToSave = getRecipesFromIngredientsProvider.execute(recipeToGenerate);
-        List<Recipe> savedRecipes = recipesToSave.stream().map(createRecipeRepository::execute).toList();
+        recipesToSave = getRecipesFromIngredientsProvider.execute(recipeToGenerate);
+        savedRecipes = recipesToSave.stream().map(createRecipeRepository::execute).toList();
 
         return savedRecipes.stream().limit(maxRecipesToGenerate).toList();
     }

@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface GetRecipeIngredientsByRecipeIdHibernateRepository extends JpaRepository<RecipeIngredientsHibernateModel, Long> {
-
+public interface GetRecipeIngredientsByRecipeIdHibernateRepositoryAdapter extends JpaRepository<RecipeIngredientsHibernateModel, Long> {
     List<RecipeIngredientsHibernateModel> findByRecipeId(Long id);
 }

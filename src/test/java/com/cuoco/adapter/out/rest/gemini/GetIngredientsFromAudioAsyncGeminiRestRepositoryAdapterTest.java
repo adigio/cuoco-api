@@ -39,8 +39,8 @@ class GetIngredientsFromAudioAsyncGeminiRestRepositoryAdapterTest {
         String language = "en";
 
         List<Ingredient> expectedIngredients = List.of(
-                IngredientFactory.create("Tomato"),
-                IngredientFactory.create("Onion")
+                IngredientFactory.create("Tomato", 1.0, "ud"),
+                IngredientFactory.create("Onion", 2.0, "ud")
         );
 
         when(getIngredientsFromAudioRepository.execute(audioBase64, format, language))

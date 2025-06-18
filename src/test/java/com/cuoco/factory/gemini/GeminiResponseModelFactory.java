@@ -12,9 +12,8 @@ public class GeminiResponseModelFactory {
 
     public static GeminiResponseModel create(String jsonResponse) {
         return GeminiResponseModel.builder()
-                .candidates(List.of(
-                        CandidateGeminiResponseModel.builder().content(getContent(jsonResponse)).build())
-                ).build();
+                .candidates(List.of(CandidateGeminiResponseModel.builder().content(getContent(jsonResponse)).build()))
+                .build();
     }
 
     public static ContentGeminiRequestModel getContent(String jsonResponse) {

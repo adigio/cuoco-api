@@ -1,7 +1,7 @@
 package com.cuoco.adapter.out.hibernate;
 
 import com.cuoco.adapter.out.hibernate.model.CookLevelHibernateModel;
-import com.cuoco.adapter.out.hibernate.repository.GetCookLevelByIdHibernateRepository;
+import com.cuoco.adapter.out.hibernate.repository.GetCookLevelByIdHibernateRepositoryAdapter;
 import com.cuoco.application.exception.BadRequestException;
 import com.cuoco.application.usecase.model.CookLevel;
 import com.cuoco.factory.hibernate.CookLevelHibernateModelFactory;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 class GetCookLevelByIdDatabaseRepositoryAdapterTest {
 
     @Mock
-    private GetCookLevelByIdHibernateRepository hibernateRepository;
+    private GetCookLevelByIdHibernateRepositoryAdapter hibernateRepository;
 
     @InjectMocks
     private GetCookLevelByIdDatabaseRepositoryAdapter adapter;

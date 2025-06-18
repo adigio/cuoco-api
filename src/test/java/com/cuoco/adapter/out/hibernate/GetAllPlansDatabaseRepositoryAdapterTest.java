@@ -1,7 +1,7 @@
 package com.cuoco.adapter.out.hibernate;
 
 import com.cuoco.adapter.out.hibernate.model.PlanHibernateModel;
-import com.cuoco.adapter.out.hibernate.repository.GetAllPlansHibernateRepository;
+import com.cuoco.adapter.out.hibernate.repository.GetAllPlansHibernateRepositoryAdapter;
 import com.cuoco.application.usecase.model.Plan;
 import com.cuoco.factory.hibernate.PlanHibernateModelFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 class GetAllPlansDatabaseRepositoryAdapterTest {
 
     @Mock
-    private GetAllPlansHibernateRepository hibernateRepository;
+    private GetAllPlansHibernateRepositoryAdapter hibernateRepository;
 
     @InjectMocks
     private GetAllPlansDatabaseRepositoryAdapter adapter;
