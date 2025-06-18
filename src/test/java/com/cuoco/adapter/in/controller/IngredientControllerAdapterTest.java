@@ -5,7 +5,6 @@ import com.cuoco.application.port.in.GetIngredientsFromAudioCommand;
 import com.cuoco.application.port.in.GetIngredientsFromTextCommand;
 import com.cuoco.application.port.in.GetIngredientsGroupedFromImagesCommand;
 import com.cuoco.application.usecase.model.Ingredient;
-
 import com.cuoco.factory.domain.IngredientFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

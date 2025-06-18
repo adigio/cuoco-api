@@ -1,6 +1,5 @@
 package com.cuoco.adapter.out.rest.gemini.model;
 
-import com.cuoco.application.usecase.model.CookLevel;
 import com.cuoco.application.usecase.model.Recipe;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

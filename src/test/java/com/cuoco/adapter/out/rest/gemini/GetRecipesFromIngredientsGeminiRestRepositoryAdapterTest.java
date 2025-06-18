@@ -1,12 +1,9 @@
 package com.cuoco.adapter.out.rest.gemini;
 
 import com.cuoco.adapter.exception.NotAvailableException;
-import com.cuoco.adapter.out.rest.gemini.model.IngredientResponseGeminiModel;
 import com.cuoco.adapter.out.rest.gemini.model.RecipeResponseGeminiModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.GeminiResponseModel;
-import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.factory.domain.IngredientFactory;
 import com.cuoco.factory.domain.RecipeFactory;
 import com.cuoco.factory.gemini.GeminiResponseModelFactory;
 import com.cuoco.factory.gemini.RecipeResponseGeminiModelFactory;
