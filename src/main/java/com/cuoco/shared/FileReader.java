@@ -1,8 +1,6 @@
 package com.cuoco.shared;
 
 import com.cuoco.adapter.exception.NotAvailableException;
-import com.cuoco.adapter.exception.UnprocessableException;
-import jakarta.servlet.UnavailableException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
