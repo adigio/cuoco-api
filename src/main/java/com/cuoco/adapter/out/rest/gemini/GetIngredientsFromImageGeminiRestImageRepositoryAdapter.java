@@ -8,7 +8,7 @@ import com.cuoco.adapter.out.rest.gemini.model.wrapper.GenerationConfigurationGe
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.InlineDataGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PartGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PromptBodyGeminiRequestModel;
-import com.cuoco.adapter.utils.Utils;
+import com.cuoco.adapter.out.rest.gemini.utils.Utils;
 import com.cuoco.application.port.out.GetIngredientsFromImageRepository;
 import com.cuoco.application.usecase.model.File;
 import com.cuoco.application.usecase.model.Ingredient;

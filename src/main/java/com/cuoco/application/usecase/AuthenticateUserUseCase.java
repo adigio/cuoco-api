@@ -30,7 +30,7 @@ public class AuthenticateUserUseCase implements AuthenticateUserCommand {
     @Override
     public AuthenticatedUser execute(Command command) {
 
-        log.info("Executing authenticate user usecase");
+        log.info("Executing user authentication usecase");
 
         String authHeader = command.getAuthHeader();
 
@@ -54,6 +54,7 @@ public class AuthenticateUserUseCase implements AuthenticateUserCommand {
             throw new UnauthorizedException(ErrorDescription.INVALID_TOKEN.getValue());
         }
 
+        log.info("User authenticated with email {}", email);
         return buildAuthenticatedUser(user);
     }
 

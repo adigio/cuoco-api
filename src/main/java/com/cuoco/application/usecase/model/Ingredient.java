@@ -16,7 +16,7 @@ public class Ingredient {
 
     private String name;
     private Double quantity;
-    private String unit;
+    private Unit unit;
     private Boolean optional;
     private String source;
     private boolean confirmed;

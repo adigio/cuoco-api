@@ -1,7 +1,7 @@
 package com.cuoco.adapter.out.hibernate;
 
 import com.cuoco.adapter.out.hibernate.model.CookLevelHibernateModel;
-import com.cuoco.adapter.out.hibernate.repository.GetAllCookLevelsHibernateRepository;
+import com.cuoco.adapter.out.hibernate.repository.GetAllCookLevelsHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.GetAllCookLevelsRepository;
 import com.cuoco.application.usecase.model.CookLevel;
 import lombok.extern.slf4j.Slf4j;
@@ -13,17 +13,17 @@ import java.util.List;
 @Repository
 public class GetAllCookLevelsDatabaseRepositoryAdapter implements GetAllCookLevelsRepository {
 
-    private final GetAllCookLevelsHibernateRepository getAllCookLevelsHibernateRepository;
+    private final GetAllCookLevelsHibernateRepositoryAdapter getAllCookLevelsHibernateRepositoryAdapter;
 
-    public GetAllCookLevelsDatabaseRepositoryAdapter(GetAllCookLevelsHibernateRepository getAllCookLevelsHibernateRepository) {
-        this.getAllCookLevelsHibernateRepository = getAllCookLevelsHibernateRepository;
+    public GetAllCookLevelsDatabaseRepositoryAdapter(GetAllCookLevelsHibernateRepositoryAdapter getAllCookLevelsHibernateRepositoryAdapter) {
+        this.getAllCookLevelsHibernateRepositoryAdapter = getAllCookLevelsHibernateRepositoryAdapter;
     }
 
     @Override
     public List<CookLevel> execute() {
         log.info("Get all cook levels from database");
 
-        List<CookLevelHibernateModel> response = getAllCookLevelsHibernateRepository.findAll();
+        List<CookLevelHibernateModel> response = getAllCookLevelsHibernateRepositoryAdapter.findAll();
 
         return response.stream().map(CookLevelHibernateModel::toDomain).toList();
     }

@@ -1,7 +1,7 @@
 package com.cuoco.adapter.out.hibernate;
 
 import com.cuoco.adapter.out.hibernate.model.PlanHibernateModel;
-import com.cuoco.adapter.out.hibernate.repository.GetAllPlansHibernateRepository;
+import com.cuoco.adapter.out.hibernate.repository.GetAllPlansHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.GetAllPlansRepository;
 import com.cuoco.application.usecase.model.Plan;
 import lombok.extern.slf4j.Slf4j;
@@ -13,17 +13,17 @@ import java.util.List;
 @Repository
 public class GetAllPlansDatabaseRepositoryAdapter implements GetAllPlansRepository {
 
-    private final GetAllPlansHibernateRepository getAllPlansHibernateRepository;
+    private final GetAllPlansHibernateRepositoryAdapter getAllPlansHibernateRepositoryAdapter;
 
-    public GetAllPlansDatabaseRepositoryAdapter(GetAllPlansHibernateRepository getAllPlansHibernateRepository) {
-        this.getAllPlansHibernateRepository = getAllPlansHibernateRepository;
+    public GetAllPlansDatabaseRepositoryAdapter(GetAllPlansHibernateRepositoryAdapter getAllPlansHibernateRepositoryAdapter) {
+        this.getAllPlansHibernateRepositoryAdapter = getAllPlansHibernateRepositoryAdapter;
     }
 
     @Override
     public List<Plan> execute() {
         log.info("Get all plans from database");
 
-        List<PlanHibernateModel> response = getAllPlansHibernateRepository.findAll();
+        List<PlanHibernateModel> response = getAllPlansHibernateRepositoryAdapter.findAll();
 
         return response.stream().map(PlanHibernateModel::toDomain).toList();
     }

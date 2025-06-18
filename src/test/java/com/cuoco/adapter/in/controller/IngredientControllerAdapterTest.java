@@ -5,6 +5,7 @@ import com.cuoco.application.port.in.GetIngredientsFromAudioCommand;
 import com.cuoco.application.port.in.GetIngredientsFromTextCommand;
 import com.cuoco.application.port.in.GetIngredientsGroupedFromImagesCommand;
 import com.cuoco.application.usecase.model.Ingredient;
+import com.cuoco.factory.domain.IngredientFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -46,13 +47,7 @@ public class IngredientControllerAdapterTest {
 
     @Test
     void GIVEN_audio_file_WHEN_postAudio_THEN_return_ingredient_response() throws Exception {
-        Ingredient ingredient = Ingredient.builder()
-                .name("Tomate")
-                .quantity(2.0)
-                .unit("pcs")
-                .confirmed(true)
-                .source("audio")
-                .build();
+        Ingredient ingredient = IngredientFactory.create();
 
         when(getIngredientsFromAudioCommand.execute(any())).thenReturn(List.of(ingredient));
 
@@ -69,58 +64,55 @@ public class IngredientControllerAdapterTest {
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(1))
-                .andExpect(jsonPath("$[0].name").value("Tomate"))
-                .andExpect(jsonPath("$[0].quantity").value(2.0))
-                .andExpect(jsonPath("$[0].unit").value("pcs"))
-                .andExpect(jsonPath("$[0].confirmed").value(true))
-                .andExpect(jsonPath("$[0].source").value("audio"));
+                .andExpect(jsonPath("$[0].name").value(ingredient.getName()))
+                .andExpect(jsonPath("$[0].quantity").value(ingredient.getQuantity()))
+                .andExpect(jsonPath("$[0].unit.symbol").value(ingredient.getUnit().getSymbol()))
+                .andExpect(jsonPath("$[0].confirmed").value(ingredient.isConfirmed()))
+                .andExpect(jsonPath("$[0].source").value(ingredient.getSource()));
     }
 
     @Test
     void GIVEN_image_files_WHEN_postImage_THEN_return_grouped_ingredients() throws Exception {
-        Ingredient ingredient1 = Ingredient.builder().name("Sal").quantity(1.0).unit("tsp").confirmed(true).source("image").build();
-        Ingredient ingredient2 = Ingredient.builder().name("Pimienta").quantity(0.5).unit("tsp").confirmed(false).source("image").build();
+        String filenameA = "image1.jpg";
+        String filenameB = "image2.jpg";
 
-        MockMultipartFile image1 = new MockMultipartFile(
+        Ingredient ingredientA = IngredientFactory.create("Sal", 1.0, "gr");
+        Ingredient ingredientB = IngredientFactory.create("Pimienta", 1.0, "ud");
+
+        MockMultipartFile imageA = new MockMultipartFile(
                 "image",
-                "image1.jpg",
+                filenameA,
                 MediaType.IMAGE_JPEG_VALUE,
                 "dummy image content 1".getBytes(StandardCharsets.UTF_8)
         );
-        MockMultipartFile image2 = new MockMultipartFile(
+        MockMultipartFile imageB = new MockMultipartFile(
                 "image",
-                "image2.jpg",
+                filenameB,
                 MediaType.IMAGE_JPEG_VALUE,
                 "dummy image content 2".getBytes(StandardCharsets.UTF_8)
         );
 
         Map<String, List<Ingredient>> ingredientsByImage = new LinkedHashMap<>();
-        ingredientsByImage.put("image1.jpg", List.of(ingredient1));
-        ingredientsByImage.put("image2.jpg", List.of(ingredient2));
+        ingredientsByImage.put(filenameA, List.of(ingredientA));
+        ingredientsByImage.put(filenameB, List.of(ingredientB));
 
         when(getIngredientsGroupedFromImagesCommand.execute(any())).thenReturn(ingredientsByImage);
 
         mockMvc.perform(multipart("/ingredients/image")
-                        .file(image1)
-                        .file(image2)
+                        .file(imageA)
+                        .file(imageB)
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(2))
-                .andExpect(jsonPath("$[0].filename").value("image1.jpg"))
-                .andExpect(jsonPath("$[0].ingredients[0].name").value("Sal"))
-                .andExpect(jsonPath("$[1].filename").value("image2.jpg"))
-                .andExpect(jsonPath("$[1].ingredients[0].name").value("Pimienta"));
+                .andExpect(jsonPath("$[0].filename").value(filenameA))
+                .andExpect(jsonPath("$[0].ingredients[0].name").value(ingredientA.getName()))
+                .andExpect(jsonPath("$[1].filename").value(filenameB))
+                .andExpect(jsonPath("$[1].ingredients[0].name").value(ingredientB.getName()));
     }
 
     @Test
     void GIVEN_text_request_WHEN_postText_THEN_return_ingredient_response() throws Exception {
-        Ingredient ingredient = Ingredient.builder()
-                .name("Cebolla")
-                .quantity(1.0)
-                .unit("pc")
-                .confirmed(true)
-                .source("text")
-                .build();
+        Ingredient ingredient = IngredientFactory.create();
 
         when(getIngredientsFromTextCommand.execute(any())).thenReturn(List.of(ingredient));
 
@@ -136,10 +128,10 @@ public class IngredientControllerAdapterTest {
                         .content(jsonRequest))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(1))
-                .andExpect(jsonPath("$[0].name").value("Cebolla"))
-                .andExpect(jsonPath("$[0].quantity").value(1.0))
-                .andExpect(jsonPath("$[0].unit").value("pc"))
-                .andExpect(jsonPath("$[0].confirmed").value(true))
-                .andExpect(jsonPath("$[0].source").value("text"));
+                .andExpect(jsonPath("$[0].name").value(ingredient.getName()))
+                .andExpect(jsonPath("$[0].quantity").value(ingredient.getQuantity()))
+                .andExpect(jsonPath("$[0].unit.symbol").value(ingredient.getUnit().getSymbol()))
+                .andExpect(jsonPath("$[0].confirmed").value(ingredient.isConfirmed()))
+                .andExpect(jsonPath("$[0].source").value(ingredient.getSource()));
     }
 }

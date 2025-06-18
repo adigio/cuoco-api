@@ -5,4 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface GetCookLevelByIdHibernateRepository extends JpaRepository<CookLevelHibernateModel, Integer> {}
+public interface GetCookLevelByIdHibernateRepositoryAdapter extends JpaRepository<CookLevelHibernateModel, Integer> {}

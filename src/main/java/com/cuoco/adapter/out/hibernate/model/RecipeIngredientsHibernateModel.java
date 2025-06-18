@@ -31,4 +31,6 @@ public class RecipeIngredientsHibernateModel {
     private IngredientHibernateModel ingredient;
 
     private Double quantity;
+    private Boolean optional;
+
 }

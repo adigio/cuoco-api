@@ -3,6 +3,7 @@ package com.cuoco.adapter.in.controller;
 import com.cuoco.adapter.in.controller.model.ImageIngredientsResponse;
 import com.cuoco.adapter.in.controller.model.IngredientResponse;
 import com.cuoco.adapter.in.controller.model.TextRequest;
+import com.cuoco.adapter.in.controller.model.UnitResponse;
 import com.cuoco.application.port.in.GetIngredientsFromAudioCommand;
 import com.cuoco.application.port.in.GetIngredientsFromTextCommand;
 import com.cuoco.application.port.in.GetIngredientsGroupedFromImagesCommand;
@@ -112,7 +113,12 @@ public class IngredientControllerAdapter {
         return IngredientResponse.builder()
                 .name(ingredient.getName())
                 .quantity(ingredient.getQuantity())
-                .unit(ingredient.getUnit())
+                .unit(UnitResponse.builder()
+                        .id(ingredient.getUnit().getId())
+                        .description(ingredient.getUnit().getDescription())
+                        .symbol(ingredient.getUnit().getSymbol())
+                        .build()
+                )
                 .confirmed(ingredient.isConfirmed())
                 .source(ingredient.getSource())
                 .build();

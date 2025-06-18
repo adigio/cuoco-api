@@ -5,4 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface GetAllDietaryNeedsHibernateRepository extends JpaRepository<DietaryNeedHibernateModel, Integer> {}
+public interface GetAllDietaryNeedsHibernateRepositoryAdapter extends JpaRepository<DietaryNeedHibernateModel, Integer> {}

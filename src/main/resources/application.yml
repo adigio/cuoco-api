@@ -24,3 +24,9 @@ gemini:
     url: ${GEMINI_API_URL}
     key: ${GEMINI_API_KEY}
   temperature: ${GEMINI_TEMPERATURE}
+shared:
+  plan:
+    free:
+      max-recipes: ${FREE_MAX_RECIPES}
+    premium:
+      max-recipes: ${PREMIUM_MAX_RECIPES}
