@@ -1,5 +1,6 @@
 package com.cuoco.adapter.out.rest.gemini.model;
 
+import com.cuoco.application.usecase.model.CookLevel;
 import com.cuoco.application.usecase.model.Recipe;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -20,27 +21,29 @@ import java.util.List;
 public class RecipeResponseGeminiModel {
     private String id;
     private String name;
-    private String preparationTime;
     private String image;
     private String subtitle;
     private String description;
-    private List<IngredientResponseGeminiModel> ingredients;
     private String instructions;
+    private String preparationTime;
+    private CookLevelResponseGeminiModel cookLevel;
+    private List<IngredientResponseGeminiModel> ingredients;
 
     public Recipe toDomain() {
         return Recipe.builder()
                 .name(name)
-                .preparationTime(preparationTime)
                 .image(image)
                 .subtitle(subtitle)
                 .description(description)
+                .instructions(instructions)
+                .preparationTime(preparationTime)
                 .ingredients(
                         ingredients
                                 .stream()
                                 .map(IngredientResponseGeminiModel::toDomain)
                                 .toList()
                 )
-                .instructions(instructions)
+                .cookLevel(cookLevel.toDomain())
                 .build();
     }
 }

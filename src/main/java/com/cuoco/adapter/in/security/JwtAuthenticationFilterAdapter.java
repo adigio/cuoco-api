@@ -50,7 +50,7 @@ public class JwtAuthenticationFilterAdapter extends OncePerRequestFilter {
 
     private UsernamePasswordAuthenticationToken buildToken(AuthenticatedUser authenticatedUser) {
         return new UsernamePasswordAuthenticationToken(
-                authenticatedUser.getUser().getEmail(),
+                authenticatedUser.getUser(),
                 null,
                 authenticatedUser.getRoles().stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
         );

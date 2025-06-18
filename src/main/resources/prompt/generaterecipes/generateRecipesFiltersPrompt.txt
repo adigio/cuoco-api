@@ -1,0 +1,8 @@
+Para generar las recetas con las instrucciones antes dadas, utilizar las siguientes condiciones:
+(Si el valor no esta o es null, ignorar la condicion)
+
+- Tiempo máximo de preparación: {{COOK_TIME}}
+- Nivel de dificultad: {{COOK_LEVEL}}
+- Tipos de comida: {{FOOD_TYPES}}
+- Dieta: {{DIET}}
+- Porciones: {{QUANTITY}}

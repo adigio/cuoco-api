@@ -17,9 +17,11 @@ import java.util.List;
 public class RecipeFilter {
 
     private String time;
-    private String difficulty;
+    private CookLevel difficulty;
     private List<String> types;
     private String diet;
-    private int quantity;
+    private Integer quantity;
 
+    private Integer maxRecipes;
+    private Boolean enable;
 }

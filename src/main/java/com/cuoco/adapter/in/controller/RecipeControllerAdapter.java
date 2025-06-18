@@ -6,6 +6,7 @@ import com.cuoco.adapter.in.controller.model.RecipeFilterRequest;
 import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
+import com.cuoco.application.usecase.model.CookLevel;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.RecipeFilter;
@@ -52,7 +53,11 @@ public class RecipeControllerAdapter {
     private RecipeFilter buildFilter(RecipeFilterRequest filter) {
         return RecipeFilter.builder()
                 .time(filter.getTime())
-                .difficulty(filter.getDifficulty())
+                .difficulty(
+                        CookLevel.builder()
+                                .description(filter.getDifficulty())
+                                .build()
+                )
                 .types(filter.getTypes())
                 .diet(filter.getDiet())
                 .quantity(filter.getQuantity())

@@ -1,0 +1,47 @@
+Objetivo:
+
+- Genera {{MAX_RECIPES}} recetas argentinas en formato JSON usando estos ingredientes:
+
+{{INGREDIENTS}}
+
+- Con esta estructura JSON
+
+[
+  {
+    "name": "Nombre de la receta",
+    "preparation_time": "25'",
+    "image": "https://ejemplo.com/imagen.jpg",
+    "subtitle": "Descripción breve y atractiva",
+    "description": "Descripción detallada del plato y su sabor",
+    "ingredients": [
+        { "name": "ingrediente1", "quantity": 200, "unit": "gr", "optional": false },
+        { "name": "ingrediente2", "quantity": 100, "unit": "ml", "optional": false },
+        { "name": "ingrediente3", "quantity": 1, "unit": "cucharada", "optional": true },
+    ],
+    "cook_level": {
+        "id": 1,
+        "description": "Bajo"
+    },
+    "instructions": "1. Paso detallado uno, 2. Paso detallado dos, 3. Paso detallado tres"
+  }
+]
+
+Instrucciones:
+
+- Usa español argentino como por ejemplo papa (no patata), palta (no aguacate), choclo (no maíz).
+- Para las "instructions" de la receta usa texto plano sin \\n ni saltos de linea.
+- En quantity solo puede ir numeros Double, no pueden ir palabras
+- unit representa la unidad de medida de la cantidad, usar las medidas siguientes. Si tiene
+  simbolo que esta entre parentesis (Ejemplo gr en gramo), usarlo, sino el nombre de la unidad en singular y minuscula
+
+    [Mililitro (ml), Gramo (gr), Kilogramo (kg), Litro (l), Cucharada (cda), Cucharadita (cdta), Unidad (ud), Taza (tz),
+    Pizca, Diente, Lata, Botella, Sobre, Rodaja, Rebanada, Puñado, Onza (oz), Libra (lb), Miligramo (mg), Centilitro (cl), Copa, Cucharón, Unidad]
+
+- Incluye acentos correctos y ñ. Tiempo en formato '30 min' o '1 h 30 min'.
+- cook_level representa la dificultad de cocinar el plato, solo pueden ser 1:Bajo, 2:Medio, 3:Alto
+- Devuelve solo el array JSON sin ```json ni explicaciones.
+- No agregar texto adicional, solo el JSON.
+
+Ejemplo del JSON con las recetas que debes devolver:
+
+

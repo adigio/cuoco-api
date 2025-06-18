@@ -1,4 +1,4 @@
-package com.cuoco.adapter.utils;
+package com.cuoco.adapter.out.rest.gemini.utils;
 
 import com.cuoco.adapter.exception.UnprocessableException;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.CandidateGeminiResponseModel;

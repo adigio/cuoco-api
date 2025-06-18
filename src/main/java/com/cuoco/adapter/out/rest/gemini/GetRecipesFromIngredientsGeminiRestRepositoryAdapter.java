@@ -8,15 +8,18 @@ import com.cuoco.adapter.out.rest.gemini.model.wrapper.GeminiResponseModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.GenerationConfigurationGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PartGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PromptBodyGeminiRequestModel;
-import com.cuoco.adapter.utils.Utils;
+import com.cuoco.adapter.out.rest.gemini.utils.Utils;
 import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.Recipe;
+import com.cuoco.application.usecase.model.RecipeFilter;
+import com.cuoco.adapter.out.rest.gemini.utils.Constants;
 import com.cuoco.shared.FileReader;
 import com.cuoco.shared.model.ErrorDescription;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -26,9 +29,11 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@Qualifier("provider")
 public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements GetRecipesFromIngredientsRepository {
 
-    private final String PROMPT = FileReader.execute("prompt/generateRecipeFromIngredientsPrompt.txt");
+    private final String BASIC_PROMPT = FileReader.execute("prompt/generaterecipes/generateRecipeFromIngredientsHeaderPrompt.txt");
+    private final String FILTERS_PROMPT = FileReader.execute("prompt/generaterecipes/generateRecipeFromIngredientsHeaderPrompt.txt");
 
     @Value("${gemini.api.url}")
     private String url;
@@ -46,13 +51,21 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
     }
 
     @Override
-    public List<Recipe> execute(List<Ingredient> ingredients) {
+    public List<Recipe> execute(Recipe recipe) {
         try {
-            log.info("Executing get recipes from gemini rest adapter with ingredients: {}", ingredients);
+            log.info("Executing recipes generation from Gemini rest adapter with ingredients: {}", recipe.getIngredients());
 
-            String ingredientNames = ingredients.stream().map(Ingredient::getName).collect(Collectors.joining(","));
+            String ingredientNames = recipe.getIngredients().stream().map(Ingredient::getName).collect(Collectors.joining(","));
 
-            PromptBodyGeminiRequestModel prompt = buildPromptBody(PROMPT.formatted(ingredientNames));
+            String basicPrompt = BASIC_PROMPT
+                    .replace(Constants.INGREDIENTS.getValue(), ingredientNames)
+                    .replace(Constants.MAX_RECIPES.getValue(), recipe.getFilters().getMaxRecipes().toString());
+
+            String filtersPrompt = buildFiltersPrompt(recipe.getFilters());
+
+            String finalPrompt = filtersPrompt == null ? basicPrompt : basicPrompt.concat(filtersPrompt);
+
+            PromptBodyGeminiRequestModel prompt = buildPromptBody(finalPrompt);
 
             String geminiUrl = url + "?key=" + apiKey;
 
@@ -73,13 +86,29 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
 
             List<Recipe> recipesResponse = recipesResponseFromGemini.stream().map(RecipeResponseGeminiModel::toDomain).toList();
 
-            log.info("Successfully generated recipes from Gemini");
+            log.info("Generated {} recipes from Gemini successfully", recipesResponse.size());
 
             return recipesResponse;
         } catch (Exception e) {
             log.error("Error getting recipes from ingredients in Gemini. ", e);
             throw new NotAvailableException(ErrorDescription.NOT_AVAILABLE.getValue());
         }
+    }
+
+    private String buildFiltersPrompt(RecipeFilter filters) {
+
+        if(filters.getEnable()) {
+            String foodTypes = String.join(",", filters.getTypes());
+
+            return FILTERS_PROMPT
+                    .replace(Constants.QUANTITY.getValue(), filters.getQuantity().toString())
+                    .replace(Constants.COOK_LEVEL.getValue(), filters.getDifficulty().getDescription())
+                    .replace(Constants.COOK_TIME.getValue(), filters.getTime())
+                    .replace(Constants.FOOD_TYPES.getValue(), foodTypes)
+                    .replace(Constants.DIET.getValue(), filters.getDiet());
+        }
+
+        return null;
     }
 
 

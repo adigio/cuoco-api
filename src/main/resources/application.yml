@@ -7,7 +7,7 @@ spring:
     password: ${DB_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: false
   servlet:
     multipart:
@@ -24,3 +24,9 @@ gemini:
     url: ${GEMINI_API_URL}
     key: ${GEMINI_API_KEY}
   temperature: ${GEMINI_TEMPERATURE}
+shared:
+  plan:
+    free:
+      max-recipes: 3
+    premium:
+      max-recipes: 5
