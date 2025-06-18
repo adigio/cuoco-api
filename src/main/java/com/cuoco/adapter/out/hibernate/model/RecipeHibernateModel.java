@@ -38,7 +38,7 @@ public class RecipeHibernateModel {
     private String preparationTime;
 
     @ManyToOne
-    private DifficultyHibernateModel difficulty;
+    private CookLevelHibernateModel cookLevel;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<RecipeIngredientsHibernateModel> recipeIngredients;
