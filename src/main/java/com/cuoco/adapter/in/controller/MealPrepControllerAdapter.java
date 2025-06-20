@@ -2,7 +2,6 @@ package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.*;
 import com.cuoco.application.port.in.GetMealPrepFromIngredientsCommand;
-import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
 import com.cuoco.application.usecase.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

@@ -16,7 +16,7 @@ import java.util.List;
 public class MealPrepFilterRequest {
     private String difficulty;
     private String diet;
-    private int quantity;
+    private Integer quantity;
     private Boolean freeze;
     private List<String> types;
     private Boolean useProfilePreferences;
