@@ -1,6 +1,7 @@
 package com.cuoco.application.port.in;
 
 import com.cuoco.application.usecase.model.Ingredient;
+import com.cuoco.application.usecase.model.MealPrep;
 import com.cuoco.application.usecase.model.RecipeFilter;
 import lombok.Builder;
 import lombok.Data;
