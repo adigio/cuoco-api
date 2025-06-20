@@ -5,7 +5,10 @@ import com.cuoco.adapter.out.hibernate.model.RecipeHibernateModel;
 import com.cuoco.adapter.out.hibernate.repository.GetRecipesByIngredientsAndFiltersHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.GetRecipesIdsByIngredientsHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
+import com.cuoco.application.usecase.model.MealCategory;
+import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.Recipe;
+import com.cuoco.application.usecase.model.RecipeFilter;
 import com.cuoco.shared.model.ErrorDescription;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,20 +41,41 @@ public class GetRecipesFromIngredientsDatabaseRepositoryAdapter implements GetRe
             log.info("Getting recipes by ingredients {} and filters from database", ingredientNames);
 
             Integer ingredientCount = ingredientNames.size();
+
+            Integer preparationTimeId = null;
             Integer cookLevelId = null;
             String maxPreparationTime = null;
+            List<Integer> typesIds = null;
+            List<Integer> categoriesIds = null;
 
             if (recipe.getFilters().getEnable()) {
-                cookLevelId = recipe.getFilters().getDifficulty() != null ? recipe.getFilters().getDifficulty().getId() : null;
-                maxPreparationTime = recipe.getFilters().getTime();
+                RecipeFilter filters = recipe.getFilters();
+
+                if(filters.getPreparationTime() != null) {
+                    preparationTimeId = filters.getPreparationTime().getId();
+                }
+
+                if(recipe.getFilters().getCookLevel() != null) {
+                    cookLevelId = filters.getCookLevel().getId();
+                }
+
+                if(!recipe.getFilters().getTypes().isEmpty()) {
+                    typesIds = filters.getTypes().stream().map(MealType::getId).toList();
+                }
+
+                if(!recipe.getFilters().getCategories().isEmpty()) {
+                    categoriesIds = filters.getCategories().stream().map(MealCategory::getId).toList();
+                }
             }
 
             List<Long> recipesIds = getRecipesIdsByIngredientsHibernateRepositoryAdapter.execute(ingredientNames, ingredientCount);
 
             List<RecipeHibernateModel> savedRecipes = getRecipesByIngredientsAndFiltersHibernateRepositoryAdapter.execute(
                     recipesIds,
+                    preparationTimeId,
                     cookLevelId,
-                    maxPreparationTime
+                    typesIds,
+                    categoriesIds
             );
 
             if(savedRecipes.isEmpty()) {
