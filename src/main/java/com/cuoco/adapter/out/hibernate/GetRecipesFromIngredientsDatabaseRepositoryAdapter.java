@@ -3,6 +3,7 @@ package com.cuoco.adapter.out.hibernate;
 import com.cuoco.adapter.exception.NotAvailableException;
 import com.cuoco.adapter.out.hibernate.model.RecipeHibernateModel;
 import com.cuoco.adapter.out.hibernate.repository.GetRecipesByIngredientsAndFiltersHibernateRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.GetRecipesIdsByIngredientsHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.shared.model.ErrorDescription;
@@ -20,11 +21,14 @@ import java.util.NoSuchElementException;
 public class GetRecipesFromIngredientsDatabaseRepositoryAdapter implements GetRecipesFromIngredientsRepository {
 
     private final GetRecipesByIngredientsAndFiltersHibernateRepositoryAdapter getRecipesByIngredientsAndFiltersHibernateRepositoryAdapter;
+    private final GetRecipesIdsByIngredientsHibernateRepositoryAdapter getRecipesIdsByIngredientsHibernateRepositoryAdapter;
 
     public GetRecipesFromIngredientsDatabaseRepositoryAdapter(
-            GetRecipesByIngredientsAndFiltersHibernateRepositoryAdapter getRecipesByIngredientsAndFiltersHibernateRepositoryAdapter
+            GetRecipesByIngredientsAndFiltersHibernateRepositoryAdapter getRecipesByIngredientsAndFiltersHibernateRepositoryAdapter,
+            GetRecipesIdsByIngredientsHibernateRepositoryAdapter getRecipesIdsByIngredientsHibernateRepositoryAdapter
     ) {
         this.getRecipesByIngredientsAndFiltersHibernateRepositoryAdapter = getRecipesByIngredientsAndFiltersHibernateRepositoryAdapter;
+        this.getRecipesIdsByIngredientsHibernateRepositoryAdapter = getRecipesIdsByIngredientsHibernateRepositoryAdapter;
     }
 
     @Override
@@ -33,6 +37,7 @@ public class GetRecipesFromIngredientsDatabaseRepositoryAdapter implements GetRe
             List<String> ingredientNames = recipe.getIngredients().stream().map(i -> i.getName().toLowerCase()).toList();
             log.info("Getting recipes by ingredients {} and filters from database", ingredientNames);
 
+            Integer ingredientCount = ingredientNames.size();
             Integer cookLevelId = null;
             String maxPreparationTime = null;
 
@@ -41,8 +46,10 @@ public class GetRecipesFromIngredientsDatabaseRepositoryAdapter implements GetRe
                 maxPreparationTime = recipe.getFilters().getTime();
             }
 
+            List<Long> recipesIds = getRecipesIdsByIngredientsHibernateRepositoryAdapter.execute(ingredientNames, ingredientCount);
+
             List<RecipeHibernateModel> savedRecipes = getRecipesByIngredientsAndFiltersHibernateRepositoryAdapter.execute(
-                    ingredientNames,
+                    recipesIds,
                     cookLevelId,
                     maxPreparationTime
             );

@@ -10,11 +10,11 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class GetAllAllCookLevelsUseCase implements GetAllCookLevelsQuery {
+public class GetAllCookLevelsUseCase implements GetAllCookLevelsQuery {
 
     private GetAllCookLevelsRepository getAllCookLevelsRepository;
 
-    public GetAllAllCookLevelsUseCase(GetAllCookLevelsRepository getAllCookLevelsRepository) {
+    public GetAllCookLevelsUseCase(GetAllCookLevelsRepository getAllCookLevelsRepository) {
         this.getAllCookLevelsRepository = getAllCookLevelsRepository;
     }
 

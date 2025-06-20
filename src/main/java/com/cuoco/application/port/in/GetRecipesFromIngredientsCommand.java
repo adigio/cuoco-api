@@ -17,7 +17,17 @@ public interface GetRecipesFromIngredientsCommand {
     @Builder
     @ToString
     class Command {
-        private RecipeFilter filters;
         private List<Ingredient> ingredients;
+
+        private Boolean filtersEnabled;
+        private Integer preparationTimeId;
+        private Integer servings;
+        private Integer cookLevelId;
+        private List<Integer> typeIds;
+        private List<Integer> categoryIds;
+        private Boolean useProfilePreferences;
+
+        private Integer recipesSize;
+        private List<Long> notInclude;
     }
 }

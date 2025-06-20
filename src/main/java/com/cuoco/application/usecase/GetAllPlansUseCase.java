@@ -10,11 +10,11 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class GetAllAllPlansUseCase implements GetAllPlansQuery {
+public class GetAllPlansUseCase implements GetAllPlansQuery {
 
     private GetAllPlansRepository getAllPlansRepository;
 
-    public GetAllAllPlansUseCase(GetAllPlansRepository getAllPlansRepository) {
+    public GetAllPlansUseCase(GetAllPlansRepository getAllPlansRepository) {
         this.getAllPlansRepository = getAllPlansRepository;
     }
 

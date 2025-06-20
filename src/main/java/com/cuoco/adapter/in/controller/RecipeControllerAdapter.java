@@ -3,6 +3,7 @@ package com.cuoco.adapter.in.controller;
 import com.cuoco.adapter.in.controller.model.IngredientRequest;
 import com.cuoco.adapter.in.controller.model.IngredientResponse;
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
+import com.cuoco.adapter.in.controller.model.RecipeConfiguration;
 import com.cuoco.adapter.in.controller.model.RecipeFilterRequest;
 import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
@@ -10,8 +11,11 @@ import com.cuoco.adapter.in.controller.model.UnitResponse;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
 import com.cuoco.application.usecase.model.CookLevel;
 import com.cuoco.application.usecase.model.Ingredient;
+import com.cuoco.application.usecase.model.MealType;
+import com.cuoco.application.usecase.model.PreparationTime;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.RecipeFilter;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,7 +37,7 @@ public class RecipeControllerAdapter {
     }
 
     @PostMapping()
-    public ResponseEntity<List<RecipeResponse>> generate(@RequestBody RecipeRequest recipeRequest) {
+    public ResponseEntity<List<RecipeResponse>> generate(@RequestBody @Valid RecipeRequest recipeRequest) {
 
         log.info("Executing GET recipes from ingredients with body {}", recipeRequest);
 
@@ -46,31 +50,32 @@ public class RecipeControllerAdapter {
     }
 
     private GetRecipesFromIngredientsCommand.Command buildGenerateRecipeCommand(RecipeRequest recipeRequest) {
-        return GetRecipesFromIngredientsCommand.Command.builder()
-                .filters(recipeRequest.getFilters() != null ? buildFilter(recipeRequest.getFilters()) : null)
-                .ingredients(recipeRequest.getIngredients().stream().map(this::buildIngredient).toList())
-                .build();
-    }
 
-    private RecipeFilter buildFilter(RecipeFilterRequest filter) {
-        return RecipeFilter.builder()
-                .time(filter.getTime())
-                .difficulty(
-                        CookLevel.builder()
-                                .description(filter.getDifficulty())
-                                .build()
-                )
-                .types(filter.getTypes())
-                .diet(filter.getDiet())
-                .quantity(filter.getQuantity())
+        Boolean filtersEnabled = true;
+
+        if(recipeRequest.getFilters() == null) {
+            filtersEnabled = false;
+            recipeRequest.setFilters(new RecipeFilterRequest());
+        }
+
+        if(recipeRequest.getConfiguration() == null) recipeRequest.setConfiguration(new RecipeConfiguration());
+
+        return GetRecipesFromIngredientsCommand.Command.builder()
+                .filtersEnabled(filtersEnabled)
+                .ingredients(recipeRequest.getIngredients().stream().map(this::buildIngredient).toList())
+                .preparationTimeId(recipeRequest.getFilters().getPreparationTimeId())
+                .servings(recipeRequest.getFilters().getServings())
+                .cookLevelId(recipeRequest.getFilters().getCookLevelId())
+                .typeIds(recipeRequest.getFilters().getTypeIds())
+                .categoryIds(recipeRequest.getFilters().getCategoryIds())
+                .recipesSize(recipeRequest.getConfiguration().getRecipesSize())
+                .notInclude(recipeRequest.getConfiguration().getNotInclude())
                 .build();
     }
 
     private Ingredient buildIngredient(IngredientRequest ingredientRequest) {
         return Ingredient.builder()
                 .name(ingredientRequest.getName())
-                .source(ingredientRequest.getSource())
-                .confirmed(ingredientRequest.isConfirmed())
                 .build();
     }
 
@@ -83,9 +88,7 @@ public class RecipeControllerAdapter {
                 .description(recipe.getDescription())
                 .preparationTime(recipe.getPreparationTime())
                 .instructions(recipe.getInstructions())
-                .ingredients(
-                        recipe.getIngredients().stream().map(this::buildIngredientResponse).toList()
-                )
+                .ingredients(recipe.getIngredients().stream().map(this::buildIngredientResponse).toList())
                 .cookLevel(
                         ParametricResponse.builder()
                                 .id(recipe.getCookLevel().getId())
@@ -97,6 +100,7 @@ public class RecipeControllerAdapter {
 
     private IngredientResponse buildIngredientResponse(Ingredient ingredient) {
         return IngredientResponse.builder()
+                .id(ingredient.getId())
                 .name(ingredient.getName())
                 .quantity(ingredient.getQuantity())
                 .unit(UnitResponse.builder()

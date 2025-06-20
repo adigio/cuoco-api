@@ -34,6 +34,7 @@ public class IngredientHibernateModel {
 
     public Ingredient toDomain() {
         return Ingredient.builder()
+                .id(id)
                 .name(name)
                 .unit(unit.toDomain())
                 .build();

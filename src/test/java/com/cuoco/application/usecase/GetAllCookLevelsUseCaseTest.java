@@ -15,12 +15,12 @@ class GetAllCookLevelsUseCaseTest {
 
     private GetAllCookLevelsRepository getAllCookLevelsRepository;
 
-    private GetAllAllCookLevelsUseCase useCase;
+    private GetAllCookLevelsUseCase useCase;
 
     @BeforeEach
     void setup() {
         getAllCookLevelsRepository = mock(GetAllCookLevelsRepository.class);
-        useCase = new GetAllAllCookLevelsUseCase(getAllCookLevelsRepository);
+        useCase = new GetAllCookLevelsUseCase(getAllCookLevelsRepository);
     }
 
     @Test

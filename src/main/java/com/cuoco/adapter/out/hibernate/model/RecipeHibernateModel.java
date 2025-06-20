@@ -1,5 +1,6 @@
 package com.cuoco.adapter.out.hibernate.model;
 
+import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.Recipe;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -31,11 +32,19 @@ public class RecipeHibernateModel {
     private String name;
     private String subtitle;
     private String description;
-    private String preparationTime;
     private String imageUrl;
     @Lob
     @Column(name = "instructions", columnDefinition = "TEXT")
     private String instructions;
+
+    @ManyToOne
+    private PreparationTimeHibernateModel preparationTime;
+
+    @ManyToOne
+    private MealTypeHibernateModel type;
+
+    @ManyToOne
+    private MealCategoryHibernateModel category;
 
     @ManyToOne
     private CookLevelHibernateModel cookLevel;
@@ -51,11 +60,20 @@ public class RecipeHibernateModel {
                 .subtitle(subtitle)
                 .description(description)
                 .instructions(instructions)
-                .preparationTime(preparationTime)
+                .preparationTime(preparationTime.toDomain())
+                .type(type.toDomain())
+                .category(category.toDomain())
                 .cookLevel(cookLevel.toDomain())
                 .ingredients(
                         recipeIngredients.stream()
-                                .map(ri -> ri.getIngredient().toDomain())
+                                .map(ri -> {
+                                    Ingredient ingredient = ri.getIngredient().toDomain();
+
+                                    ingredient.setQuantity(ri.getQuantity());
+                                    ingredient.setOptional(ri.getOptional());
+
+                                    return ingredient;
+                                })
                                 .toList()
                 )
                 .build();

@@ -16,11 +16,12 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RecipeFilter {
 
-    private String time;
-    private CookLevel difficulty;
-    private List<String> types;
-    private String diet;
-    private Integer quantity;
+    private PreparationTime preparationTime;
+    private Integer servings;
+    private CookLevel cookLevel;
+    private List<MealType> types;
+    private List<MealCategory> categories;
+    private Boolean useProfilePreferences;
 
     private Integer maxRecipes;
     private Boolean enable;

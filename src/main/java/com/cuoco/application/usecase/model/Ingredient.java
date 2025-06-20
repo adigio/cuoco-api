@@ -14,6 +14,7 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Ingredient {
 
+    private Long id;
     private String name;
     private Double quantity;
     private Unit unit;

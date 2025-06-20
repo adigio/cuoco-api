@@ -15,12 +15,12 @@ public interface GetRecipesByIngredientsAndFiltersHibernateRepositoryAdapter ext
         SELECT DISTINCT r FROM recipe r
         JOIN FETCH r.recipeIngredients ri
         JOIN FETCH ri.ingredient i
-        WHERE LOWER(i.name) IN :ingredientNames
+        WHERE r.id IN :recipeIds
         AND (:cookLevelId IS NULL OR r.cookLevel.id = :cookLevelId)
         AND (:maxPreparationTime IS NULL OR r.preparationTime <= :maxPreparationTime)
     """)
     List<RecipeHibernateModel> execute(
-            @Param("ingredientNames") List<String> ingredientNames,
+            @Param("recipeIds") List<Long> recipeIds,
             @Param("cookLevelId") Integer cookLevelId,
             @Param("maxPreparationTime") String maxPreparationTime
     );
