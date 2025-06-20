@@ -3,10 +3,7 @@ package com.cuoco.adapter.in.controller;
 import com.cuoco.adapter.in.controller.model.*;
 import com.cuoco.application.port.in.GetMealPrepFromIngredientsCommand;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
-import com.cuoco.application.usecase.model.CookLevel;
-import com.cuoco.application.usecase.model.Ingredient;
-import com.cuoco.application.usecase.model.MealPrep;
-import com.cuoco.application.usecase.model.RecipeFilter;
+import com.cuoco.application.usecase.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,36 +25,36 @@ public class MealPrepControllerAdapter {
     }
 
     @PostMapping
-    public ResponseEntity<List<MealPrepResponse>> generate(@RequestBody RecipeRequest mealPrepRequest){
+    public ResponseEntity<List<MealPrepResponse>> generate(@RequestBody MealPrepRequest mealPrepRequest){
 
         log.info("Executing GET mealPrep from ingredients with body {}", mealPrepRequest);
 
         List<MealPrep> mealPreps = getMealPrepFromIngredientsCommand.execute(buildGenerateMealPrepCommand(mealPrepRequest));
 
-        List<MealPrepResponse> mealPrepsResponse = mealPreps.stream().map(this::builResponse).toList();
+        List<MealPrepResponse> mealPrepsResponse = mealPreps.stream().map(this::buildResponse).toList();
 
         log.info("Successfully generated recipes");
         return ResponseEntity.ok(mealPrepsResponse);
     }
 
-    private GetMealPrepFromIngredientsCommand.Command buildGenerateMealPrepCommand(RecipeRequest mealPrepRequest) {
+    private GetMealPrepFromIngredientsCommand.Command buildGenerateMealPrepCommand(MealPrepRequest mealPrepRequest) {
         return GetMealPrepFromIngredientsCommand.Command.builder()
                 .filters(mealPrepRequest.getFilters() != null ? buildFilter(mealPrepRequest.getFilters()) : null)
                 .ingredients(mealPrepRequest.getIngredients().stream().map(this::buildIngredient).toList())
                 .build();
     }
 
-    private RecipeFilter buildFilter(RecipeFilterRequest filter) {
-        return RecipeFilter.builder()
-                .time(filter.getTime())
+    private MealPrepFilter buildFilter(MealPrepFilterRequest filter) {
+        return MealPrepFilter.builder()
                 .difficulty(
                         CookLevel.builder()
                                 .description(filter.getDifficulty())
                                 .build()
                 )
-                .types(filter.getTypes())
                 .diet(filter.getDiet())
                 .quantity(filter.getQuantity())
+                .freeze(filter.getFreeze())
+                .types(filter.getTypes())
                 .build();
     }
 
@@ -69,7 +66,7 @@ public class MealPrepControllerAdapter {
                 .build();
     }
 
-    private MealPrepResponse builResponse(MealPrep mealPrep) {
+    private MealPrepResponse buildResponse(MealPrep mealPrep) {
         return MealPrepResponse.builder()
                 .id(mealPrep.getId())
                 .name(mealPrep.getName())

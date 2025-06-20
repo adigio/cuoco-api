@@ -1,0 +1,9 @@
+Para generar los meal preps con las instrucciones antes dadas, utilizar las siguientes condiciones:
+(Si un valor no está presente o es null, ignorar esa condición)
+
+- Tiempo máximo de preparación: {{COOK_TIME}}
+- Nivel de dificultad: {{COOK_LEVEL}}
+- Tipos de comida (por ejemplo: desayuno, cena, snack, etc.): {{FOOD_TYPES}}
+- Dieta especial (por ejemplo: vegana, sin gluten): {{DIET}}
+- Porciones: {{QUANTITY}}
+- ¿Apto para freezar?: {{FREEZE}}

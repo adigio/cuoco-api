@@ -2,7 +2,7 @@ package com.cuoco.application.port.in;
 
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.MealPrep;
-import com.cuoco.application.usecase.model.RecipeFilter;
+import com.cuoco.application.usecase.model.MealPrepFilter;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
@@ -17,7 +17,7 @@ public interface GetMealPrepFromIngredientsCommand {
     @Builder
     @ToString
     class Command {
-        private RecipeFilter filters;
+        private MealPrepFilter filters;
         private List<Ingredient> ingredients;
     }
 }

@@ -1,0 +1,44 @@
+Objetivo:
+
+- Genera {{MAX_MEAL_PREPS}} opciones de meal prep argentinas en formato JSON usando estos ingredientes:
+
+{{INGREDIENTS}}
+
+- Con esta estructura JSON
+
+[
+  {
+    "name": "Nombre del meal prep",
+    "subtitle": "Descripción breve y atractiva",
+    "description": "Descripción detallada del plato o conjunto de platos",
+    "preparation_time": "45 min",
+    "ingredients": [
+      { "name": "ingrediente1", "quantity": 200.0, "unit": "gr", "optional": false },
+      { "name": "ingrediente2", "quantity": 100.0, "unit": "ml", "optional": false },
+      { "name": "ingrediente3", "quantity": 1.0, "unit": "ud", "optional": true }
+    ],
+    "cook_level": {
+      "id": 2,
+      "description": "Medio"
+    },
+    "instructions": "1. Paso detallado uno, 2. Paso detallado dos, 3. Paso detallado tres"
+  }
+]
+
+Instrucciones:
+
+- Usa español argentino (ejemplo: papa, palta, choclo).
+- Las instrucciones deben ser texto plano, sin saltos de línea ni '\n'.
+- Solo números decimales en "quantity", sin texto.
+- "unit" debe estar en la siguiente lista (usar símbolo si lo tiene, si no, el nombre en singular y minúscula):
+
+  [Mililitro (ml), Gramo (gr), Kilogramo (kg), Litro (l), Cucharada (cda), Cucharadita (cdta), Unidad (ud), Taza (tz),
+  pizca, diente, lata, botella, sobre, rodaja, rebanada, puñado, Onza (oz), Libra (lb), miligramo (mg), Centilitro (cl), copa, cucharon]
+
+- Acentos y ñ correctamente usados.
+- "preparation_time" debe tener formato '45 min', '1 h 20 min', etc.
+- "cook_level" puede ser: 1:Bajo, 2:Medio, 3:Alto.
+- No incluir ```json, ni explicaciones, ni texto adicional.
+- Solo devolver un array JSON.
+
+Ejemplo del JSON que debes devolver:
