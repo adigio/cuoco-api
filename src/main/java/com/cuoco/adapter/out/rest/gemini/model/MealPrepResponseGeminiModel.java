@@ -23,8 +23,8 @@ public class MealPrepResponseGeminiModel {
     private String id;
     private String name;
     private String subtitle;
-    private String description;
-    private String instructions;
+    private List<String> recipes;
+    private List<InstructionResponseGeminiModel> instructions;
     private String preparationTime;
     private CookLevelResponseGeminiModel cookLevel;
     private List<IngredientResponseGeminiModel> ingredients;
@@ -33,8 +33,8 @@ public class MealPrepResponseGeminiModel {
         return MealPrep.builder()
                 .name(name)
                 .subtitle(subtitle)
-                .description(description)
-                .instructions(instructions)
+                .recipes(recipes)
+                .instructions(instructions.stream().map(InstructionResponseGeminiModel::toDomain).toList())
                 .preparationTime(preparationTime)
                 .ingredients(ingredients.stream().map(IngredientResponseGeminiModel::toDomain).toList())
                 .cookLevel(cookLevel.toDomain())

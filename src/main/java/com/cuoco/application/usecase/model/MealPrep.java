@@ -12,8 +12,8 @@ public class MealPrep {
     private String name;
     private String image;
     private String subtitle;
-    private String description;
-    private String instructions;
+    private List<String> recipes;
+    private List<Instruction> instructions;
     private String preparationTime;
     private CookLevel cookLevel;
     private List<Ingredient> ingredients;

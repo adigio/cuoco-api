@@ -1,8 +1,7 @@
-Para generar los meal preps con las instrucciones antes dadas, utilizar las siguientes condiciones:
-(Si un valor no está presente o es null, ignorar esa condición)
+Para generar los meal preps con las instrucciones anteriores, respetar las siguientes condiciones si están presentes (si un valor no está o es null, ignorarlo):
 
-- Nivel de dificultad: {{COOK_LEVEL}}
+- Nivel de dificultad: {{COOK_LEVEL}} (puede ser Bajo, Medio o Alto)
 - Tipos de comida (por ejemplo: desayuno, cena, snack, etc.): {{FOOD_TYPES}}
 - Dieta especial (por ejemplo: vegana, sin gluten): {{DIET}}
-- Porciones: {{QUANTITY}}
-- ¿Apto para freezar?: {{FREEZE}}
+- Cantidad exacta de meal preps a generar: {{QUANTITY}}
+- ¿Apto para freezar?: {{FREEZE}} (sí o no; si es sí, sugerir pasos para almacenamiento y duración)

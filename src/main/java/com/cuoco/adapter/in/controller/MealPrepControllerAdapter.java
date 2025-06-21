@@ -70,9 +70,10 @@ public class MealPrepControllerAdapter {
                 .id(mealPrep.getId())
                 .name(mealPrep.getName())
                 .subtitle(mealPrep.getSubtitle())
-                .description(mealPrep.getDescription())
+                .recipes(mealPrep.getRecipes())
                 .preparationTime(mealPrep.getPreparationTime())
-                .instructions(mealPrep.getInstructions())
+                .instructions(
+                        mealPrep.getInstructions().stream().map(this::buildIntructionResponse).toList())
                 .ingredients(
                         mealPrep.getIngredients().stream().map(this::buildIngredientResponse).toList()
                 )
@@ -82,6 +83,14 @@ public class MealPrepControllerAdapter {
                                 .description(mealPrep.getCookLevel().getDescription())
                                 .build()
                 )
+                .build();
+    }
+
+    private InstructionResponse buildIntructionResponse(Instruction instruction) {
+        return InstructionResponse.builder()
+                .title(instruction.getTitle())
+                .time(instruction.getTime())
+                .description(instruction.getDescription())
                 .build();
     }
 

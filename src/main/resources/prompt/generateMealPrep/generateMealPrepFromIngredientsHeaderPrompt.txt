@@ -1,17 +1,35 @@
+Contexto:
+
+Un **meal prep** es un plan de cocina organizado para preparar varias comidas en un solo día, optimizando tiempo e ingredientes. Cada meal prep contiene varias recetas que se cocinan juntas y luego se dividen en porciones para consumir durante la semana. No es una sola receta, sino un conjunto planificado de recetas.
+
 Objetivo:
 
-- Genera {{MAX_MEAL_PREPS}} opciones de meal prep argentinas en formato JSON usando estos ingredientes:
-
+- Genera exactamente 3 meal preps en formato JSON.
+- Cada meal prep debe cumplir con lo siguiente:
+  - Tener un nombre representativo y un subtítulo atractivo.
+  - Incluir una lista de nombres de al menos 3 recetas (solo los nombres).
+  - Incluir una lista completa de ingredientes usados, **usando exclusivamente los ingredientes proporcionados** a continuación, sin agregar otros ni variantes:
 {{INGREDIENTS}}
+    - No repetir ingredientes si están en más de una receta.
+  - Tener un paso a paso general para cocinar todas las recetas en conjunto. Cada paso debe tener:
+    - Título del paso
+    - Descripción del paso
+    - Duración del paso (por ejemplo: "30 min" o "1 h")
+  - Tiempo total del meal prep (suma aproximada de los pasos)
+  - Dificultad general del meal prep (ver cook_level)
 
-- Con esta estructura JSON
+- Utilizar la siguiente estructura JSON:
 
 [
   {
     "name": "Nombre del meal prep",
     "subtitle": "Descripción breve y atractiva",
-    "description": "Descripción detallada del plato o conjunto de platos",
-    "preparation_time": "45 min",
+    "recipes": [
+      "Nombre receta 1",
+      "Nombre receta 2",
+      "Nombre receta 3"
+    ],
+    "preparation_time": "1 h 30 min",
     "ingredients": [
       { "name": "ingrediente1", "quantity": 200.0, "unit": "gr", "optional": false },
       { "name": "ingrediente2", "quantity": 100.0, "unit": "ml", "optional": false },
@@ -21,24 +39,33 @@ Objetivo:
       "id": 2,
       "description": "Medio"
     },
-    "instructions": "1. Paso detallado uno, 2. Paso detallado dos, 3. Paso detallado tres"
+    "instructions": [
+      {
+        "title": "Preparar ingredientes",
+        "description": "Cortar los vegetales, hervir arroz, batir huevos.",
+        "duration": "30 min"
+      },
+      {
+        "title": "Cocinar recetas",
+        "description": "Saltear, hornear o hervir según cada preparación. Armar las porciones.",
+        "duration": "1 h"
+      }
+    ]
   }
 ]
 
 Instrucciones:
 
-- Usa español argentino (ejemplo: papa, palta, choclo).
-- Las instrucciones deben ser texto plano, sin saltos de línea ni '\n'.
-- Solo números decimales en "quantity", sin texto.
-- "unit" debe estar en la siguiente lista (usar símbolo si lo tiene, si no, el nombre en singular y minúscula):
+- Usar español argentino (ejemplo: papa, palta, choclo, etc.).
+- Las instrucciones deben ir como texto plano, sin '\n' ni saltos de línea.
+- Solo usar números decimales en "quantity", sin texto.
+- "unit" debe pertenecer estrictamente a la siguiente lista (usar símbolo si existe, en minúscula):
 
   [Mililitro (ml), Gramo (gr), Kilogramo (kg), Litro (l), Cucharada (cda), Cucharadita (cdta), Unidad (ud), Taza (tz),
   pizca, diente, lata, botella, sobre, rodaja, rebanada, puñado, Onza (oz), Libra (lb), miligramo (mg), Centilitro (cl), copa, cucharon]
 
-- Acentos y ñ correctamente usados.
-- "preparation_time" debe tener formato '45 min', '1 h 20 min', etc.
-- "cook_level" puede ser: 1:Bajo, 2:Medio, 3:Alto.
-- No incluir ```json, ni explicaciones, ni texto adicional.
-- Solo devolver un array JSON.
-
-Ejemplo del JSON que debes devolver:
+- Usar correctamente acentos y la letra ñ.
+- El campo "preparation_time" debe estar en formato: '30 min', '1 h 15 min', etc.
+- "cook_level" debe ser: 1:Bajo, 2:Medio, 3:Alto.
+- No incluir ningún texto adicional ni explicación.
+- Solo devolver el array JSON como resultado.

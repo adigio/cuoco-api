@@ -7,20 +7,13 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MealPrepResponse {
-    private Long id;
-    private String name;
-    private String subtitle;
-    private List<String> recipes;
-    private List<InstructionResponse> instructions;
-    private String preparationTime;
-    private List<IngredientResponse> ingredients;
-    private ParametricResponse cookLevel;
+public class InstructionResponse {
+    private String title;
+    private String time;
+    private String description;
 }
