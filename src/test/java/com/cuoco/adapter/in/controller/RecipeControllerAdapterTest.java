@@ -1,7 +1,6 @@
 package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.RecipeRequest;
-import com.cuoco.application.port.in.AuthenticateUserCommand;
 import com.cuoco.application.port.in.GenerateRecipeImagesCommand;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
 import com.cuoco.application.usecase.model.Recipe;
@@ -39,9 +38,6 @@ public class RecipeControllerAdapterTest {
 
     @MockitoBean
     private GenerateRecipeImagesCommand generateRecipeImagesCommand;
-
-    @MockitoBean
-    private AuthenticateUserCommand authenticateUserCommand;
 
     @Test
     void GIVEN_valid_ingredients_request_WHEN_generate_THEN_return_recipes_response_with_images() throws Exception {

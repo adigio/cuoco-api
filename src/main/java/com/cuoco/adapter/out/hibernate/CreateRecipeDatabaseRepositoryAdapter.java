@@ -53,7 +53,6 @@ public class CreateRecipeDatabaseRepositoryAdapter implements CreateRecipeReposi
         log.info("Saving recipe and ingredients in database: {}", recipe);
 
         // Check if recipe with same name already exists (normalized comparison)
-        String normalizedName = recipe.getName().trim().toLowerCase();
         Optional<RecipeHibernateModel> existingRecipe = createRecipeHibernateRepositoryAdapter.findByNameIgnoreCase(recipe.getName().trim());
         if (existingRecipe.isPresent()) {
             log.info("Recipe with name '{}' already exists with ID {}. Returning existing recipe.", recipe.getName(), existingRecipe.get().getId());

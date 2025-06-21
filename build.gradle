@@ -31,8 +31,10 @@ dependencies {
 	implementation 'org.jetbrains.kotlinx:kotlinx-io-bytestring-jvm:0.5.4'
 	implementation 'net.javacrumbs.hamcrest-logger:hamcrest-logger:0.0.1'
 	implementation 'com.github.lolgab:snunit-autowire_native0.4.0-M2_2.11:0.0.4'
-	implementation 'com.github.lolgab:snunit-autowire_native0.4.0-M2_2.11:0.0.4'
 	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+	
+	// Force secure Guava version to fix security vulnerabilities
+	implementation 'com.google.guava:guava:33.0.0-jre'
 
 	// Swagger documentation
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'

@@ -30,22 +30,6 @@ public class RecipeImageFactory {
                 .build();
     }
 
-    public static RecipeImage createStepImage(Integer stepNumber, String stepDescription) {
-        return RecipeImage.builder()
-                .imageType("STEP")
-                .stepNumber(stepNumber)
-                .stepDescription(stepDescription)
-                .imagePath(String.format("src/main/resources/imagenes/pasos/test-recipe/test-recipe-step-%d.jpg", stepNumber))
-                .imageUrl(String.format("https://example.com/step-%d-image.jpg", stepNumber))
-                .imageData("fake-step-image-data".getBytes())
-                .build();
-    }
-
-    // Legacy methods for backward compatibility
-    public static RecipeImage createMainImage() {
-        return createMainRecipeImage();
-    }
-
     public static RecipeImage create() {
         return createMainRecipeImage();
     }
