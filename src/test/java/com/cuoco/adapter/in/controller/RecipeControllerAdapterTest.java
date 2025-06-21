@@ -2,9 +2,12 @@ package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.application.port.in.AuthenticateUserCommand;
+import com.cuoco.application.port.in.GenerateRecipeImagesCommand;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
 import com.cuoco.application.usecase.model.Recipe;
+import com.cuoco.application.usecase.model.RecipeImage;
 import com.cuoco.factory.domain.RecipeFactory;
+import com.cuoco.factory.domain.RecipeImageFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,14 +38,22 @@ public class RecipeControllerAdapterTest {
     private GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand;
 
     @MockitoBean
+    private GenerateRecipeImagesCommand generateRecipeImagesCommand;
+
+    @MockitoBean
     private AuthenticateUserCommand authenticateUserCommand;
 
     @Test
-    void GIVEN_valid_ingredients_request_WHEN_generate_THEN_return_recipes_response() throws Exception {
+    void GIVEN_valid_ingredients_request_WHEN_generate_THEN_return_recipes_response_with_images() throws Exception {
         Recipe recipe = RecipeFactory.create();
         RecipeRequest request = RecipeFactory.getRecipeRequest();
+        List<RecipeImage> generatedImages = List.of(
+                RecipeImageFactory.createMainRecipeImage(),
+                RecipeImageFactory.createStepRecipeImage()
+        );
 
         when(getRecipesFromIngredientsCommand.execute(any())).thenReturn(List.of(recipe));
+        when(generateRecipeImagesCommand.execute(any())).thenReturn(generatedImages);
 
         mockMvc.perform(post("/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -55,6 +66,28 @@ public class RecipeControllerAdapterTest {
                 .andExpect(jsonPath("$[0].subtitle").value(recipe.getSubtitle()))
                 .andExpect(jsonPath("$[0].description").value(recipe.getDescription()))
                 .andExpect(jsonPath("$[0].ingredients[0].name").value(recipe.getIngredients().get(0).getName()))
-                .andExpect(jsonPath("$[0].instructions").value(recipe.getInstructions()));
+                .andExpect(jsonPath("$[0].instructions").value(recipe.getInstructions()))
+                .andExpect(jsonPath("$[0].generated_images").exists())
+                .andExpect(jsonPath("$[0].generated_images.size()").value(2))
+                .andExpect(jsonPath("$[0].generated_images[0].image_type").value("MAIN"))
+                .andExpect(jsonPath("$[0].generated_images[1].image_type").value("STEP"));
+    }
+
+    @Test
+    void GIVEN_valid_ingredients_request_WHEN_image_generation_fails_THEN_return_recipes_without_images() throws Exception {
+        Recipe recipe = RecipeFactory.create();
+        RecipeRequest request = RecipeFactory.getRecipeRequest();
+
+        when(getRecipesFromIngredientsCommand.execute(any())).thenReturn(List.of(recipe));
+        when(generateRecipeImagesCommand.execute(any())).thenThrow(new RuntimeException("Image generation failed"));
+
+        mockMvc.perform(post("/recipes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(1))
+                .andExpect(jsonPath("$[0].name").value(recipe.getName()))
+                .andExpect(jsonPath("$[0].generated_images").exists())
+                .andExpect(jsonPath("$[0].generated_images.size()").value(0));
     }
 }

@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements GetRecipesFromIngredientsRepository {
 
     private final String BASIC_PROMPT = FileReader.execute("prompt/generaterecipes/generateRecipeFromIngredientsHeaderPrompt.txt");
-    private final String FILTERS_PROMPT = FileReader.execute("prompt/generaterecipes/generateRecipeFromIngredientsHeaderPrompt.txt");
+    private final String FILTERS_PROMPT = FileReader.execute("prompt/generaterecipes/generateRecipesFiltersPrompt.txt");
 
     @Value("${gemini.api.url}")
     private String url;
@@ -84,7 +84,10 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
                     new TypeReference<>() {}
             );
 
-            List<Recipe> recipesResponse = recipesResponseFromGemini.stream().map(RecipeResponseGeminiModel::toDomain).toList();
+            List<Recipe> recipesResponse = recipesResponseFromGemini.stream()
+                    .map(RecipeResponseGeminiModel::toDomain)
+                    .map(this::fixImageUrl)
+                    .toList();
 
             log.info("Generated {} recipes from Gemini successfully", recipesResponse.size());
 
@@ -121,6 +124,31 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
 
     private List<PartGeminiRequestModel> buildPartsRequest(String prompt) {
         return List.of(PartGeminiRequestModel.builder().text(prompt).build());
+    }
+
+    private Recipe fixImageUrl(Recipe recipe) {
+        // Force correct image URL format regardless of what Gemini generated
+        String sanitizedName = sanitizeRecipeName(recipe.getName());
+        String correctImageUrl = "/api/images/recipes/" + sanitizedName + "_main.jpg";
+        
+        return Recipe.builder()
+                .name(recipe.getName())
+                .image(correctImageUrl)
+                .subtitle(recipe.getSubtitle())
+                .description(recipe.getDescription())
+                .instructions(recipe.getInstructions())
+                .preparationTime(recipe.getPreparationTime())
+                .ingredients(recipe.getIngredients())
+                .cookLevel(recipe.getCookLevel())
+                .filters(recipe.getFilters())
+                .build();
+    }
+    
+    private String sanitizeRecipeName(String recipeName) {
+        if (recipeName == null) return "recipe";
+        return recipeName.replaceAll("[^a-zA-Z0-9\\s]", "")
+                         .replaceAll("\\s+", "_")
+                         .toLowerCase();
     }
 
 }

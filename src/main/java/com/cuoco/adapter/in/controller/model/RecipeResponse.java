@@ -24,4 +24,5 @@ public class RecipeResponse {
     private String preparationTime;
     private List<IngredientResponse> ingredients;
     private ParametricResponse cookLevel;
+    private List<RecipeImageResponse> generatedImages;
 }
