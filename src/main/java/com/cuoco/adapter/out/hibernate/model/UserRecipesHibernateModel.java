@@ -1,5 +1,7 @@
 package com.cuoco.adapter.out.hibernate.model;
 
+import com.cuoco.application.usecase.model.User;
+import com.cuoco.application.usecase.model.UserRecipe;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,4 +33,13 @@ public class UserRecipesHibernateModel {
     private RecipeHibernateModel recipe;
 
     private Boolean favorite;
+
+    public UserRecipe toDomain() {
+        return UserRecipe.builder()
+                .id(id)
+                .user(user.toDomain())
+                .recipe(recipe.toDomain())
+                .favorite(favorite)
+                .build();
+    }
 }
