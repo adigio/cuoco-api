@@ -1,6 +1,6 @@
 package com.cuoco.adapter.in.controller;
 
-import com.cuoco.application.port.in.UserRecipeCommand;
+import com.cuoco.application.port.in.SaveUserRecipeCommand;
 import com.cuoco.application.usecase.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +14,10 @@ public class UserRecipeControllerAdapter {
 
     static final Logger log = LoggerFactory.getLogger(UserRecipeControllerAdapter.class);
 
-    private UserRecipeCommand userRecipeCommand;
+    private SaveUserRecipeCommand saveUserRecipeCommand;
 
-    public UserRecipeControllerAdapter(UserRecipeCommand userRecipeCommand) {
-        this.userRecipeCommand = userRecipeCommand;
+    public UserRecipeControllerAdapter(SaveUserRecipeCommand saveUserRecipeCommand) {
+        this.saveUserRecipeCommand = saveUserRecipeCommand;
     }
 
     @PostMapping("/{id}")
@@ -26,7 +26,7 @@ public class UserRecipeControllerAdapter {
             log.info("Executing save recipe");
 
 
-            Boolean saved = userRecipeCommand.execute(buildRequestToCommand(id));
+            Boolean saved = saveUserRecipeCommand.execute(buildRequestToCommand(id));
 
             if(!saved){
                 log.info("Error to save a recipe");
@@ -42,7 +42,7 @@ public class UserRecipeControllerAdapter {
         }
     }
 
-    private UserRecipeCommand.Command buildRequestToCommand(Long id) throws Exception {
+    private SaveUserRecipeCommand.Command buildRequestToCommand(Long id) throws Exception {
 
         User user=null;
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -54,7 +54,7 @@ public class UserRecipeControllerAdapter {
         if(user==null) {
             throw new Exception("User not found. Please log in to save a recipe.");
         }
-        return new UserRecipeCommand.Command(
+        return new SaveUserRecipeCommand.Command(
                 user,
                 id
         );

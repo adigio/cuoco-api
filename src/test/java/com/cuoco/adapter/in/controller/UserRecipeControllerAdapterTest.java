@@ -1,6 +1,6 @@
 package com.cuoco.adapter.in.controller;
 
-import com.cuoco.application.port.in.UserRecipeCommand;
+import com.cuoco.application.port.in.SaveUserRecipeCommand;
 import com.cuoco.application.usecase.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,13 +13,13 @@ import static org.mockito.Mockito.*;
 
 public class UserRecipeControllerAdapterTest {
 
-    private UserRecipeCommand userRecipeCommand;
+    private SaveUserRecipeCommand saveUserRecipeCommand;
     private UserRecipeControllerAdapter userRecipeControllerAdapter;
 
     @BeforeEach
     public void setUp() {
-        userRecipeCommand = mock(UserRecipeCommand.class);
-        userRecipeControllerAdapter = new UserRecipeControllerAdapter(userRecipeCommand);
+        saveUserRecipeCommand = mock(SaveUserRecipeCommand.class);
+        userRecipeControllerAdapter = new UserRecipeControllerAdapter(saveUserRecipeCommand);
     }
 
     @Test
@@ -28,7 +28,7 @@ public class UserRecipeControllerAdapterTest {
         User user = new User();
         user.setName("testUser");
         setAuthentication(user);
-        when(userRecipeCommand.execute(any(UserRecipeCommand.Command.class))).thenReturn(true);
+        when(saveUserRecipeCommand.execute(any(SaveUserRecipeCommand.Command.class))).thenReturn(true);
 
         // Act
         ResponseEntity<?> response = userRecipeControllerAdapter.save(123L);

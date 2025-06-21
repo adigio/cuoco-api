@@ -2,9 +2,9 @@ package com.cuoco.application.port.in;
 
 import com.cuoco.application.usecase.model.User;
 
-public interface UserRecipeCommand {
+public interface SaveUserRecipeCommand {
 
-    Boolean execute(UserRecipeCommand.Command command);
+    Boolean execute(SaveUserRecipeCommand.Command command);
 
     class Command {
         private User user;
