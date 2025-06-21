@@ -8,7 +8,8 @@ public enum Constants {
     COOK_LEVEL("COOK_LEVEL"),
     FOOD_TYPES("FOOD_TYPES"),
     QUANTITY("QUANTITY"),
-    DIET("DIET");
+    DIET("DIET"),
+    FREEZE("FREEZE");
 
     private final String value;
 
