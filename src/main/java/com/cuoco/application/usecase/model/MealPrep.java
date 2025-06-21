@@ -17,5 +17,5 @@ public class MealPrep {
     private String preparationTime;
     private CookLevel cookLevel;
     private List<Ingredient> ingredients;
-    private RecipeFilter filters;
+    private MealPrepFilter filters;
 }

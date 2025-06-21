@@ -43,11 +43,11 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
     private MealPrep buildMealPrep(Command command) {
         return MealPrep.builder()
                 .ingredients(command.getIngredients())
-                .filters(buildFilters(command.getFilters()))
+                .filters(buildFiltersMealPrep(command.getFilters()))
                 .build();
     }
 
-    private MealPrepFilter buildFilters(MealPrepFilter filter) {
+    private MealPrepFilter buildFiltersMealPrep(MealPrepFilter filter) {
         return MealPrepFilter.builder()
                 .difficulty(filter.getDifficulty() != null ? filter.getDifficulty() : null)
                 .diet(filter.getDiet() != null ? filter.getDiet() : null)
