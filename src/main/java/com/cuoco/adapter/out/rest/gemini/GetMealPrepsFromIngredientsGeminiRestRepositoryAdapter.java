@@ -77,7 +77,7 @@ public class GetMealPrepsFromIngredientsGeminiRestRepositoryAdapter implements G
 
             List<MealPrepResponseGeminiModel> mealPrepResponses = mapper.readValue(
                     sanitizedResponse,
-                    new TypeReference<List<MealPrepResponseGeminiModel>>() {}
+                    new TypeReference<>() {}
             );
 
             List<MealPrep> mealPreps = mealPrepResponses.stream()
