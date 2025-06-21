@@ -53,28 +53,34 @@ public class GetMealPrepsFromIngredientsGeminiRestRepositoryAdapter implements G
                     .map(Ingredient::getName)
                     .collect(Collectors.joining(","));
 
+            log.info("Building basic prompt...");
             String basicPrompt = BASIC_PROMPT
                     .replace("{ingredients}", ingredientNames)
                     .replace("{max_meal_preps}", mealPrep.getFilters().getQuantity().toString());
 
             String filtersPrompt = buildFiltersPrompt(mealPrep.getFilters());
+            log.info("Filters prompt built: {}", filtersPrompt);
 
             String finalPrompt =  basicPrompt.concat(filtersPrompt);
-
+            log.info("Final prompt: {}", finalPrompt);
             PromptBodyGeminiRequestModel prompt = buildPromptBody(finalPrompt);
+            log.info("Prompt body created.");
 
             String geminiUrl = url + "?key=" + apiKey;
 
             GeminiResponseModel response = restTemplate.postForObject(geminiUrl, prompt, GeminiResponseModel.class);
+            log.info("Received response from Gemini.");
+
 
             if (response == null) {
                 throw new RuntimeException("Gemini response is null");
             }
 
             String sanitizedResponse = Utils.sanitizeJsonResponse(response);
+            log.info("Sanitized response: {}", sanitizedResponse);
 
             ObjectMapper mapper = new ObjectMapper();
-
+            log.info("Mapped response to domain objects.");
             List<MealPrepResponseGeminiModel> mealPrepResponses = mapper.readValue(
                     sanitizedResponse,
                     new TypeReference<>() {}

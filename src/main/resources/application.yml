@@ -21,7 +21,7 @@ jwt:
   secret: defaultsecretkeyforjwtauth123456
 gemini:
   api:
-    url: https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=
+    url: https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent
     key: AIzaSyCJbW7Frv2QVg08Az242DH5m6219iHU37E
   temperature: 0.4
 shared:
