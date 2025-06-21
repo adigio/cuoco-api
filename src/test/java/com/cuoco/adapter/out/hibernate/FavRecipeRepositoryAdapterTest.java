@@ -34,7 +34,10 @@ public class FavRecipeRepositoryAdapterTest {
         Recipe recipe = new Recipe();
         recipe.setId(2L);
 
-        UserRecipe userRecipe = new UserRecipe(user, recipe, true);
+        UserRecipe userRecipe = new UserRecipe();
+        userRecipe.setUser(user);
+        userRecipe.setRecipe(recipe);
+        userRecipe.setFavorite(true);
 
         // Act
         Boolean result = repository.execute(userRecipe);

@@ -1,10 +1,9 @@
 package com.cuoco.application.usecase;
 
-import com.cuoco.application.port.in.UserRecipeCommand.Command;
+import com.cuoco.application.port.in.SaveUserRecipeCommand.Command;
 import com.cuoco.application.port.out.FavRecipeRepository;
 import com.cuoco.application.port.out.GetRecipeByIdRepository;
 import com.cuoco.application.port.out.SavedRecipeExistByUsernameRepository;
-import com.cuoco.application.usecase.UserRecipeUseCase;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserRecipe;
@@ -19,7 +18,7 @@ public class UserRecipeUseCaseTest {
     private SavedRecipeExistByUsernameRepository savedRecipeExistByUsernameRepository;
     private GetRecipeByIdRepository getRecipeByIdRepository;
 
-    private UserRecipeUseCase useCase;
+    private SaveUserRecipeUseCase useCase;
 
     @BeforeEach
     public void setUp() {
@@ -27,7 +26,7 @@ public class UserRecipeUseCaseTest {
         savedRecipeExistByUsernameRepository = mock(SavedRecipeExistByUsernameRepository.class);
         getRecipeByIdRepository = mock(GetRecipeByIdRepository.class);
 
-        useCase = new UserRecipeUseCase(favRecipeRepository, savedRecipeExistByUsernameRepository, getRecipeByIdRepository);
+        useCase = new SaveUserRecipeUseCase(favRecipeRepository, savedRecipeExistByUsernameRepository, getRecipeByIdRepository);
     }
 
     @Test
