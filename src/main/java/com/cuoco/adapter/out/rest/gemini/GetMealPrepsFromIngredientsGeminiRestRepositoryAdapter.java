@@ -55,8 +55,7 @@ public class GetMealPrepsFromIngredientsGeminiRestRepositoryAdapter implements G
 
             log.info("Building basic prompt...");
             String basicPrompt = BASIC_PROMPT
-                    .replace("{ingredients}", ingredientNames)
-                    .replace("{max_meal_preps}", mealPrep.getFilters().getQuantity().toString());
+                    .replace("{INGREDIENTS}", ingredientNames);
 
             String filtersPrompt = buildFiltersPrompt(mealPrep.getFilters());
             log.info("Filters prompt built: {}", filtersPrompt);
@@ -64,7 +63,7 @@ public class GetMealPrepsFromIngredientsGeminiRestRepositoryAdapter implements G
             String finalPrompt =  basicPrompt.concat(filtersPrompt);
             log.info("Final prompt: {}", finalPrompt);
             PromptBodyGeminiRequestModel prompt = buildPromptBody(finalPrompt);
-            log.info("Prompt body created.");
+            log.info("Prompt body created.", prompt);
 
             String geminiUrl = url + "?key=" + apiKey;
 

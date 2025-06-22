@@ -4,7 +4,7 @@ Un **meal prep** es un plan de cocina organizado para preparar varias comidas en
 
 Objetivo:
 
-- Genera exactamente 3 meal preps en formato JSON.
+- Generar la cantidad de mealpreps que indican los filtros en formato JSON.
 - Cada meal prep debe cumplir con lo siguiente:
   - Tener un nombre representativo y un subtítulo atractivo.
   - Incluir una lista de nombres de al menos 3 recetas (solo los nombres).
@@ -18,7 +18,7 @@ Objetivo:
   - Tiempo total del meal prep (suma aproximada de los pasos)
   - Dificultad general del meal prep (ver cook_level)
 
-- Utilizar la siguiente estructura JSON:
+- Utilizar la siguiente estructura JSON que corresponde a solamente un mealprep:
 
 [
   {
