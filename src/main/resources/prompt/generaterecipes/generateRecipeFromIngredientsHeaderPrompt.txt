@@ -1,26 +1,79 @@
 Objetivo:
 
-- Genera {{MAX_RECIPES}} recetas argentinas en formato JSON usando estos ingredientes:
+- Genera {{MAX_RECIPES}} recetas argentinas en formato JSON usando TODOS estos ingredientes:
 
 {{INGREDIENTS}}
 
-Instrucciones:
+- OBLIGATORIO: Cada receta DEBE incluir TODOS los ingredientes proporcionados como ingredientes principales
+- Los ingredientes proporcionados deben aparecer en la lista de ingredientes de cada receta
+- Las recetas deben ser lógicas combinando TODOS los ingredientes dados
+- Ejemplo: si dan "queso, arroz" las recetas deben usar tanto queso como arroz juntos
+
+- Las recetas DEBEN usar los ingredientes proporcionados como ingredientes PRINCIPALES, no como acompañamiento menor
+- Las recetas deben ser lógicas y comunes en la cocina argentina
+
+- Con esta estructura JSON
+
+[
+  {
+    "name": "Nombre de la receta",
+    "preparation_time": "25'",
+    "image": "USAR_NOMBRE_RECETA_AQUI",
+    "subtitle": "Descripción breve y atractiva",
+    "description": "Descripción detallada del plato y su sabor",
+    "ingredients": [
+        { "name": "ingrediente1", "quantity": 200.00, "unit": "gr", "optional": false },
+        { "name": "ingrediente2", "quantity": 100.00, "unit": "ml", "optional": false },
+        { "name": "ingrediente3", "quantity": 1.00, "unit": "ud", "optional": false },
+        { "name": "sal y pimienta", "quantity": 1.00, "unit": "pizca", "optional": true },
+    ],
+    "cook_level": {
+        "id": 1,
+        "description": "Bajo"
+    },
+    "instructions": "1. Paso detallado uno, 2. Paso detallado dos, 3. Paso detallado tres"
+  }
+]
+
+Instrucciones CRÍTICAS:
 
 - Usa español argentino como por ejemplo papa (no patata), palta (no aguacate), choclo (no maíz).
 - Para las "instructions" de la receta usa texto plano sin \\n ni saltos de linea.
-- En quantity solo puede ir numeros Double, no pueden ir palabras
-- unit representa la unidad de medida de la cantidad, usar las medidas de la siguiente lista.
-  Si tiene acrónimo o simbolo entre parentesis (Ejemplo (gr) en gramo) usar eso, sino el nombre de la unidad en singular y minuscula
+- IMPORTANTE: En "quantity" SIEMPRE debe ir un número decimal (ej: 1.00, 250.00, 0.50). NUNCA palabras como "pizca", "al gusto", etc.
+- Si es "una pizca" usar quantity: 1.00 y unit: "pizca"
+- Si es "al gusto" usar quantity: 1.00 y unit: "pizca"
+- unit representa la unidad de medida. Usar EXACTAMENTE estas unidades:
 
-    [Mililitro (ml), Gramo (gr), Kilogramo (kg), Litro (l), Cucharada (cda), Cucharadita (cdta), Unidad (ud), Taza (tz),
-    pizca, diente, lata, botella, sobre, rodaja, rebanada, puñado, Onza (oz), Libra (lb), miligramo (mg), Centilitro (cl), copa, cucharon]
+    [ml, gr, kg, l, cda, cdta, ud, tz, pizca, diente, lata, botella, sobre, rodaja, rebanada, puñado, oz, lb, mg, cl, copa, cucharon]
 
 - Incluye acentos correctos y ñ. Tiempo en formato '30 min' o '1 h 30 min'.
-- cook_level representa la dificultad de cocinar el plato, solo pueden ser 1:Bajo, 2:Medio, 3:Alto
+- cook_level representa la dificultad: solo pueden ser 1:Bajo, 2:Medio, 3:Alto
+- CRÍTICO: Para el campo "image" NO usar URLs genéricas como "https://ejemplo.com". En su lugar usar EXACTAMENTE: "/api/images/recipes/" + nombre_de_la_receta_sin_espacios_ni_acentos_en_minusculas + "_main.jpg"
 - Devuelve solo el array JSON sin ```json ni explicaciones.
 - No agregar texto adicional, solo el JSON.
 
 Ejemplo del JSON con las recetas que debes devolver:
+
+[
+  {
+    "name": "Sánguches de salchicha con mayonesa",
+    "preparation_time": "15'",
+    "image": "/api/images/recipes/sanguches_de_salchicha_con_mayonesa_main.jpg",
+    "subtitle": "Un clásico rápido y fácil.",
+    "description": "Pan tierno relleno con salchichas jugosas y una cremosa mayonesa.",
+    "ingredients": [
+        { "name": "Salchichas", "quantity": 4.0, "unit": "ud", "optional": false },
+        { "name": "Pan de miga", "quantity": 4.0, "unit": "rebanada", "optional": false }
+    ],
+    "cook_level": {
+        "id": 1,
+        "description": "Bajo"
+    },
+    "instructions": "1. Calentar las salchichas a la plancha. 2. Untar el pan con mayonesa. 3. Armar los sánguches."
+  }
+]
+
+
 
 [
   {

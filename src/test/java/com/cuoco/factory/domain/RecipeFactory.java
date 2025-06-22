@@ -56,6 +56,18 @@ public class RecipeFactory {
                 .build();
     }
 
+    public static Recipe createWithEmptyInstructions() {
+        Recipe recipe = create();
+        recipe.setInstructions("");
+        return recipe;
+    }
+
+    public static Recipe createWithManySteps() {
+        Recipe recipe = create();
+        recipe.setInstructions("1. First step; 2. Second step; 3. Third step; 4. Fourth step; 5. Fifth step; 6. Sixth step; 7. Seventh step");
+        return recipe;
+    }
+
     public static RecipeRequest getRecipeRequest() {
         Recipe recipe = create();
 

@@ -1,0 +1,23 @@
+Fotografía realista del proceso de cocina: {STEP_INSTRUCTION}
+
+CREAR IMAGEN SIN NINGÚN TEXTO VISIBLE - SOLO MANOS COCINANDO
+
+PROHIBIDO COMPLETAMENTE:
+- Cualquier letra, número, palabra o símbolo escrito
+- Etiquetas en frascos, envases o productos
+- Carteles, letreros, stickers o calcomanías
+- Libros de cocina, recetas impresas o papeles con texto
+- Relojes digitales con números
+- Envases comerciales con marcas
+- Instrucciones escritas de cualquier tipo
+- Títulos, subtítulos o leyendas
+- Cualquier elemento con escritura
+
+MOSTRAR ÚNICAMENTE:
+- Manos en primer plano preparando comida
+- Ingredientes frescos sin envases etiquetados
+- Utensilios de cocina básicos (cuchillos, tablas, sartenes)
+- Proceso de cocción en acción
+
+Estilo: Fotografía casera, cocina doméstica argentina, luz natural.
+IMAGEN 100% SIN TEXTO DE NINGÚN TIPO. 

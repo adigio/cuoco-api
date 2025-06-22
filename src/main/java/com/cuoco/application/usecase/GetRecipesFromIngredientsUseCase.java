@@ -91,7 +91,7 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
             recipesToSave = getRecipesFromIngredientsProvider.execute(recipeToGenerate);
             savedRecipes = recipesToSave.stream().map(createRecipeRepository::execute).limit(recipesNeeded).toList();
 
-            return Stream.concat(foundedRecipes.stream(), savedRecipes.stream()).toList();
+            return Stream.concat(foundedRecipes.stream(), savedRecipes.stream()).limit(maxRecipesToGenerate).toList();
         }
 
         log.info("Can't find saved recipes with the provided ingredients and filters. Generating new ones");

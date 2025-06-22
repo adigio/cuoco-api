@@ -27,4 +27,5 @@ public class RecipeResponse {
     private List<ParametricResponse> categories;
     private List<IngredientResponse> ingredients;
 
+    private List<RecipeImageResponse> generatedImages;
 }
