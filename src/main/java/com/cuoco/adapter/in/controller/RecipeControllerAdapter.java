@@ -4,15 +4,18 @@ import com.cuoco.adapter.in.controller.model.IngredientRequest;
 import com.cuoco.adapter.in.controller.model.IngredientResponse;
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
 import com.cuoco.adapter.in.controller.model.RecipeFilterRequest;
+import com.cuoco.adapter.in.controller.model.RecipeImageResponse;
 import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.adapter.in.controller.model.UnitResponse;
+import com.cuoco.application.port.in.GenerateRecipeImagesCommand;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
 import com.cuoco.application.usecase.model.CookLevel;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.RecipeFilter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +30,9 @@ import java.util.List;
 public class RecipeControllerAdapter {
 
     private final GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand;
+    
+    @Autowired(required = false)
+    private GenerateRecipeImagesCommand generateRecipeImagesCommand;
 
     public RecipeControllerAdapter(GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand) {
         this.getRecipesFromIngredientsCommand = getRecipesFromIngredientsCommand;
@@ -92,7 +98,21 @@ public class RecipeControllerAdapter {
                                 .description(recipe.getCookLevel().getDescription())
                                 .build()
                 )
+                .generatedImages(buildImages(recipe))
                 .build();
+    }
+
+    private List<RecipeImageResponse> buildImages(Recipe recipe) {
+        try {
+            if (generateRecipeImagesCommand != null) {
+                return generateRecipeImagesCommand.execute(GenerateRecipeImagesCommand.Command.builder().recipe(recipe).build())
+                        .stream().map(RecipeImageResponse::fromDomain).toList();
+            }
+            return List.of();
+        } catch (Exception e) {
+            log.warn("Failed to generate images for recipe: {}", recipe.getName(), e);
+            return List.of();
+        }
     }
 
     private IngredientResponse buildIngredientResponse(Ingredient ingredient) {

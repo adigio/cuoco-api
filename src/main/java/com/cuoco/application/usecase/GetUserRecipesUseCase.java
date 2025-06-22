@@ -2,7 +2,6 @@ package com.cuoco.application.usecase;
 
 import com.cuoco.application.port.in.GetUserRecipeCommand;
 import com.cuoco.application.port.out.GetUserRecipesRepository;
-import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserRecipe;
 import org.slf4j.Logger;

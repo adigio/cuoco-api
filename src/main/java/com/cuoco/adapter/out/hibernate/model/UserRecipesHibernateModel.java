@@ -1,6 +1,5 @@
 package com.cuoco.adapter.out.hibernate.model;
 
-import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserRecipe;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

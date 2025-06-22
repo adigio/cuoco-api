@@ -1,0 +1,15 @@
+Creá una foto realista de '{RECIPE_NAME}' con ingredientes: {MAIN_INGREDIENTS}.
+
+Foto casera con celular, iluminación natural, mesa de madera, apariencia auténtica y apetitosa.
+
+ESTRICTAMENTE PROHIBIDO: 
+- Texto de cualquier tipo (letras, números, palabras, frases)
+- Carteles, etiquetas, stickers, letreros
+- Instrucciones escritas, recetas impresas
+- Nombres de platos, títulos, descripciones
+- Cualquier escritura visible en la imagen
+
+SOLO mostrar: La comida terminada, plato servido, presentación final.
+Colores vibrantes y atractivos, texturas realistas, buena iluminación, presentación colorida.
+
+Estilo: Comida casera argentina, fotografía limpia de alimentos, IMAGEN 100% SIN TEXTO. 

@@ -31,9 +31,16 @@ public class RecipeResponseGeminiModel {
     private List<IngredientResponseGeminiModel> ingredients;
 
     public Recipe toDomain() {
+        // Process dynamic image URL
+        String processedImageUrl = image;
+        if (image != null && image.contains("{recipe_name_sanitized}")) {
+            String sanitizedName = sanitizeRecipeName(name);
+            processedImageUrl = image.replace("{recipe_name_sanitized}", sanitizedName);
+        }
+        
         return Recipe.builder()
                 .name(name)
-                .image(image)
+                .image(processedImageUrl)
                 .subtitle(subtitle)
                 .description(description)
                 .instructions(instructions)
@@ -46,5 +53,12 @@ public class RecipeResponseGeminiModel {
                 )
                 .cookLevel(cookLevel.toDomain())
                 .build();
+    }
+    
+    private String sanitizeRecipeName(String recipeName) {
+        if (recipeName == null) return "recipe";
+        return recipeName.replaceAll("[^a-zA-Z0-9\\s]", "")
+                         .replaceAll("\\s+", "_")
+                         .toLowerCase();
     }
 }

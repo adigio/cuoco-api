@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -14,4 +16,5 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GenerationConfigurationGeminiRequestModel {
     private Double temperature;
+    private List<String> responseModalities;
 }
