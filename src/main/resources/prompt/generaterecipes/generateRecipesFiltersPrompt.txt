@@ -1,8 +1,8 @@
 Para generar las recetas con las instrucciones antes dadas, utilizar las siguientes condiciones:
-(Si el valor no esta o es null, ignorar la condicion)
+(Si el valor es vacio, array vacio o es null, ignorar la condicion)
 
-- Tiempo máximo de preparación: {{COOK_TIME}}
 - Nivel de dificultad: {{COOK_LEVEL}}
-- Tipos de comida: {{FOOD_TYPES}}
-- Dieta: {{DIET}}
-- Porciones: {{QUANTITY}}
+- Tiempo de preparación: {{PREPARATION_TIME}}
+- Tipos de comida (Como desayuno, almuerzo, merienda, cena): {{MEAL_TYPES}}
+- Categoria de la comida: {{MEAL_CATEGORIES}}
+- Porciones: 1 persona

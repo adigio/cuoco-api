@@ -16,8 +16,8 @@ public class Recipe {
     private String image;
     private PreparationTime preparationTime;
     private MealType type;
-    private MealCategory category;
     private CookLevel cookLevel;
+    private List<MealCategory> categories;
     private List<Ingredient> ingredients;
 
     private RecipeFilter filters;

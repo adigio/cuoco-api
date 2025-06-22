@@ -12,6 +12,7 @@ import com.cuoco.application.usecase.model.RecipeFilter;
 import com.cuoco.shared.model.ErrorDescription;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
@@ -44,7 +45,6 @@ public class GetRecipesFromIngredientsDatabaseRepositoryAdapter implements GetRe
 
             Integer preparationTimeId = null;
             Integer cookLevelId = null;
-            String maxPreparationTime = null;
             List<Integer> typesIds = null;
             List<Integer> categoriesIds = null;
 
@@ -75,7 +75,8 @@ public class GetRecipesFromIngredientsDatabaseRepositoryAdapter implements GetRe
                     preparationTimeId,
                     cookLevelId,
                     typesIds,
-                    categoriesIds
+                    categoriesIds,
+                    PageRequest.of(0, recipe.getConfiguration().getSize())
             );
 
             if(savedRecipes.isEmpty()) {

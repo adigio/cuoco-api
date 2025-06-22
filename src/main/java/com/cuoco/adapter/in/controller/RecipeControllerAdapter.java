@@ -9,12 +9,11 @@ import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.adapter.in.controller.model.UnitResponse;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
-import com.cuoco.application.usecase.model.CookLevel;
 import com.cuoco.application.usecase.model.Ingredient;
+import com.cuoco.application.usecase.model.MealCategory;
 import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.PreparationTime;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.RecipeFilter;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -83,11 +82,13 @@ public class RecipeControllerAdapter {
         return RecipeResponse.builder()
                 .id(recipe.getId())
                 .name(recipe.getName())
-                .image(recipe.getImage())
                 .subtitle(recipe.getSubtitle())
                 .description(recipe.getDescription())
-                .preparationTime(recipe.getPreparationTime())
+                .image(recipe.getImage())
                 .instructions(recipe.getInstructions())
+                .preparationTime(buildParametricResponse(recipe.getPreparationTime()))
+                .type(buildParametricResponse(recipe.getType()))
+                .categories(recipe.getCategories().stream().map(this::buildParametricResponse).toList())
                 .ingredients(recipe.getIngredients().stream().map(this::buildIngredientResponse).toList())
                 .cookLevel(
                         ParametricResponse.builder()
@@ -109,6 +110,27 @@ public class RecipeControllerAdapter {
                         .symbol(ingredient.getUnit().getSymbol())
                         .build()
                 )
+                .build();
+    }
+
+    private ParametricResponse buildParametricResponse(MealType mealType) {
+        return ParametricResponse.builder()
+                .id(mealType.getId())
+                .description(mealType.getDescription())
+                .build();
+    }
+
+    private ParametricResponse buildParametricResponse(MealCategory mealCategory) {
+        return ParametricResponse.builder()
+                .id(mealCategory.getId())
+                .description(mealCategory.getDescription())
+                .build();
+    }
+
+    private ParametricResponse buildParametricResponse(PreparationTime preparationTime) {
+        return ParametricResponse.builder()
+                .id(preparationTime.getId())
+                .description(preparationTime.getDescription())
                 .build();
     }
 }

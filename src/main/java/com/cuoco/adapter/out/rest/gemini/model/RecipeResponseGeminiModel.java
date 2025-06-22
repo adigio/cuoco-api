@@ -26,9 +26,10 @@ public class RecipeResponseGeminiModel {
     private String subtitle;
     private String description;
     private String instructions;
-    private String preparationTime;
+    private PreparationTimeResponseGeminiModel preparationTime;
     private CookLevelResponseGeminiModel cookLevel;
     private List<IngredientResponseGeminiModel> ingredients;
+    private List<MealCategoryResponseGeminiModel> categories;
 
     public Recipe toDomain() {
         return Recipe.builder()
@@ -37,14 +38,10 @@ public class RecipeResponseGeminiModel {
                 .subtitle(subtitle)
                 .description(description)
                 .instructions(instructions)
-                .preparationTime(preparationTime)
-                .ingredients(
-                        ingredients
-                                .stream()
-                                .map(IngredientResponseGeminiModel::toDomain)
-                                .toList()
-                )
+                .preparationTime(preparationTime.toDomain())
                 .cookLevel(cookLevel.toDomain())
+                .ingredients(ingredients.stream().map(IngredientResponseGeminiModel::toDomain).toList())
+                .categories(categories.stream().map(MealCategoryResponseGeminiModel::toDomain).toList())
                 .build();
     }
 }

@@ -4,11 +4,11 @@ public enum Constants {
 
     INGREDIENTS("INGREDIENTS"),
     MAX_RECIPES("MAX_RECIPES"),
-    COOK_TIME("COOK_TIME"),
+
+    PREPARATION_TIME("COOK_TIME"),
     COOK_LEVEL("COOK_LEVEL"),
-    FOOD_TYPES("FOOD_TYPES"),
-    QUANTITY("QUANTITY"),
-    DIET("DIET");
+    MEAL_TYPES("MEAL_TYPES"),
+    MEAL_CATEGORIES("MEAL_CATEGORIES");
 
     private final String value;
 

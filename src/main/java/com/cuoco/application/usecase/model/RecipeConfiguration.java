@@ -9,6 +9,6 @@ import java.util.List;
 @Builder
 public class RecipeConfiguration {
 
-    private Integer recipesSize;
+    private Integer size;
     private List<Long> notInclude;
 }

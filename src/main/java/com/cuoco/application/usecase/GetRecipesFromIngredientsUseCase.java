@@ -71,7 +71,7 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
         int userPlan = getUserPlan();
 
         Recipe recipeToGenerate = buildRecipe(command, userPlan);
-        Integer recipesSize = recipeToGenerate.getConfiguration().getRecipesSize();
+        Integer recipesSize = recipeToGenerate.getConfiguration().getSize();
 
         List<Recipe> foundedRecipes = getRecipesFromIngredientsRepository.execute(recipeToGenerate);
 
@@ -146,12 +146,12 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
             recipesSize = command.getRecipesSize() != null ? command.getRecipesSize() : PREMIUM_MAX_RECIPES;
 
             return RecipeConfiguration.builder()
-                    .recipesSize(recipesSize)
+                    .size(recipesSize)
                     .notInclude(command.getNotInclude())
                     .build();
         } else {
             return RecipeConfiguration.builder()
-                    .recipesSize(FREE_MAX_RECIPES)
+                    .size(FREE_MAX_RECIPES)
                     .build();
         }
     }

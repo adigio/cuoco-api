@@ -1,6 +1,6 @@
 package com.cuoco.adapter.out.hibernate.model;
 
-import com.cuoco.application.usecase.model.RecipeIngredient;
+import com.cuoco.application.usecase.model.RecipeMealCategory;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,12 +12,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "recipe_ingredients")
+@Entity(name = "recipe_meal_categories")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecipeIngredientsHibernateModel {
+public class RecipeMealCategoriesHibernateModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,15 +28,12 @@ public class RecipeIngredientsHibernateModel {
     private RecipeHibernateModel recipe;
 
     @ManyToOne
-    @JoinColumn(name = "ingredient_id", referencedColumnName = "id")
-    private IngredientHibernateModel ingredient;
+    @JoinColumn(name = "meal_category_id", referencedColumnName = "id")
+    private MealCategoryHibernateModel category;
 
-    private Double quantity;
-    private Boolean optional;
-
-    public RecipeIngredient toDomain() {
-        return RecipeIngredient.builder()
-                .ingredient(ingredient.toDomain(quantity, optional))
+    public RecipeMealCategory toDomain() {
+        return RecipeMealCategory.builder()
+                .category(category.toDomain())
                 .build();
     }
 }

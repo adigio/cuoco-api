@@ -1,6 +1,7 @@
 package com.cuoco.adapter.out.hibernate.model;
 
 import com.cuoco.application.usecase.model.Ingredient;
+import com.cuoco.application.usecase.model.MealCategory;
 import com.cuoco.application.usecase.model.Recipe;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -9,6 +10,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -41,18 +43,27 @@ public class RecipeHibernateModel {
     private PreparationTimeHibernateModel preparationTime;
 
     @ManyToOne
+    @JoinColumn(name = "type_id")
     private MealTypeHibernateModel type;
-
-    @ManyToOne
-    private MealCategoryHibernateModel category;
 
     @ManyToOne
     private CookLevelHibernateModel cookLevel;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<RecipeIngredientsHibernateModel> recipeIngredients;
+    private List<RecipeIngredientsHibernateModel> ingredients;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<RecipeMealCategoriesHibernateModel> categories;
 
     public Recipe toDomain() {
+        List<Ingredient> domainIngredients = ingredients.stream()
+                .map(ri -> ri.toDomain().getIngredient())
+                .toList();
+
+        List<MealCategory> domainCategories = categories.stream()
+                .map(c -> c.toDomain().getCategory())
+                .toList();
+
         return Recipe.builder()
                 .id(id)
                 .name(name)
@@ -62,20 +73,9 @@ public class RecipeHibernateModel {
                 .instructions(instructions)
                 .preparationTime(preparationTime.toDomain())
                 .type(type.toDomain())
-                .category(category.toDomain())
                 .cookLevel(cookLevel.toDomain())
-                .ingredients(
-                        recipeIngredients.stream()
-                                .map(ri -> {
-                                    Ingredient ingredient = ri.getIngredient().toDomain();
-
-                                    ingredient.setQuantity(ri.getQuantity());
-                                    ingredient.setOptional(ri.getOptional());
-
-                                    return ingredient;
-                                })
-                                .toList()
-                )
+                .categories(domainCategories)
+                .ingredients(domainIngredients)
                 .build();
     }
 }

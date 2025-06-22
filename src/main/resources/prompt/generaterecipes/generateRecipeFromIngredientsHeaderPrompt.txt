@@ -4,29 +4,6 @@ Objetivo:
 
 {{INGREDIENTS}}
 
-- Con esta estructura JSON
-
-[
-  {
-    "name": "Nombre de la receta",
-    "preparation_time": "25'",
-    "image": "https://ejemplo.com/imagen.jpg",
-    "subtitle": "Descripción breve y atractiva",
-    "description": "Descripción detallada del plato y su sabor",
-    "ingredients": [
-        { "name": "ingrediente1", "quantity": 200.00, "unit": "gr", "optional": false },
-        { "name": "ingrediente2", "quantity": 100.00, "unit": "ml", "optional": false },
-        { "name": "ingrediente3", "quantity": 100.00, "unit": "ud", "optional": false },
-        { "name": "ingrediente4", "quantity": 1.50, "unit": "lata", "optional": true },
-    ],
-    "cook_level": {
-        "id": 1,
-        "description": "Bajo"
-    },
-    "instructions": "1. Paso detallado uno, 2. Paso detallado dos, 3. Paso detallado tres"
-  }
-]
-
 Instrucciones:
 
 - Usa español argentino como por ejemplo papa (no patata), palta (no aguacate), choclo (no maíz).
@@ -45,4 +22,33 @@ Instrucciones:
 
 Ejemplo del JSON con las recetas que debes devolver:
 
-
+[
+  {
+    "name": "Nombre de la receta",
+    "subtitle": "Descripción breve y atractiva",
+    "description": "Descripción detallada del plato y su sabor",
+    "image": "https://ejemplo.com/imagen.jpg",
+    "instructions": "1. Paso detallado uno, 2. Paso detallado dos, 3. Paso detallado tres",
+    "preparation_time": {
+        description: "20min"
+    },
+    "type": {
+        "id": 1,
+        "description": "desayuno/merienda"
+    },
+    "cook_level": {
+        "id": 1,
+        "description": "Bajo"
+    },
+    "ingredients": [
+        { "name": "ingrediente1", "quantity": 200.00, "unit": "gr", "optional": false },
+        { "name": "ingrediente2", "quantity": 100.00, "unit": "ml", "optional": false },
+        { "name": "ingrediente3", "quantity": 100.00, "unit": "ud", "optional": false },
+        { "name": "ingrediente4", "quantity": 1.50, "unit": "lata", "optional": true },
+    ],
+    "categories": [
+        { "id": 1, "description": "Con gluten"},
+        { "id": 2, "description": "Con lactosa"}
+    ]
+  }
+]

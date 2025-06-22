@@ -12,6 +12,8 @@ import com.cuoco.adapter.out.rest.gemini.utils.Constants;
 import com.cuoco.adapter.out.rest.gemini.utils.Utils;
 import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
 import com.cuoco.application.usecase.model.Ingredient;
+import com.cuoco.application.usecase.model.MealCategory;
+import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.RecipeFilter;
 import com.cuoco.shared.FileReader;
@@ -32,8 +34,11 @@ import java.util.stream.Collectors;
 @Qualifier("provider")
 public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements GetRecipesFromIngredientsRepository {
 
+    private final String DELIMITER = com.cuoco.shared.utils.Constants.COMMA.getValue();
+    private final String EMPTY_STRING = com.cuoco.shared.utils.Constants.EMPTY.getValue();
+
     private final String BASIC_PROMPT = FileReader.execute("prompt/generaterecipes/generateRecipeFromIngredientsHeaderPrompt.txt");
-    private final String FILTERS_PROMPT = FileReader.execute("prompt/generaterecipes/generateRecipeFromIngredientsHeaderPrompt.txt");
+    private final String FILTERS_PROMPT = FileReader.execute("prompt/generaterecipes/generateRecipesFiltersPrompt.txt");
 
     @Value("${gemini.api.url}")
     private String url;
@@ -55,28 +60,25 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
         try {
             log.info("Executing recipes generation from Gemini rest adapter with ingredients: {}", recipe.getIngredients());
 
-            String ingredientNames = recipe.getIngredients().stream().map(Ingredient::getName).collect(Collectors.joining(","));
+            String ingredientNames = recipe.getIngredients().stream().map(Ingredient::getName).collect(Collectors.joining(DELIMITER));
 
             String basicPrompt = BASIC_PROMPT
                     .replace(Constants.INGREDIENTS.getValue(), ingredientNames)
                     .replace(Constants.MAX_RECIPES.getValue(), recipe.getFilters().getMaxRecipes().toString());
 
             String filtersPrompt = buildFiltersPrompt(recipe.getFilters());
-
             String finalPrompt = filtersPrompt == null ? basicPrompt : basicPrompt.concat(filtersPrompt);
 
-            PromptBodyGeminiRequestModel prompt = buildPromptBody(finalPrompt);
+            PromptBodyGeminiRequestModel promptBody = buildPromptBody(finalPrompt);
 
             String geminiUrl = url + "?key=" + apiKey;
-
-            GeminiResponseModel response = restTemplate.postForObject(geminiUrl, prompt, GeminiResponseModel.class);
+            GeminiResponseModel response = restTemplate.postForObject(geminiUrl, promptBody, GeminiResponseModel.class);
 
             if(response == null) {
                 throw new UnprocessableException(ErrorDescription.NOT_AVAILABLE.getValue());
             }
 
             String recipeResponseText = Utils.sanitizeJsonResponse(response);
-
             ObjectMapper mapper = new ObjectMapper();
 
             List<RecipeResponseGeminiModel> recipesResponseFromGemini = mapper.readValue(
@@ -98,14 +100,33 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
     private String buildFiltersPrompt(RecipeFilter filters) {
 
         if(filters.getEnable()) {
-            String foodTypes = String.join(",", filters.getTypes());
+
+            String cookLevel = EMPTY_STRING;
+            String preparationTime = EMPTY_STRING;
+            String types = EMPTY_STRING;
+            String categories = EMPTY_STRING;
+
+            if(filters.getCookLevel() != null && !filters.getCookLevel().getDescription().isBlank()) {
+                cookLevel = filters.getCookLevel().getDescription();
+            }
+
+            if(filters.getPreparationTime() != null && !filters.getPreparationTime().getDescription().isBlank()) {
+                preparationTime = filters.getPreparationTime().getDescription();
+            }
+
+            if(filters.getTypes() != null && !filters.getTypes().isEmpty()) {
+                types = filters.getTypes().stream().map(MealType::getDescription).collect(Collectors.joining(DELIMITER));
+            }
+
+            if(filters.getCategories() != null && !filters.getCategories().isEmpty()) {
+                categories = filters.getCategories().stream().map(MealCategory::getDescription).collect(Collectors.joining(DELIMITER));
+            }
 
             return FILTERS_PROMPT
-                    .replace(Constants.QUANTITY.getValue(), filters.getQuantity().toString())
-                    .replace(Constants.COOK_LEVEL.getValue(), filters.getDifficulty().getDescription())
-                    .replace(Constants.COOK_TIME.getValue(), filters.getTime())
-                    .replace(Constants.FOOD_TYPES.getValue(), foodTypes)
-                    .replace(Constants.DIET.getValue(), filters.getDiet());
+                    .replace(Constants.COOK_LEVEL.getValue(), cookLevel)
+                    .replace(Constants.PREPARATION_TIME.getValue(), preparationTime)
+                    .replace(Constants.MEAL_TYPES.getValue(), types)
+                    .replace(Constants.MEAL_CATEGORIES.getValue(), categories);
         }
 
         return null;

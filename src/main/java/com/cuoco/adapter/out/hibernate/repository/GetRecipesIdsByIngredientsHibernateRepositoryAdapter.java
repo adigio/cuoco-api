@@ -13,7 +13,7 @@ public interface GetRecipesIdsByIngredientsHibernateRepositoryAdapter extends Jp
 
     @Query("""
         SELECT r.id FROM recipe r
-        JOIN r.recipeIngredients ri
+        JOIN r.ingredients ri
         JOIN ri.ingredient i
         WHERE LOWER(i.name) IN :ingredientNames
     """)

@@ -3,21 +3,29 @@ package com.cuoco.adapter.out.hibernate;
 import com.cuoco.adapter.exception.UnprocessableException;
 import com.cuoco.adapter.out.hibernate.model.CookLevelHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.IngredientHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.MealCategoryHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.MealTypeHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.PreparationTimeHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.RecipeHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.RecipeIngredientsHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.RecipeMealCategoriesHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.UnitHibernateModel;
 import com.cuoco.adapter.out.hibernate.repository.CreateIngredientHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.CreateRecipeHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.CreateRecipeIngredientsHibernateRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.CreateRecipeMealCategoriesHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.GetIngredientByNameHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.GetUnitBySymbolHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.CreateRecipeRepository;
 import com.cuoco.application.usecase.model.Ingredient;
+import com.cuoco.application.usecase.model.MealCategory;
 import com.cuoco.application.usecase.model.Recipe;
+import com.cuoco.application.usecase.model.RecipeMealCategory;
 import com.cuoco.shared.model.ErrorDescription;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.data.jdbc.core.JdbcAggregateOperations;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -33,19 +41,22 @@ public class CreateRecipeDatabaseRepositoryAdapter implements CreateRecipeReposi
     private final CreateIngredientHibernateRepositoryAdapter createIngredientHibernateRepositoryAdapter;
     private final CreateRecipeIngredientsHibernateRepositoryAdapter createRecipeIngredientsHibernateRepositoryAdapter;
     private final GetUnitBySymbolHibernateRepositoryAdapter getUnitBySymbolHibernateRepositoryAdapter;
+    private final CreateRecipeMealCategoriesHibernateRepositoryAdapter createRecipeMealCategoriesHibernateRepositoryAdapter;
 
     public CreateRecipeDatabaseRepositoryAdapter(
             GetIngredientByNameHibernateRepositoryAdapter getIngredientByNameHibernateRepositoryAdapter,
             CreateRecipeHibernateRepositoryAdapter createRecipeHibernateRepositoryAdapter,
             CreateIngredientHibernateRepositoryAdapter createIngredientHibernateRepositoryAdapter,
             CreateRecipeIngredientsHibernateRepositoryAdapter createRecipeIngredientsHibernateRepositoryAdapter,
-            GetUnitBySymbolHibernateRepositoryAdapter getUnitBySymbolHibernateRepositoryAdapter
+            GetUnitBySymbolHibernateRepositoryAdapter getUnitBySymbolHibernateRepositoryAdapter,
+            CreateRecipeMealCategoriesHibernateRepositoryAdapter createRecipeMealCategoriesHibernateRepositoryAdapter
     ) {
         this.getIngredientByNameHibernateRepositoryAdapter = getIngredientByNameHibernateRepositoryAdapter;
         this.createRecipeHibernateRepositoryAdapter = createRecipeHibernateRepositoryAdapter;
         this.createIngredientHibernateRepositoryAdapter = createIngredientHibernateRepositoryAdapter;
         this.createRecipeIngredientsHibernateRepositoryAdapter = createRecipeIngredientsHibernateRepositoryAdapter;
         this.getUnitBySymbolHibernateRepositoryAdapter = getUnitBySymbolHibernateRepositoryAdapter;
+        this.createRecipeMealCategoriesHibernateRepositoryAdapter = createRecipeMealCategoriesHibernateRepositoryAdapter;
     }
 
     @Override
@@ -54,9 +65,13 @@ public class CreateRecipeDatabaseRepositoryAdapter implements CreateRecipeReposi
 
         RecipeHibernateModel savedRecipe = createRecipeHibernateRepositoryAdapter.save(buildRecipeHibernateModel(recipe));
 
-        List<RecipeIngredientsHibernateModel> recipeIngredientsHibernateModel = recipe.getIngredients().stream().map(ingredient -> buildRecipeIngredientHibernateModel(savedRecipe, ingredient)).toList();
-        List<RecipeIngredientsHibernateModel> savedRecipeIngredients = createRecipeIngredientsHibernateRepositoryAdapter.saveAll(recipeIngredientsHibernateModel);
-        savedRecipe.setRecipeIngredients(savedRecipeIngredients);
+        List<RecipeIngredientsHibernateModel> recipeIngredientsHibernateModels = recipe.getIngredients().stream().map(ingredient -> buildRecipeIngredientHibernateModel(savedRecipe, ingredient)).toList();
+        List<RecipeIngredientsHibernateModel> savedRecipeIngredients = createRecipeIngredientsHibernateRepositoryAdapter.saveAll(recipeIngredientsHibernateModels);
+        savedRecipe.setIngredients(savedRecipeIngredients);
+
+        List<RecipeMealCategoriesHibernateModel> recipeMealCategoriesHibernateModels = recipe.getCategories().stream().map(category -> buildRecipeMealCategoriesHibernateModel(savedRecipe, category)).toList();
+        List<RecipeMealCategoriesHibernateModel> savedRecipeCategories = createRecipeMealCategoriesHibernateRepositoryAdapter.saveAll(recipeMealCategoriesHibernateModels);
+        savedRecipe.setCategories(savedRecipeCategories);
 
         Recipe recipeResponse = savedRecipe.toDomain();
 
@@ -68,16 +83,22 @@ public class CreateRecipeDatabaseRepositoryAdapter implements CreateRecipeReposi
     private RecipeHibernateModel buildRecipeHibernateModel(Recipe recipe) {
         return RecipeHibernateModel.builder()
                 .name(recipe.getName())
-                .imageUrl(recipe.getImage())
                 .subtitle(recipe.getSubtitle())
                 .description(recipe.getDescription())
+                .imageUrl(recipe.getImage())
                 .instructions(recipe.getInstructions())
-                .preparationTime(recipe.getPreparationTime())
-                .cookLevel(
-                        CookLevelHibernateModel.builder()
-                                .id(recipe.getCookLevel().getId())
-                                .description(recipe.getCookLevel().getDescription())
-                                .build()
+                .preparationTime(PreparationTimeHibernateModel.builder()
+                        .id(recipe.getPreparationTime().getId())
+                        .description(recipe.getPreparationTime().getDescription())
+                        .build())
+                .type(MealTypeHibernateModel.builder()
+                        .id(recipe.getType().getId())
+                        .description(recipe.getType().getDescription())
+                        .build())
+                .cookLevel(CookLevelHibernateModel.builder()
+                        .id(recipe.getCookLevel().getId())
+                        .description(recipe.getCookLevel().getDescription())
+                        .build()
                 )
                 .build();
     }
@@ -106,6 +127,15 @@ public class CreateRecipeDatabaseRepositoryAdapter implements CreateRecipeReposi
         return IngredientHibernateModel.builder()
                 .name(ingredient.getName())
                 .unit(unitHibernateModel.get())
+                .build();
+    }
+
+    private RecipeMealCategoriesHibernateModel buildRecipeMealCategoriesHibernateModel(RecipeHibernateModel savedRecipe, MealCategory category) {
+        MealCategoryHibernateModel categoryHibernateModel = MealCategoryHibernateModel.builder().id(category.getId()).description(category.getDescription()).build();
+
+        return RecipeMealCategoriesHibernateModel.builder()
+                .recipe(savedRecipe)
+                .category(categoryHibernateModel)
                 .build();
     }
 }
