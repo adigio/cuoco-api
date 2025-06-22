@@ -33,11 +33,15 @@ public class MealPrepResponseGeminiModel {
         return MealPrep.builder()
                 .name(name)
                 .subtitle(subtitle)
-                .recipes(recipes)
-                .instructions(instructions.stream().map(InstructionResponseGeminiModel::toDomain).toList())
+                .recipes(recipes != null ? recipes : List.of())
+                .instructions(instructions != null
+                        ? instructions.stream().map(InstructionResponseGeminiModel::toDomain).toList()
+                        : List.of())
                 .preparationTime(preparationTime)
-                .ingredients(ingredients.stream().map(IngredientResponseGeminiModel::toDomain).toList())
-                .cookLevel(cookLevel.toDomain())
+                .ingredients(ingredients != null
+                        ? ingredients.stream().map(IngredientResponseGeminiModel::toDomain).toList()
+                        : List.of())
+                .cookLevel(cookLevel != null ? cookLevel.toDomain() : null)
                 .build();
     }
 }
