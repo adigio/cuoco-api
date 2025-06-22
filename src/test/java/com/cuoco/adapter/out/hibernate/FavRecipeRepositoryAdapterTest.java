@@ -1,9 +1,5 @@
 package com.cuoco.adapter.out.hibernate;
 
-import com.cuoco.adapter.out.hibernate.FavRecipeRepositoryAdapter;
-import com.cuoco.adapter.out.hibernate.model.RecipeHibernateModel;
-import com.cuoco.adapter.out.hibernate.model.UserHibernateModel;
-import com.cuoco.adapter.out.hibernate.model.UserRecipesHibernateModel;
 import com.cuoco.adapter.out.hibernate.repository.SaveUserRecipeHibernateRepositoryAdapter;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.User;
@@ -11,8 +7,11 @@ import com.cuoco.application.usecase.model.UserRecipe;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.argThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class FavRecipeRepositoryAdapterTest {
 
@@ -34,7 +33,10 @@ public class FavRecipeRepositoryAdapterTest {
         Recipe recipe = new Recipe();
         recipe.setId(2L);
 
-        UserRecipe userRecipe = new UserRecipe(user, recipe, true);
+        UserRecipe userRecipe = new UserRecipe();
+        userRecipe.setUser(user);
+        userRecipe.setRecipe(recipe);
+        userRecipe.setFavorite(true);
 
         // Act
         Boolean result = repository.execute(userRecipe);

@@ -1,6 +1,5 @@
 package com.cuoco.adapter.out.rest.gemini;
 
-import com.cuoco.adapter.exception.NotAvailableException;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.GeminiResponseModel;
 import com.cuoco.application.usecase.domainservice.ImageDomainService;
 import com.cuoco.application.usecase.model.Recipe;
@@ -16,7 +15,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;

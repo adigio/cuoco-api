@@ -1,16 +1,26 @@
 package com.cuoco.application.usecase.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserRecipe {
 
+    private Long id;
     private User user;
     private Recipe recipe;
     private boolean favorite;
 
-    public UserRecipe(User user, Recipe recipe, boolean favorite) {
-        this.user = user;
-        this.recipe = recipe;
-        this.favorite = favorite;
+    public Long getId() {
+        return id;
     }
+
+
 
     public User getUser() {
         return user;

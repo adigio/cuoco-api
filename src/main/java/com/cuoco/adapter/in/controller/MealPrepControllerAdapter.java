@@ -1,8 +1,19 @@
 package com.cuoco.adapter.in.controller;
 
-import com.cuoco.adapter.in.controller.model.*;
+import com.cuoco.adapter.in.controller.model.IngredientRequest;
+import com.cuoco.adapter.in.controller.model.IngredientResponse;
+import com.cuoco.adapter.in.controller.model.InstructionResponse;
+import com.cuoco.adapter.in.controller.model.MealPrepFilterRequest;
+import com.cuoco.adapter.in.controller.model.MealPrepRequest;
+import com.cuoco.adapter.in.controller.model.MealPrepResponse;
+import com.cuoco.adapter.in.controller.model.ParametricResponse;
+import com.cuoco.adapter.in.controller.model.UnitResponse;
 import com.cuoco.application.port.in.GetMealPrepFromIngredientsCommand;
-import com.cuoco.application.usecase.model.*;
+import com.cuoco.application.usecase.model.CookLevel;
+import com.cuoco.application.usecase.model.Ingredient;
+import com.cuoco.application.usecase.model.Instruction;
+import com.cuoco.application.usecase.model.MealPrep;
+import com.cuoco.application.usecase.model.MealPrepFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

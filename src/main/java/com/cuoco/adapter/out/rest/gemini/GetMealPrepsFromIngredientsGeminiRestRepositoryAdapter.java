@@ -1,14 +1,18 @@
 package com.cuoco.adapter.out.rest.gemini;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.cuoco.adapter.out.rest.gemini.model.MealPrepResponseGeminiModel;
-import com.cuoco.adapter.out.rest.gemini.model.wrapper.*;
+import com.cuoco.adapter.out.rest.gemini.model.wrapper.ContentGeminiRequestModel;
+import com.cuoco.adapter.out.rest.gemini.model.wrapper.GeminiResponseModel;
+import com.cuoco.adapter.out.rest.gemini.model.wrapper.GenerationConfigurationGeminiRequestModel;
+import com.cuoco.adapter.out.rest.gemini.model.wrapper.PartGeminiRequestModel;
+import com.cuoco.adapter.out.rest.gemini.model.wrapper.PromptBodyGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.utils.Utils;
 import com.cuoco.application.port.out.GetMealPrepsFromIngredientsRepository;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.MealPrep;
 import com.cuoco.application.usecase.model.MealPrepFilter;
 import com.cuoco.shared.FileReader;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;

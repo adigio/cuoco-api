@@ -7,8 +7,10 @@ import com.cuoco.application.usecase.model.UserRecipe;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class SavedRecipeExistByUsernameRepositoryAdapterTest {
 
@@ -30,7 +32,10 @@ public class SavedRecipeExistByUsernameRepositoryAdapterTest {
         Recipe recipe = new Recipe();
         recipe.setId(2L);
 
-        UserRecipe userRecipe = new UserRecipe(user, recipe, false);
+        UserRecipe userRecipe = new UserRecipe();
+        userRecipe.setUser(user);
+        userRecipe.setRecipe(recipe);
+        userRecipe.setFavorite(false);
 
         when(existRepo.existsByUserIdAndRecipeId(1L, 2L)).thenReturn(true);
 
@@ -50,7 +55,10 @@ public class SavedRecipeExistByUsernameRepositoryAdapterTest {
         Recipe recipe = new Recipe();
         recipe.setId(4L);
 
-        UserRecipe userRecipe = new UserRecipe(user, recipe, false);
+        UserRecipe userRecipe = new UserRecipe();
+        userRecipe.setUser(user);
+        userRecipe.setRecipe(recipe);
+        userRecipe.setFavorite(false);
 
         when(existRepo.existsByUserIdAndRecipeId(3L, 4L)).thenReturn(false);
 

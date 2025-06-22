@@ -51,7 +51,7 @@ public class SaveUserRecipeUseCase implements SaveUserRecipeCommand {
     }
 
     private UserRecipe buildUserRecipe(Command command) {
-        return new UserRecipe(command.getUser(),
+        return new UserRecipe(null,command.getUser(),
                 getRecipe(command.getRecipeId()),
                 false);
 
