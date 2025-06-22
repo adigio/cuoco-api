@@ -2,9 +2,9 @@ spring:
   application:
     name: cuoco
   datasource:
-    url: jdbc:mysql://localhost:3306/cuoco?serverTimezone=UTC
-    username: root
-    password: Tomas.1995
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: none
@@ -18,15 +18,15 @@ springdoc:
   swagger-ui:
     path: /swagger-ui
 jwt:
-  secret: defaultsecretkeyforjwtauth123456
+  secret: ${JWT_SECRET}
 gemini:
   api:
-    url: https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent
-    key: AIzaSyCJbW7Frv2QVg08Az242DH5m6219iHU37E
-  temperature: 0.4
+    url: ${GEMINI_API_URL}
+    key: ${GEMINI_API_KEY}
+  temperature: ${GEMINI_TEMPERATURE}
 shared:
   plan:
     free:
-      max-recipes: 3
+      max-recipes: ${FREE_MAX_RECIPES}
     premium:
-      max-recipes: 5
+      max-recipes: ${PREMIUM_MAX_RECIPES}

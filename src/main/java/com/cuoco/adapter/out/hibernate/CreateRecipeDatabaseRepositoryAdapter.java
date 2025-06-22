@@ -52,6 +52,13 @@ public class CreateRecipeDatabaseRepositoryAdapter implements CreateRecipeReposi
     public Recipe execute(Recipe recipe) {
         log.info("Saving recipe and ingredients in database: {}", recipe);
 
+        // Check if recipe with same name already exists (normalized comparison)
+        Optional<RecipeHibernateModel> existingRecipe = createRecipeHibernateRepositoryAdapter.findByNameIgnoreCase(recipe.getName().trim());
+        if (existingRecipe.isPresent()) {
+            log.info("Recipe with name '{}' already exists with ID {}. Returning existing recipe.", recipe.getName(), existingRecipe.get().getId());
+            return existingRecipe.get().toDomain();
+        }
+
         RecipeHibernateModel savedRecipe = createRecipeHibernateRepositoryAdapter.save(buildRecipeHibernateModel(recipe));
 
         List<RecipeIngredientsHibernateModel> recipeIngredientsHibernateModel = recipe.getIngredients().stream().map(ingredient -> buildRecipeIngredientHibernateModel(savedRecipe, ingredient)).toList();

@@ -50,6 +50,7 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
 
         List<Recipe> foundedRecipes = getRecipesFromIngredientsRepository.execute(recipeToGenerate);
 
+        // Check if we already have enough saved recipes
         if (!foundedRecipes.isEmpty() && foundedRecipes.size() >= maxRecipesToGenerate) {
             log.info("Founded enough {} saved recipes with the provided ingredients and filters.", foundedRecipes.size());
             return foundedRecipes.stream().limit(maxRecipesToGenerate).toList();
@@ -66,7 +67,7 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
             recipesToSave = getRecipesFromIngredientsProvider.execute(recipeToGenerate);
             savedRecipes = recipesToSave.stream().map(createRecipeRepository::execute).limit(recipesNeeded).toList();
 
-            return Stream.concat(foundedRecipes.stream(), savedRecipes.stream()).toList();
+            return Stream.concat(foundedRecipes.stream(), savedRecipes.stream()).limit(maxRecipesToGenerate).toList();
         }
 
         log.info("Can't find saved recipes with the provided ingredients and filters. Generating new ones");
@@ -104,8 +105,6 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
                     .enable(false)
                     .build();
         }
-
-
     }
 
     private int getUserPlan() {
