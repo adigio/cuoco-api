@@ -15,7 +15,6 @@ import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.RecipeFilter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,12 +29,14 @@ import java.util.List;
 public class RecipeControllerAdapter {
 
     private final GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand;
-    
-    @Autowired(required = false)
-    private GenerateRecipeImagesCommand generateRecipeImagesCommand;
+    private final GenerateRecipeImagesCommand generateRecipeImagesCommand;
 
-    public RecipeControllerAdapter(GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand) {
+    public RecipeControllerAdapter(
+            GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand,
+            GenerateRecipeImagesCommand generateRecipeImagesCommand
+    ) {
         this.getRecipesFromIngredientsCommand = getRecipesFromIngredientsCommand;
+        this.generateRecipeImagesCommand = generateRecipeImagesCommand;
     }
 
     @PostMapping()
