@@ -23,6 +23,8 @@ gemini:
   api:
     url: ${GEMINI_API_URL}
     key: ${GEMINI_API_KEY}
+  image:
+    url: ${GEMINI_IMAGE_URL}
   temperature: ${GEMINI_TEMPERATURE}
 shared:
   plan:
