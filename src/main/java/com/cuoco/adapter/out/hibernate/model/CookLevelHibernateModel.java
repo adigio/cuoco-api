@@ -10,7 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "cook_level")
+@Entity(name = "cook_levels")
 @Data
 @Builder
 @NoArgsConstructor

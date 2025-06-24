@@ -10,6 +10,7 @@ import com.cuoco.application.port.out.GetDietaryNeedsByIdRepository;
 import com.cuoco.application.port.out.GetMealTypeByIdRepository;
 import com.cuoco.application.port.out.GetPreparationTimeByIdRepository;
 import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
+import com.cuoco.application.usecase.domainservice.RecipeDomainService;
 import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.CookLevel;
 import com.cuoco.application.usecase.model.Diet;
@@ -41,6 +42,8 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
     @Value("${shared.plan.premium.max-recipes}")
     private int PREMIUM_MAX_RECIPES;
 
+    private final RecipeDomainService recipeDomainService;
+
     private final GetPreparationTimeByIdRepository getPreparationTimeByIdRepository;
     private final GetCookLevelByIdRepository getCookLevelByIdRepository;
     private final GetMealTypeByIdRepository getMealTypeByIdRepository;
@@ -49,20 +52,18 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
     private final GetDietaryNeedsByIdRepository getDietaryNeedsByIdRepository;
 
     private final GetRecipesFromIngredientsRepository getRecipesFromIngredientsRepository;
-    private final GetRecipesFromIngredientsRepository getRecipesFromIngredientsProvider;
-    private final CreateRecipeRepository createRecipeRepository;
 
     public GetRecipesFromIngredientsUseCase(
+            RecipeDomainService recipeDomainService,
             GetPreparationTimeByIdRepository getPreparationTimeByIdRepository,
             GetCookLevelByIdRepository getCookLevelByIdRepository,
             GetMealTypeByIdRepository getMealTypeByIdRepository,
             GetDietByIdRepository getDietByIdRepository,
             GetAllergiesByIdRepository getAllergiesByIdRepository,
             GetDietaryNeedsByIdRepository getDietaryNeedsByIdRepository,
-            @Qualifier("repository") GetRecipesFromIngredientsRepository getRecipesFromIngredientsRepository,
-            @Qualifier("provider") GetRecipesFromIngredientsRepository getRecipesFromIngredientsProvider,
-            CreateRecipeRepository createRecipeRepository
+            @Qualifier("repository") GetRecipesFromIngredientsRepository getRecipesFromIngredientsRepository
     ) {
+        this.recipeDomainService = recipeDomainService;
         this.getPreparationTimeByIdRepository = getPreparationTimeByIdRepository;
         this.getCookLevelByIdRepository = getCookLevelByIdRepository;
         this.getMealTypeByIdRepository = getMealTypeByIdRepository;
@@ -70,8 +71,6 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
         this.getAllergiesByIdRepository = getAllergiesByIdRepository;
         this.getDietaryNeedsByIdRepository = getDietaryNeedsByIdRepository;
         this.getRecipesFromIngredientsRepository = getRecipesFromIngredientsRepository;
-        this.getRecipesFromIngredientsProvider = getRecipesFromIngredientsProvider;
-        this.createRecipeRepository = createRecipeRepository;
     }
 
     public List<Recipe> execute(Command command) {
@@ -79,36 +78,18 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
 
         int userPlan = getUserPlan();
 
-        Recipe recipeToGenerate = buildRecipe(command, userPlan);
-        Integer recipesSize = recipeToGenerate.getConfiguration().getSize();
+        Recipe recipeToFind = buildRecipe(command, userPlan);
 
-        List<Recipe> foundedRecipes = getRecipesFromIngredientsRepository.execute(recipeToGenerate);
+        List<Recipe> foundedRecipes = getRecipesFromIngredientsRepository.execute(recipeToFind);
 
-        if (!foundedRecipes.isEmpty() && foundedRecipes.size() >= recipesSize) {
-            log.info("Founded enough {} saved recipes with the provided ingredients and filters.", foundedRecipes.size());
-            return foundedRecipes.stream().limit(recipesSize).toList();
-        }
+        List<Recipe> recipesToResponse = recipeDomainService.generateIfNeeded(recipeToFind, foundedRecipes);
 
-        List<Recipe> recipesToSave;
-        List<Recipe> savedRecipes;
+        return recipesToResponse;
+    }
 
-        if (!foundedRecipes.isEmpty()) {
-            int recipesNeeded = recipesSize - foundedRecipes.size();
-
-            log.info("Founded only {} saved recipes. Generating {} new recipes to complete", foundedRecipes.size(), recipesNeeded);
-
-            recipesToSave = getRecipesFromIngredientsProvider.execute(recipeToGenerate);
-            savedRecipes = recipesToSave.stream().map(createRecipeRepository::execute).limit(recipesNeeded).toList();
-
-            return Stream.concat(foundedRecipes.stream(), savedRecipes.stream()).limit(recipesSize).toList();
-        }
-
-        log.info("Can't find saved recipes with the provided ingredients and filters. Generating new ones");
-
-        recipesToSave = getRecipesFromIngredientsProvider.execute(recipeToGenerate);
-        savedRecipes = recipesToSave.stream().map(createRecipeRepository::execute).toList();
-
-        return savedRecipes.stream().limit(recipesSize).toList();
+    private int getUserPlan() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return user.getPlan().getId();
     }
 
     private Recipe buildRecipe(Command command, int userPlan) {
@@ -152,11 +133,8 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
     }
 
     private RecipeConfiguration buildConfiguration(Command command, int userPlan) {
-
-        int size;
-
         if(userPlan == PlanConstants.PREMIUM.getValue()) {
-            size = command.getSize() != null ? command.getSize() : PREMIUM_MAX_RECIPES;
+            int size = command.getSize() != null ? command.getSize() : PREMIUM_MAX_RECIPES;
 
             return RecipeConfiguration.builder()
                     .size(size)
@@ -167,10 +145,5 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
                     .size(FREE_MAX_RECIPES)
                     .build();
         }
-    }
-
-    private int getUserPlan() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return user.getPlan().getId();
     }
 }

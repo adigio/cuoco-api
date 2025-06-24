@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public class GetAllUnitsDatabaseRepositoryAdapter implements GetAllUnitsRepository {
 
-    private GetAllUnitsHibernateRepositoryAdapter getAllUnitsHibernateRepositoryAdapter;
+    private final GetAllUnitsHibernateRepositoryAdapter getAllUnitsHibernateRepositoryAdapter;
 
     public GetAllUnitsDatabaseRepositoryAdapter(GetAllUnitsHibernateRepositoryAdapter getAllUnitsHibernateRepositoryAdapter) {
         this.getAllUnitsHibernateRepositoryAdapter = getAllUnitsHibernateRepositoryAdapter;

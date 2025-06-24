@@ -52,7 +52,7 @@ public class CookLevelControllerAdapter {
             )
     })
     public ResponseEntity<List<ParametricResponse>> getAll() {
-        log.info("GET all cook levels");
+        log.info("Executing GET all cook levels");
 
         List<CookLevel> cookLevels = getAllCookLevelsQuery.execute();
         List<ParametricResponse> response = cookLevels.stream().map(this::buildParametricResponse).toList();

@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class GetAllPreparationTimesUseCase implements GetAllPreparationTimesQuery {
 
-    private GetAllPreparationTimesRepository getAllPreparationTimesRepository;
+    private final GetAllPreparationTimesRepository getAllPreparationTimesRepository;
 
     public GetAllPreparationTimesUseCase(GetAllPreparationTimesRepository getAllPreparationTimesRepository) {
         this.getAllPreparationTimesRepository = getAllPreparationTimesRepository;

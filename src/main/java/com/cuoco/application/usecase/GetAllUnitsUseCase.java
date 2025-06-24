@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class GetAllUnitsUseCase implements GetAllUnitsQuery {
 
-    private GetAllUnitsRepository getAllUnitsRepository;
+    private final GetAllUnitsRepository getAllUnitsRepository;
 
     public GetAllUnitsUseCase(GetAllUnitsRepository getAllUnitsRepository) {
         this.getAllUnitsRepository = getAllUnitsRepository;

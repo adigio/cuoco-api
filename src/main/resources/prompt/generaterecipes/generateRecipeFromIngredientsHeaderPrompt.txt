@@ -15,8 +15,6 @@ Instrucciones CRÍTICAS:
 - Usa español argentino como por ejemplo papa (no patata), palta (no aguacate), choclo (no maíz).
 - Para las "instructions" de la receta usa texto plano sin \\n ni saltos de linea.
 - IMPORTANTE: En "quantity" SIEMPRE debe ir un número decimal (ej: 1.00, 250.00, 0.50). NUNCA palabras como "pizca", "al gusto", etc.
-- Si es "una pizca" usar quantity: 1.00 y unit: "pizca"
-- Si es "al gusto" usar quantity: 1.00 y unit: "pizca"
 - Incluye acentos correctos y ñ.
 - unit representa la unidad de medida del ingrediente. Usar EXACTAMENTE las unidades del JSON de units
 - preparation_time_id es el tiempo de preparacion de la receta. Usar EXACTAMENTE los tiempos del JSON de preparation_times
@@ -26,8 +24,7 @@ Instrucciones CRÍTICAS:
 - allergy_ids representa los tipos de alergias que puede tener la receta en base a sus ingredientes. Usar EXACTAMENTE las alergias del JSON de allergies (si no tiene, no agregues nada)
 - dietary_need_ids representa los tipos de necesidades alimenticias que pertenece la receta. Usar EXACTAMENTE las necesidades del JSON de dietary_needs (si no pertenece a ninguno, no agregues nada)
 - CRÍTICO: Para el campo "image" NO usar URLs genéricas como "https://ejemplo.com". En su lugar usar EXACTAMENTE: "/api/images/recipes/" + nombre_de_la_receta_sin_espacios_ni_acentos_en_minusculas + "_main.jpg"
-- Devuelve solo el array JSON sin ```json ni explicaciones.
-- No agregar texto adicional, solo el JSON.
+- Devuelve solo el array JSON sin ```json ni explicaciones ni texto adicional.
 
 Ejemplo de la estructura del JSON con las recetas que debes devolver:
 
@@ -38,17 +35,26 @@ Ejemplo de la estructura del JSON con las recetas que debes devolver:
     "description": "Descripción detallada del plato y su sabor",
     "instructions": "1. Paso detallado uno, 2. Paso detallado dos, 3. Paso detallado tres",
     "image": "https://ejemplo.com/imagen.jpg",
-    "preparation_time_id": 1,
-    "cook_level_id": 1,
-    "diet_id": 1,
-    "meal_type_id": 1,
-    "allergy_ids": [1,2,3],
-    "dietary_need_ids": [1,2,3],
+    "preparation_time": {
+        "id": 1,
+        "description": "20 min"
+    },
+    "cook_level": {
+        "id": 1,
+        "description": "bajo"
+    },
+    "diet": {
+        "id": 1, //Si no pertenece a ninguna en especifico, no agregues nada
+        "description": "Vegetariano"
+    },
+    "meal_types": [{"id": "2", "description": "Almuerzo"}, {"id": "4", "description": "Cena"}],
+    "allergies": [{ "id": "1", "description": "alergia1"},{ "id": "2", "description": "alergia2"},{ "id": "3", "description": "algergia3"}],
+    "dietary_needs": [{ "id": "1", "description": "dietary need 1"},{ "id": "2", "description": "dietary need 2"}],
     "ingredients": [
-        { "name": "ingrediente1", "quantity": 200.00, "unit": "gr", "optional": false },
-        { "name": "ingrediente2", "quantity": 100.00, "unit": "ml", "optional": false },
-        { "name": "ingrediente3", "quantity": 100.00, "unit": "ud", "optional": false },
-        { "name": "ingrediente4", "quantity": 1.50, "unit": "lata", "optional": true },
+        { "name": "ingrediente1", "quantity": 200.00, "unit": { "id": "1", "symbol": "gr"}, "optional": false },
+        { "name": "ingrediente2", "quantity": 100.00, "unit": { "id": "2", "symbol": "ml"}, "optional": false },
+        { "name": "ingrediente3", "quantity": 100.00, "unit": { "id": "3", "symbol": "ud"}, "optional": false },
+        { "name": "ingrediente4", "quantity": 1.50, "unit": { "id": "4", "symbol": "cd"}, "optional": true },
     ]
   }
 ]

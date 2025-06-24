@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class GetAllCookLevelsUseCase implements GetAllCookLevelsQuery {
 
-    private GetAllCookLevelsRepository getAllCookLevelsRepository;
+    private final GetAllCookLevelsRepository getAllCookLevelsRepository;
 
     public GetAllCookLevelsUseCase(GetAllCookLevelsRepository getAllCookLevelsRepository) {
         this.getAllCookLevelsRepository = getAllCookLevelsRepository;

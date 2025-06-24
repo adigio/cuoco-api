@@ -66,15 +66,15 @@ public class GetRecipesFromIngredientsDatabaseRepositoryAdapter implements GetRe
                     cookLevelId = filters.getCookLevel().getId();
                 }
 
-                if(!filters.getTypes().isEmpty()) {
+                if(filters.getTypes() != null && !filters.getTypes().isEmpty()) {
                     mealTypesIds = filters.getTypes().stream().map(MealType::getId).toList();
                 }
 
-                if(!filters.getAllergies().isEmpty()) {
+                if(filters.getAllergies() != null && !filters.getAllergies().isEmpty()) {
                     allergiesIds = filters.getAllergies().stream().map(Allergy::getId).toList();
                 }
 
-                if(!filters.getDietaryNeeds().isEmpty()) {
+                if(filters.getDietaryNeeds() != null && !filters.getDietaryNeeds().isEmpty()) {
                     dietaryNeedsIds = filters.getDietaryNeeds().stream().map(DietaryNeed::getId).toList();
                 }
             }

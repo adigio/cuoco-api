@@ -22,10 +22,12 @@ import com.cuoco.application.port.out.GetAllergiesByIdRepository;
 import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.MealType;
+import com.cuoco.application.usecase.model.ParametricData;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.RecipeFilter;
 import com.cuoco.shared.FileReader;
 import com.cuoco.shared.model.ErrorDescription;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -58,9 +60,11 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
     @Value("${gemini.temperature}")
     private Double temperature;
 
+    private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;
 
-    public GetRecipesFromIngredientsGeminiRestRepositoryAdapter(RestTemplate restTemplate) {
+    public GetRecipesFromIngredientsGeminiRestRepositoryAdapter(ObjectMapper objectMapper, RestTemplate restTemplate) {
+        this.objectMapper = objectMapper;
         this.restTemplate = restTemplate;
     }
 
@@ -73,7 +77,8 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
 
             String basicPrompt = BASIC_PROMPT
                     .replace(Constants.INGREDIENTS.getValue(), ingredientNames)
-                    .replace(Constants.MAX_RECIPES.getValue(), recipe.getFilters().getMaxRecipes().toString());
+                    .replace(Constants.MAX_RECIPES.getValue(), recipe.getConfiguration().getSize().toString())
+                    .concat(buildParametricPrompt(recipe.getConfiguration().getParametricData()));
 
             String filtersPrompt = buildFiltersPrompt(recipe.getFilters());
             String finalPrompt = filtersPrompt == null ? basicPrompt : basicPrompt.concat(filtersPrompt);
@@ -88,16 +93,14 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
             }
 
             String recipeResponseText = Utils.sanitizeJsonResponse(response);
-            ObjectMapper mapper = new ObjectMapper();
 
-            List<RecipeResponseGeminiModel> recipesResponseFromGemini = mapper.readValue(
+            List<RecipeResponseGeminiModel> recipesResponseFromGemini = objectMapper.readValue(
                     recipeResponseText,
                     new TypeReference<>() {}
             );
 
             List<Recipe> recipesResponse = recipesResponseFromGemini.stream()
                     .map(RecipeResponseGeminiModel::toDomain)
-                    .map(this::fixImageUrl)
                     .toList();
 
             log.info("Generated {} recipes from Gemini successfully", recipesResponse.size());
@@ -109,15 +112,15 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
         }
     }
 
-    private String buildParametricPrompt() {
+    private String buildParametricPrompt(ParametricData parametricData) throws JsonProcessingException {
         return PARAMETRIC_PROMPT
-                .replace(Constants.PARAMETRIC_UNITS.getValue(),"")
-                .replace(Constants.PARAMETRIC_PREPARATION_TIMES.getValue(),"")
-                .replace(Constants.PARAMETRIC_COOK_LEVELS.getValue(),"")
-                .replace(Constants.PARAMETRIC_DIETS.getValue(),"")
-                .replace(Constants.PARAMETRIC_MEAL_TYPES.getValue(),"")
-                .replace(Constants.PARAMETRIC_ALLERGIES.getValue(),"")
-                .replace(Constants.PARAMETRIC_DIETARY_NEEDS.getValue(),"");
+                .replace(Constants.PARAMETRIC_UNITS.getValue(), objectMapper.writeValueAsString(parametricData.getUnits()))
+                .replace(Constants.PARAMETRIC_PREPARATION_TIMES.getValue(), objectMapper.writeValueAsString(parametricData.getPreparationTimes()))
+                .replace(Constants.PARAMETRIC_COOK_LEVELS.getValue(), objectMapper.writeValueAsString(parametricData.getCookLevels()))
+                .replace(Constants.PARAMETRIC_DIETS.getValue(), objectMapper.writeValueAsString(parametricData.getDiets()))
+                .replace(Constants.PARAMETRIC_MEAL_TYPES.getValue(), objectMapper.writeValueAsString(parametricData.getMealTypes()))
+                .replace(Constants.PARAMETRIC_ALLERGIES.getValue(), objectMapper.writeValueAsString(parametricData.getAllergies()))
+                .replace(Constants.PARAMETRIC_DIETARY_NEEDS.getValue(), objectMapper.writeValueAsString(parametricData.getDietaryNeeds()));
     }
 
     private String buildFiltersPrompt(RecipeFilter filters) {
@@ -181,30 +184,4 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
     private List<PartGeminiRequestModel> buildPartsRequest(String prompt) {
         return List.of(PartGeminiRequestModel.builder().text(prompt).build());
     }
-
-    private Recipe fixImageUrl(Recipe recipe) {
-        // Force correct image URL format regardless of what Gemini generated
-        String sanitizedName = sanitizeRecipeName(recipe.getName());
-        String correctImageUrl = "/api/images/recipes/" + sanitizedName + "_main.jpg";
-        
-        return Recipe.builder()
-                .name(recipe.getName())
-                .image(correctImageUrl)
-                .subtitle(recipe.getSubtitle())
-                .description(recipe.getDescription())
-                .instructions(recipe.getInstructions())
-                .preparationTime(recipe.getPreparationTime())
-                .ingredients(recipe.getIngredients())
-                .cookLevel(recipe.getCookLevel())
-                .filters(recipe.getFilters())
-                .build();
-    }
-    
-    private String sanitizeRecipeName(String recipeName) {
-        if (recipeName == null) return "recipe";
-        return recipeName.replaceAll("[^a-zA-Z0-9\\s]", "")
-                         .replaceAll("\\s+", "_")
-                         .toLowerCase();
-    }
-
 }

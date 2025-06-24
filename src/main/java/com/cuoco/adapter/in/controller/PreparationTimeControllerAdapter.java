@@ -52,7 +52,7 @@ public class PreparationTimeControllerAdapter {
             )
     })
     public ResponseEntity<List<ParametricResponse>> getAllPreparationTimes() {
-        log.info("GET all preparation times");
+        log.info("Executing GET all preparation times");
         List<PreparationTime> preparationTimes = getAllPreparationTimesQuery.execute();
         List<ParametricResponse> response = preparationTimes.stream().map(this::buildParametricResponse).toList();
 

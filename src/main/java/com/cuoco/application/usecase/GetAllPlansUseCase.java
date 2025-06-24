@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class GetAllPlansUseCase implements GetAllPlansQuery {
 
-    private GetAllPlansRepository getAllPlansRepository;
+    private final GetAllPlansRepository getAllPlansRepository;
 
     public GetAllPlansUseCase(GetAllPlansRepository getAllPlansRepository) {
         this.getAllPlansRepository = getAllPlansRepository;

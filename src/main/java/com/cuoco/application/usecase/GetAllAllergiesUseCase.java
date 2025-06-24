@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class GetAllAllergiesUseCase implements GetAllAllergiesQuery {
 
-    private GetAllAllergiesRepository getAllAllergiesRepository;
+    private final GetAllAllergiesRepository getAllAllergiesRepository;
 
     public GetAllAllergiesUseCase(GetAllAllergiesRepository getAllAllergiesRepository) {
         this.getAllAllergiesRepository = getAllAllergiesRepository;

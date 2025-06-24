@@ -11,4 +11,6 @@ public class RecipeConfiguration {
 
     private Integer size;
     private List<Long> notInclude;
+
+    private ParametricData parametricData;
 }

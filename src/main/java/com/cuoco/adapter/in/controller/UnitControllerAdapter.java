@@ -52,7 +52,7 @@ public class UnitControllerAdapter {
             )
     })
     public ResponseEntity<List<ParametricResponse>> getAll() {
-        log.info("GET all measure units");
+        log.info("Executing GET all measure units");
         List<Unit> units = getAllUnitsQuery.execute();
         List<ParametricResponse> response = units.stream().map(this::buildParametricResponse).toList();
 
@@ -64,6 +64,7 @@ public class UnitControllerAdapter {
         return ParametricResponse.builder()
                 .id(unit.getId())
                 .description(unit.getDescription())
+                .symbol(unit.getSymbol())
                 .build();
     }
 }

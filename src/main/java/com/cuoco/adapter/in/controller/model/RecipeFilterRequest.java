@@ -22,6 +22,4 @@ public class RecipeFilterRequest {
     private List<Integer> allergiesIds;
     private List<Integer> dietaryNeedsIds;
 
-    private Boolean useProfilePreferences;
-
 }

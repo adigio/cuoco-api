@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Entity(name = "recipe")
+@Entity(name = "recipes")
 @Data
 @Builder
 @NoArgsConstructor
@@ -90,7 +90,7 @@ public class RecipeHibernateModel {
                 .image(imageUrl)
                 .preparationTime(preparationTime.toDomain())
                 .cookLevel(cookLevel.toDomain())
-                .diet(diet.toDomain())
+                .diet(diet != null ? diet.toDomain() : null)
                 .mealTypes(mealTypes.stream().map(MealTypeHibernateModel::toDomain).toList())
                 .allergies(allergies.stream().map(AllergyHibernateModel::toDomain).toList())
                 .dietaryNeeds(dietaryNeeds.stream().map(DietaryNeedHibernateModel::toDomain).toList())

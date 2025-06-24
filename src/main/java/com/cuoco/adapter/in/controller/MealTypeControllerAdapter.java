@@ -1,8 +1,9 @@
 package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
-import com.cuoco.application.port.in.GetAllAllergiesQuery;
-import com.cuoco.application.usecase.model.Allergy;
+import com.cuoco.application.port.in.GetAllMealTypesQuery;
+import com.cuoco.application.usecase.model.Diet;
+import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.shared.GlobalExceptionHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -21,22 +22,22 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/allergies")
-public class AllergyControllerAdapter {
+@RequestMapping("/meal-types")
+public class MealTypeControllerAdapter {
 
-    private final GetAllAllergiesQuery getAllAllergiesQuery;
+    private final GetAllMealTypesQuery getAllMealTypesQuery;
 
-    public AllergyControllerAdapter(GetAllAllergiesQuery getAllAllergiesQuery) {
-        this.getAllAllergiesQuery = getAllAllergiesQuery;
+    public MealTypeControllerAdapter(GetAllMealTypesQuery getAllMealTypesQuery) {
+        this.getAllMealTypesQuery = getAllMealTypesQuery;
     }
 
     @GetMapping
-    @Tag(name = "Parametric Endpoints", description = "Parametric values of immutable resources")
-    @Operation(summary = "GET all the allergies")
+    @Tag(name = "Parametric Endpoints")
+    @Operation(summary = "GET all the meal types")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Return all the existent allergies",
+                    description = "Return all the existent meal types",
                     content = @Content(
                             mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = ParametricResponse.class))
@@ -52,18 +53,19 @@ public class AllergyControllerAdapter {
             )
     })
     public ResponseEntity<List<ParametricResponse>> getAll() {
-        log.info("Executing GET all allergies");
-        List<Allergy> allergies = getAllAllergiesQuery.execute();
-        List<ParametricResponse> response = allergies.stream().map(this::buildParametricResponse).toList();
+        log.info("Executing GET all meal types");
+        List<MealType> mealTypes = getAllMealTypesQuery.execute();
+        List<ParametricResponse> response = mealTypes.stream().map(this::buildParametricResponse).toList();
 
-        log.info("All allergies are retrieved successfully");
+        log.info("All meal types are retrieved successfully");
         return ResponseEntity.ok(response);
     }
 
-    private ParametricResponse buildParametricResponse(Allergy allergy) {
+    private ParametricResponse buildParametricResponse(MealType mealTypes) {
         return ParametricResponse.builder()
-                .id(allergy.getId())
-                .description(allergy.getDescription())
+                .id(mealTypes.getId())
+                .description(mealTypes.getDescription())
                 .build();
     }
+
 }

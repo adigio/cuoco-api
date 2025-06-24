@@ -22,12 +22,16 @@ import java.util.List;
 public class RecipeResponseGeminiModel {
     private String id;
     private String name;
-    private String image;
     private String subtitle;
     private String description;
     private String instructions;
+    private String image;
     private PreparationTimeResponseGeminiModel preparationTime;
     private CookLevelResponseGeminiModel cookLevel;
+    private DietResponseGeminiModel diet;
+    private List<MealTypeResponseGeminiModel> mealTypes;
+    private List<AllergyResponseGeminiModel> allergies;
+    private List<DietaryNeedResponseGeminiModel> dietaryNeeds;
     private List<IngredientResponseGeminiModel> ingredients;
 
     public Recipe toDomain() {
@@ -40,12 +44,16 @@ public class RecipeResponseGeminiModel {
         
         return Recipe.builder()
                 .name(name)
-                .image(processedImageUrl)
                 .subtitle(subtitle)
                 .description(description)
                 .instructions(instructions)
+                .image(processedImageUrl)
                 .preparationTime(preparationTime.toDomain())
                 .cookLevel(cookLevel.toDomain())
+                .diet(diet != null ? diet.toDomain() : null)
+                .mealTypes(mealTypes != null ? mealTypes.stream().map(MealTypeResponseGeminiModel::toDomain).toList() : List.of())
+                .allergies(allergies != null ? allergies.stream().map(AllergyResponseGeminiModel::toDomain).toList() : List.of())
+                .dietaryNeeds(dietaryNeeds != null ? dietaryNeeds.stream().map(DietaryNeedResponseGeminiModel::toDomain).toList() : List.of())
                 .ingredients(ingredients.stream().map(IngredientResponseGeminiModel::toDomain).toList())
                 .build();
     }
