@@ -1,6 +1,5 @@
 package com.cuoco.adapter.in.controller;
 
-import com.cuoco.adapter.in.controller.model.ParametricResponse;
 import com.cuoco.adapter.in.controller.model.UnitResponse;
 import com.cuoco.application.port.in.GetAllUnitsQuery;
 import com.cuoco.application.usecase.model.Unit;
@@ -40,7 +39,7 @@ public class UnitControllerAdapter {
                     description = "Return all the existent units",
                     content = @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = ParametricResponse.class))
+                            array = @ArraySchema(schema = @Schema(implementation = UnitResponse.class))
                     )
             ),
             @ApiResponse(
@@ -55,13 +54,13 @@ public class UnitControllerAdapter {
     public ResponseEntity<List<UnitResponse>> getAll() {
         log.info("Executing GET all measure units");
         List<Unit> units = getAllUnitsQuery.execute();
-        List<UnitResponse> response = units.stream().map(this::buildParametricResponse).toList();
+        List<UnitResponse> response = units.stream().map(this::buildUnitResponse).toList();
 
         log.info("All units are retrieved successfully");
         return ResponseEntity.ok(response);
     }
 
-    private UnitResponse buildParametricResponse(Unit unit) {
+    private UnitResponse buildUnitResponse(Unit unit) {
         return UnitResponse.builder()
                 .id(unit.getId())
                 .description(unit.getDescription())
