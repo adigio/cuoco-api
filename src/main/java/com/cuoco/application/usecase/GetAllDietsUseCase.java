@@ -10,11 +10,11 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class GetAllAllDietsUseCase implements GetAllDietsQuery {
+public class GetAllDietsUseCase implements GetAllDietsQuery {
 
-    private GetAllDietsRepository getAllDietsRepository;
+    private final GetAllDietsRepository getAllDietsRepository;
 
-    public GetAllAllDietsUseCase(GetAllDietsRepository getAllDietsRepository) {
+    public GetAllDietsUseCase(GetAllDietsRepository getAllDietsRepository) {
         this.getAllDietsRepository = getAllDietsRepository;
     }
 

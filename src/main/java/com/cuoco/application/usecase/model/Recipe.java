@@ -14,12 +14,18 @@ import java.util.List;
 public class Recipe {
     private Long id;
     private String name;
-    private String image;
     private String subtitle;
     private String description;
     private String instructions;
-    private String preparationTime;
+    private String image;
+    private PreparationTime preparationTime;
     private CookLevel cookLevel;
+    private Diet diet;
+    private List<MealType> mealTypes;
+    private List<Allergy> allergies;
+    private List<DietaryNeed> dietaryNeeds;
     private List<Ingredient> ingredients;
+
     private RecipeFilter filters;
+    private RecipeConfiguration configuration;
 }

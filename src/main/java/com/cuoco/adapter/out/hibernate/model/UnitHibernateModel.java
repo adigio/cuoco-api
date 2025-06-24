@@ -10,7 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "unit")
+@Entity(name = "units")
 @Data
 @Builder
 @NoArgsConstructor

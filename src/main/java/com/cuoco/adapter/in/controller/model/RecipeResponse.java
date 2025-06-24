@@ -17,12 +17,15 @@ import java.util.List;
 public class RecipeResponse {
     private Long id;
     private String name;
-    private String image;
     private String subtitle;
     private String description;
+    private String image;
     private String instructions;
-    private String preparationTime;
-    private List<IngredientResponse> ingredients;
+    private ParametricResponse preparationTime;
+    private ParametricResponse type;
     private ParametricResponse cookLevel;
+    private List<ParametricResponse> categories;
+    private List<IngredientResponse> ingredients;
+
     private List<RecipeImageResponse> generatedImages;
 }

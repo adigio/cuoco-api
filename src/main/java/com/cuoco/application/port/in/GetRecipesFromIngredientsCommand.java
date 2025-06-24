@@ -2,7 +2,6 @@ package com.cuoco.application.port.in;
 
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.RecipeFilter;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
@@ -17,7 +16,19 @@ public interface GetRecipesFromIngredientsCommand {
     @Builder
     @ToString
     class Command {
-        private RecipeFilter filters;
         private List<Ingredient> ingredients;
+        private Boolean filtersEnabled;
+        private Boolean useProfilePreferences;
+
+        private Integer servings;
+        private Integer preparationTimeId;
+        private Integer cookLevelId;
+        private Integer dietId;
+        private List<Integer> typeIds;
+        private List<Integer> allergiesIds;
+        private List<Integer> dietaryNeedsIds;
+
+        private Integer size;
+        private List<Long> notInclude;
     }
 }

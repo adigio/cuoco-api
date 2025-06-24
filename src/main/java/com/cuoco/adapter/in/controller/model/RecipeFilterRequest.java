@@ -14,12 +14,12 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RecipeFilterRequest {
 
-    private String time;
-    private String difficulty;
-    private List<String> types;
-    private String diet;
-    private int quantity;
-    private Integer people;
-    private Boolean useProfilePreferences;
+    private Integer preparationTimeId;
+    private Integer servings;
+    private Integer cookLevelId;
+    private List<Integer> typeIds;
+    private Integer dietId;
+    private List<Integer> allergiesIds;
+    private List<Integer> dietaryNeedsIds;
 
 }

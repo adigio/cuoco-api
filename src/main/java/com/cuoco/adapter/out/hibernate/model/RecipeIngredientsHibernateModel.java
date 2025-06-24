@@ -1,5 +1,6 @@
 package com.cuoco.adapter.out.hibernate.model;
 
+import com.cuoco.application.usecase.model.RecipeIngredient;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,4 +34,9 @@ public class RecipeIngredientsHibernateModel {
     private Double quantity;
     private Boolean optional;
 
+    public RecipeIngredient toDomain() {
+        return RecipeIngredient.builder()
+                .ingredient(ingredient.toDomain(quantity, optional))
+                .build();
+    }
 }

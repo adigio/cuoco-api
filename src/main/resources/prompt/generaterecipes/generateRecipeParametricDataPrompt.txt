@@ -1,0 +1,9 @@
+Datos parametricos para llenar el json:
+
+units: {{PARAMETRIC_UNITS}}
+preparation_times: {{PARAMETRIC_PREPARATION_TIMES}}
+cook_levels: {{PARAMETRIC_COOK_LEVELS}}
+diets: {{PARAMETRIC_DIETS}}
+meal_types: {{PARAMETRIC_MEAL_TYPES}}
+allergies: {{PARAMETRIC_ALLERGIES}}
+dietary_needs: {{PARAMETRIC_DIETARY_NEEDS}}

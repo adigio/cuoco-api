@@ -14,6 +14,7 @@ import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.Instruction;
 import com.cuoco.application.usecase.model.MealPrep;
 import com.cuoco.application.usecase.model.MealPrepFilter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/meal-preps")
+@Tag(name = "Meal Prep", description = "Obtains recipes for MealPrep from ingredients")
 public class MealPrepControllerAdapter {
 
     private final GetMealPrepFromIngredientsCommand getMealPrepFromIngredientsCommand;
@@ -71,8 +73,6 @@ public class MealPrepControllerAdapter {
     private Ingredient buildIngredient(IngredientRequest ingredientRequest) {
         return Ingredient.builder()
                 .name(ingredientRequest.getName())
-                .source(ingredientRequest.getSource())
-                .confirmed(ingredientRequest.isConfirmed())
                 .build();
     }
 

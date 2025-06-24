@@ -1,8 +1,8 @@
-Para generar las recetas con las instrucciones antes dadas, utilizar las siguientes condiciones:
-(Si el valor no esta o es null, ignorar la condicion)
+Para generar las recetas con las instrucciones antes dadas, utilizar OBLIGATORIAMENTE las siguientes condiciones:
+(Si el valor es vacio, array vacio o es null, ignorar la condicion)
 
-- Tiempo máximo de preparación: {{COOK_TIME}}
-- Nivel de dificultad: {{COOK_LEVEL}}
-- Tipos de comida: {{FOOD_TYPES}}
-- Dieta: {{DIET}}
-- Porciones: {{QUANTITY}}
+-   Tiempo de preparación que lleva la receta completa debe ser de: {{PREPARATION_TIME}}
+-   Nivel de dificultad de la receta debe ser: {{COOK_LEVEL}}
+-   La dieta de la receta debe ser: {{DIET}}
+-   Tipos de receta a crear (Como desayuno, almuerzo, etc.): {{MEAL_TYPES}}
+-   No debe contener ingredientes que pueda tener este tipo de alergias: {{ALLERGIES}}

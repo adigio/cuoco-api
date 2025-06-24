@@ -1,10 +1,8 @@
-package com.cuoco.adapter.out.database;
+package com.cuoco.adapter.out.hibernate;
 
 import com.cuoco.adapter.out.hibernate.CreateUserDatabaseRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.model.UserHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.UserPreferencesHibernateModel;
-import com.cuoco.adapter.out.hibernate.repository.CreateUserAllergiesHibernateRepositoryAdapter;
-import com.cuoco.adapter.out.hibernate.repository.CreateUserDietaryNeedsHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.CreateUserHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.CreateUserPreferencesHibernateRepositoryAdapter;
 import com.cuoco.application.usecase.model.User;
@@ -30,12 +28,6 @@ class CreateUserDatabaseRepositoryAdapterTest {
 
     @Mock
     private CreateUserPreferencesHibernateRepositoryAdapter preferencesRepository;
-
-    @Mock
-    private CreateUserDietaryNeedsHibernateRepositoryAdapter dietaryNeedsRepository;
-
-    @Mock
-    private CreateUserAllergiesHibernateRepositoryAdapter allergiesRepository;
 
     @InjectMocks
     private CreateUserDatabaseRepositoryAdapter adapter;
@@ -67,7 +59,5 @@ class CreateUserDatabaseRepositoryAdapterTest {
 
         verify(userRepository).save(any(UserHibernateModel.class));
         verify(preferencesRepository).save(any());
-        verify(dietaryNeedsRepository).saveAll(any());
-        verify(allergiesRepository).saveAll(any());
     }
 }

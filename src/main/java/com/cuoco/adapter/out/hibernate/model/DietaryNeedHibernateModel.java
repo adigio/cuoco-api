@@ -10,7 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "dietary_need")
+@Entity(name = "dietary_needs")
 @Data
 @Builder
 @NoArgsConstructor

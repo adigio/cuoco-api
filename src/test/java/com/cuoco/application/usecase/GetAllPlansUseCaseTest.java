@@ -15,12 +15,12 @@ public class GetAllPlansUseCaseTest {
 
     private GetAllPlansRepository getAllPlansRepository;
 
-    private GetAllAllPlansUseCase useCase;
+    private GetAllPlansUseCase useCase;
 
     @BeforeEach
     void setup() {
         getAllPlansRepository = mock(GetAllPlansRepository.class);
-        useCase = new GetAllAllPlansUseCase(getAllPlansRepository);
+        useCase = new GetAllPlansUseCase(getAllPlansRepository);
     }
 
     @Test
