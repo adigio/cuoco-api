@@ -15,5 +15,4 @@ import lombok.Data;
 public class ParametricResponse {
     private Integer id;
     private String description;
-    private String symbol;
 }
