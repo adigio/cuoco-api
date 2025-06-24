@@ -29,7 +29,6 @@ public class RecipeResponseGeminiModel {
     private PreparationTimeResponseGeminiModel preparationTime;
     private CookLevelResponseGeminiModel cookLevel;
     private List<IngredientResponseGeminiModel> ingredients;
-    private List<MealCategoryResponseGeminiModel> categories;
 
     public Recipe toDomain() {
         // Process dynamic image URL
@@ -48,7 +47,6 @@ public class RecipeResponseGeminiModel {
                 .preparationTime(preparationTime.toDomain())
                 .cookLevel(cookLevel.toDomain())
                 .ingredients(ingredients.stream().map(IngredientResponseGeminiModel::toDomain).toList())
-                .categories(categories.stream().map(MealCategoryResponseGeminiModel::toDomain).toList())
                 .build();
     }
     

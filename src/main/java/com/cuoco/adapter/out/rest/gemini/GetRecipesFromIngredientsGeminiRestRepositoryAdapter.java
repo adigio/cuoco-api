@@ -2,6 +2,10 @@ package com.cuoco.adapter.out.rest.gemini;
 
 import com.cuoco.adapter.exception.NotAvailableException;
 import com.cuoco.adapter.exception.UnprocessableException;
+import com.cuoco.adapter.out.hibernate.GetAllAllergiesDatabaseRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.GetAllCookLevelsDatabaseRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.GetAllDietaryNeedsDatabaseRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.GetAllDietsDatabaseRepositoryAdapter;
 import com.cuoco.adapter.out.rest.gemini.model.RecipeResponseGeminiModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.ContentGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.GeminiResponseModel;
@@ -10,9 +14,13 @@ import com.cuoco.adapter.out.rest.gemini.model.wrapper.PartGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PromptBodyGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.utils.Constants;
 import com.cuoco.adapter.out.rest.gemini.utils.Utils;
+import com.cuoco.application.port.out.GetAllAllergiesRepository;
+import com.cuoco.application.port.out.GetAllCookLevelsRepository;
+import com.cuoco.application.port.out.GetAllDietaryNeedsRepository;
+import com.cuoco.application.port.out.GetAllDietsRepository;
+import com.cuoco.application.port.out.GetAllergiesByIdRepository;
 import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
 import com.cuoco.application.usecase.model.Ingredient;
-import com.cuoco.application.usecase.model.MealCategory;
 import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.RecipeFilter;
@@ -38,6 +46,7 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
     private final String EMPTY_STRING = com.cuoco.shared.utils.Constants.EMPTY.getValue();
 
     private final String BASIC_PROMPT = FileReader.execute("prompt/generaterecipes/generateRecipeFromIngredientsHeaderPrompt.txt");
+    private final String PARAMETRIC_PROMPT = FileReader.execute("prompt/generaterecipes/generateRecipeParametricDataPrompt.txt");
     private final String FILTERS_PROMPT = FileReader.execute("prompt/generaterecipes/generateRecipesFiltersPrompt.txt");
 
     @Value("${gemini.api.url}")
@@ -100,41 +109,67 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
         }
     }
 
+    private String buildParametricPrompt() {
+        return PARAMETRIC_PROMPT
+                .replace(Constants.PARAMETRIC_UNITS.getValue(),"")
+                .replace(Constants.PARAMETRIC_PREPARATION_TIMES.getValue(),"")
+                .replace(Constants.PARAMETRIC_COOK_LEVELS.getValue(),"")
+                .replace(Constants.PARAMETRIC_DIETS.getValue(),"")
+                .replace(Constants.PARAMETRIC_MEAL_TYPES.getValue(),"")
+                .replace(Constants.PARAMETRIC_ALLERGIES.getValue(),"")
+                .replace(Constants.PARAMETRIC_DIETARY_NEEDS.getValue(),"");
+    }
+
     private String buildFiltersPrompt(RecipeFilter filters) {
 
         if(filters.getEnable()) {
 
-            String cookLevel = EMPTY_STRING;
-            String preparationTime = EMPTY_STRING;
-            String types = EMPTY_STRING;
-            String categories = EMPTY_STRING;
+            String preparationTimeId = EMPTY_STRING;
+            String cookLevelId = EMPTY_STRING;
+            String dietId = EMPTY_STRING;
+            String mealTypesIds = EMPTY_STRING;
+            String allergiesIds = EMPTY_STRING;
+            String dietaryNeedsIds = EMPTY_STRING;
 
-            if(filters.getCookLevel() != null && !filters.getCookLevel().getDescription().isBlank()) {
-                cookLevel = filters.getCookLevel().getDescription();
+            if(filters.getPreparationTime() != null && filters.getPreparationTime().getId() != null) {
+                preparationTimeId = filters.getPreparationTime().getId().toString();
             }
 
-            if(filters.getPreparationTime() != null && !filters.getPreparationTime().getDescription().isBlank()) {
-                preparationTime = filters.getPreparationTime().getDescription();
+            if(filters.getCookLevel() != null && filters.getCookLevel().getId() != null) {
+                cookLevelId = filters.getCookLevel().getId().toString();
+            }
+
+            if(filters.getDiet() != null && filters.getDiet().getId() != null) {
+                dietId = filters.getDiet().getId().toString();
+            }
+
+            if(filters.getCookLevel() != null && filters.getCookLevel().getId() != null) {
+                cookLevelId = filters.getCookLevel().getId().toString();
             }
 
             if(filters.getTypes() != null && !filters.getTypes().isEmpty()) {
-                types = filters.getTypes().stream().map(MealType::getDescription).collect(Collectors.joining(DELIMITER));
+                mealTypesIds = filters.getTypes().stream().map(mt -> mt.getId().toString()).collect(Collectors.joining(DELIMITER));
             }
 
-            if(filters.getCategories() != null && !filters.getCategories().isEmpty()) {
-                categories = filters.getCategories().stream().map(MealCategory::getDescription).collect(Collectors.joining(DELIMITER));
+            if(filters.getAllergies() != null && !filters.getAllergies().isEmpty()) {
+                allergiesIds = filters.getAllergies().stream().map(a -> a.getId().toString()).collect(Collectors.joining(DELIMITER));
+            }
+
+            if(filters.getDietaryNeeds() != null && !filters.getDietaryNeeds().isEmpty()) {
+                dietaryNeedsIds = filters.getDietaryNeeds().stream().map(dn -> dn.getId().toString()).collect(Collectors.joining(DELIMITER));
             }
 
             return FILTERS_PROMPT
-                    .replace(Constants.COOK_LEVEL.getValue(), cookLevel)
-                    .replace(Constants.PREPARATION_TIME.getValue(), preparationTime)
-                    .replace(Constants.MEAL_TYPES.getValue(), types)
-                    .replace(Constants.MEAL_CATEGORIES.getValue(), categories);
+                    .replace(Constants.PREPARATION_TIME.getValue(), preparationTimeId)
+                    .replace(Constants.COOK_LEVEL.getValue(), cookLevelId)
+                    .replace(Constants.DIET.getValue(), dietId)
+                    .replace(Constants.MEAL_TYPES.getValue(), mealTypesIds)
+                    .replace(Constants.ALLERGIES.getValue(), allergiesIds)
+                    .replace(Constants.DIETARY_NEEDS.getValue(), dietaryNeedsIds);
         }
 
         return null;
     }
-
 
     private PromptBodyGeminiRequestModel buildPromptBody(String prompt) {
         return PromptBodyGeminiRequestModel.builder()

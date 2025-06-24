@@ -18,7 +18,10 @@ public class RecipeFilterRequest {
     private Integer servings;
     private Integer cookLevelId;
     private List<Integer> typeIds;
-    private List<Integer> categoryIds;
+    private Integer dietId;
+    private List<Integer> allergiesIds;
+    private List<Integer> dietaryNeedsIds;
+
     private Boolean useProfilePreferences;
 
 }

@@ -12,10 +12,10 @@ import com.cuoco.adapter.in.controller.model.UnitResponse;
 import com.cuoco.application.port.in.GenerateRecipeImagesCommand;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
 import com.cuoco.application.usecase.model.Ingredient;
-import com.cuoco.application.usecase.model.MealCategory;
 import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.PreparationTime;
 import com.cuoco.application.usecase.model.Recipe;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +29,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/recipes")
+@Tag(name = "Recipes", description = "Obtains recipes from ingredients, filters and configuration")
 public class RecipeControllerAdapter {
 
     private final GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand;
@@ -72,9 +73,11 @@ public class RecipeControllerAdapter {
                 .preparationTimeId(recipeRequest.getFilters().getPreparationTimeId())
                 .servings(recipeRequest.getFilters().getServings())
                 .cookLevelId(recipeRequest.getFilters().getCookLevelId())
+                .dietId(recipeRequest.getFilters().getDietId())
                 .typeIds(recipeRequest.getFilters().getTypeIds())
-                .categoryIds(recipeRequest.getFilters().getCategoryIds())
-                .recipesSize(recipeRequest.getConfiguration().getRecipesSize())
+                .allergiesIds(recipeRequest.getFilters().getAllergiesIds())
+                .dietaryNeedsIds(recipeRequest.getFilters().getDietaryNeedsIds())
+                .size(recipeRequest.getConfiguration().getSize())
                 .notInclude(recipeRequest.getConfiguration().getNotInclude())
                 .build();
     }
@@ -94,8 +97,6 @@ public class RecipeControllerAdapter {
                 .image(recipe.getImage())
                 .instructions(recipe.getInstructions())
                 .preparationTime(buildParametricResponse(recipe.getPreparationTime()))
-                .type(buildParametricResponse(recipe.getType()))
-                .categories(recipe.getCategories().stream().map(this::buildParametricResponse).toList())
                 .ingredients(recipe.getIngredients().stream().map(this::buildIngredientResponse).toList())
                 .cookLevel(
                         ParametricResponse.builder()
@@ -138,13 +139,6 @@ public class RecipeControllerAdapter {
         return ParametricResponse.builder()
                 .id(mealType.getId())
                 .description(mealType.getDescription())
-                .build();
-    }
-
-    private ParametricResponse buildParametricResponse(MealCategory mealCategory) {
-        return ParametricResponse.builder()
-                .id(mealCategory.getId())
-                .description(mealCategory.getDescription())
                 .build();
     }
 

@@ -3,13 +3,17 @@ package com.cuoco.application.usecase;
 import com.cuoco.application.exception.BadRequestException;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
 import com.cuoco.application.port.out.CreateRecipeRepository;
+import com.cuoco.application.port.out.GetAllergiesByIdRepository;
 import com.cuoco.application.port.out.GetCookLevelByIdRepository;
-import com.cuoco.application.port.out.GetMealCategoryByIdRepository;
+import com.cuoco.application.port.out.GetDietByIdRepository;
+import com.cuoco.application.port.out.GetDietaryNeedsByIdRepository;
 import com.cuoco.application.port.out.GetMealTypeByIdRepository;
 import com.cuoco.application.port.out.GetPreparationTimeByIdRepository;
 import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
+import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.CookLevel;
-import com.cuoco.application.usecase.model.MealCategory;
+import com.cuoco.application.usecase.model.Diet;
+import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.PreparationTime;
 import com.cuoco.application.usecase.model.Recipe;
@@ -24,7 +28,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -41,7 +44,9 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
     private final GetPreparationTimeByIdRepository getPreparationTimeByIdRepository;
     private final GetCookLevelByIdRepository getCookLevelByIdRepository;
     private final GetMealTypeByIdRepository getMealTypeByIdRepository;
-    private final GetMealCategoryByIdRepository getMealCategoryByIdRepository;
+    private final GetDietByIdRepository getDietByIdRepository;
+    private final GetAllergiesByIdRepository getAllergiesByIdRepository;
+    private final GetDietaryNeedsByIdRepository getDietaryNeedsByIdRepository;
 
     private final GetRecipesFromIngredientsRepository getRecipesFromIngredientsRepository;
     private final GetRecipesFromIngredientsRepository getRecipesFromIngredientsProvider;
@@ -51,7 +56,9 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
             GetPreparationTimeByIdRepository getPreparationTimeByIdRepository,
             GetCookLevelByIdRepository getCookLevelByIdRepository,
             GetMealTypeByIdRepository getMealTypeByIdRepository,
-            GetMealCategoryByIdRepository getMealCategoryByIdRepository,
+            GetDietByIdRepository getDietByIdRepository,
+            GetAllergiesByIdRepository getAllergiesByIdRepository,
+            GetDietaryNeedsByIdRepository getDietaryNeedsByIdRepository,
             @Qualifier("repository") GetRecipesFromIngredientsRepository getRecipesFromIngredientsRepository,
             @Qualifier("provider") GetRecipesFromIngredientsRepository getRecipesFromIngredientsProvider,
             CreateRecipeRepository createRecipeRepository
@@ -59,7 +66,9 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
         this.getPreparationTimeByIdRepository = getPreparationTimeByIdRepository;
         this.getCookLevelByIdRepository = getCookLevelByIdRepository;
         this.getMealTypeByIdRepository = getMealTypeByIdRepository;
-        this.getMealCategoryByIdRepository = getMealCategoryByIdRepository;
+        this.getDietByIdRepository = getDietByIdRepository;
+        this.getAllergiesByIdRepository = getAllergiesByIdRepository;
+        this.getDietaryNeedsByIdRepository = getDietaryNeedsByIdRepository;
         this.getRecipesFromIngredientsRepository = getRecipesFromIngredientsRepository;
         this.getRecipesFromIngredientsProvider = getRecipesFromIngredientsProvider;
         this.createRecipeRepository = createRecipeRepository;
@@ -91,7 +100,7 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
             recipesToSave = getRecipesFromIngredientsProvider.execute(recipeToGenerate);
             savedRecipes = recipesToSave.stream().map(createRecipeRepository::execute).limit(recipesNeeded).toList();
 
-            return Stream.concat(foundedRecipes.stream(), savedRecipes.stream()).limit(maxRecipesToGenerate).toList();
+            return Stream.concat(foundedRecipes.stream(), savedRecipes.stream()).limit(recipesSize).toList();
         }
 
         log.info("Can't find saved recipes with the provided ingredients and filters. Generating new ones");
@@ -125,28 +134,32 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
 
         PreparationTime preparationTime = command.getPreparationTimeId() != null ? getPreparationTimeByIdRepository.execute(command.getPreparationTimeId()) : null;
         CookLevel cookLevel = command.getCookLevelId() != null ? getCookLevelByIdRepository.execute(command.getCookLevelId()) : null;
+        Diet diet = command.getDietId() != null ? getDietByIdRepository.execute(command.getDietId()) : null;
         List<MealType> types = command.getTypeIds() != null ? command.getTypeIds().stream().map(getMealTypeByIdRepository::execute).toList() : null;
-        List<MealCategory> categories = command.getCategoryIds() != null ? command.getCategoryIds().stream().map(getMealCategoryByIdRepository::execute).toList() : null;
+        List<DietaryNeed> dietaryNeeds = command.getDietaryNeedsIds() != null ? getDietaryNeedsByIdRepository.execute(command.getDietaryNeedsIds()) : null;
+        List<Allergy> allergies = command.getAllergiesIds() != null ? getAllergiesByIdRepository.execute(command.getAllergiesIds()) : null;
 
         return RecipeFilter.builder()
-                .preparationTime(preparationTime)
+                .enable(true)
                 .servings(command.getServings())
+                .preparationTime(preparationTime)
                 .cookLevel(cookLevel)
                 .types(types)
-                .categories(categories)
-                .enable(true)
+                .diet(diet)
+                .allergies(allergies)
+                .dietaryNeeds(dietaryNeeds)
                 .build();
     }
 
     private RecipeConfiguration buildConfiguration(Command command, int userPlan) {
 
-        Integer recipesSize;
+        int size;
 
         if(userPlan == PlanConstants.PREMIUM.getValue()) {
-            recipesSize = command.getRecipesSize() != null ? command.getRecipesSize() : PREMIUM_MAX_RECIPES;
+            size = command.getSize() != null ? command.getSize() : PREMIUM_MAX_RECIPES;
 
             return RecipeConfiguration.builder()
-                    .size(recipesSize)
+                    .size(size)
                     .notInclude(command.getNotInclude())
                     .build();
         } else {

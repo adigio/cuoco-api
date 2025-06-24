@@ -15,10 +15,9 @@ import lombok.Data;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IngredientRequest {
-
-    @Schema(name = "Nombre del ingrediente")
     @NotBlank
     private String name;
+    @Schema(example = "10.5")
     private Double quantity;
     private Integer unitId;
 

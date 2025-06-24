@@ -19,9 +19,11 @@ public class Recipe {
     private String instructions;
     private String image;
     private PreparationTime preparationTime;
-    private MealType type;
     private CookLevel cookLevel;
-    private List<MealCategory> categories;
+    private Diet diet;
+    private List<MealType> mealTypes;
+    private List<Allergy> allergies;
+    private List<DietaryNeed> dietaryNeeds;
     private List<Ingredient> ingredients;
 
     private RecipeFilter filters;

@@ -5,7 +5,8 @@ import com.cuoco.adapter.out.hibernate.model.RecipeHibernateModel;
 import com.cuoco.adapter.out.hibernate.repository.GetRecipesByIngredientsAndFiltersHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.GetRecipesIdsByIngredientsHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
-import com.cuoco.application.usecase.model.MealCategory;
+import com.cuoco.application.usecase.model.Allergy;
+import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.RecipeFilter;
@@ -45,8 +46,10 @@ public class GetRecipesFromIngredientsDatabaseRepositoryAdapter implements GetRe
 
             Integer preparationTimeId = null;
             Integer cookLevelId = null;
-            List<Integer> typesIds = null;
-            List<Integer> categoriesIds = null;
+            Integer dietId = null;
+            List<Integer> mealTypesIds = null;
+            List<Integer> allergiesIds = null;
+            List<Integer> dietaryNeedsIds = null;
 
             if (recipe.getFilters().getEnable()) {
                 RecipeFilter filters = recipe.getFilters();
@@ -55,16 +58,24 @@ public class GetRecipesFromIngredientsDatabaseRepositoryAdapter implements GetRe
                     preparationTimeId = filters.getPreparationTime().getId();
                 }
 
-                if(recipe.getFilters().getCookLevel() != null) {
+                if(filters.getDiet() != null) {
+                    dietId = filters.getDiet().getId();
+                }
+
+                if(filters.getCookLevel() != null) {
                     cookLevelId = filters.getCookLevel().getId();
                 }
 
-                if(!recipe.getFilters().getTypes().isEmpty()) {
-                    typesIds = filters.getTypes().stream().map(MealType::getId).toList();
+                if(!filters.getTypes().isEmpty()) {
+                    mealTypesIds = filters.getTypes().stream().map(MealType::getId).toList();
                 }
 
-                if(!recipe.getFilters().getCategories().isEmpty()) {
-                    categoriesIds = filters.getCategories().stream().map(MealCategory::getId).toList();
+                if(!filters.getAllergies().isEmpty()) {
+                    allergiesIds = filters.getAllergies().stream().map(Allergy::getId).toList();
+                }
+
+                if(!filters.getDietaryNeeds().isEmpty()) {
+                    dietaryNeedsIds = filters.getDietaryNeeds().stream().map(DietaryNeed::getId).toList();
                 }
             }
 
@@ -74,8 +85,10 @@ public class GetRecipesFromIngredientsDatabaseRepositoryAdapter implements GetRe
                     recipesIds,
                     preparationTimeId,
                     cookLevelId,
-                    typesIds,
-                    categoriesIds,
+                    dietId,
+                    mealTypesIds,
+                    allergiesIds,
+                    dietaryNeedsIds,
                     PageRequest.of(0, recipe.getConfiguration().getSize())
             );
 

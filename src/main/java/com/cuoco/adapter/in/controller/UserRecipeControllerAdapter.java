@@ -5,6 +5,7 @@ import com.cuoco.application.port.in.GetUserRecipeCommand;
 import com.cuoco.application.port.in.SaveUserRecipeCommand;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserRecipe;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users/recipes")
+@Tag(name = "User favourites recipes", description = "Manipulate favourites recipes saved from the user")
 public class UserRecipeControllerAdapter {
 
     static final Logger log = LoggerFactory.getLogger(UserRecipeControllerAdapter.class);
@@ -54,7 +56,7 @@ public class UserRecipeControllerAdapter {
         }
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<?> getFavourites() {
         List<UserRecipe> recipes = getUserRecipeCommand.execute();
         List<UserRecipesResponse> response = recipes.stream().map(this::buildResponseFromRecipes).toList();

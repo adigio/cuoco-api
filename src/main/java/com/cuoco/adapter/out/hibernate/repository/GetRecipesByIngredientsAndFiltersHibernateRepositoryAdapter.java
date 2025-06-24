@@ -14,20 +14,32 @@ public interface GetRecipesByIngredientsAndFiltersHibernateRepositoryAdapter ext
 
     @Query("""
         SELECT DISTINCT r FROM recipe r
-        LEFT JOIN r.categories rc
-        LEFT JOIN rc.category c
+        LEFT JOIN r.mealTypes mt
+        LEFT JOIN r.dietaryNeeds dn
         WHERE r.id IN :recipeIds
             AND (:preparationTimeId IS NULL OR r.preparationTime.id = :preparationTimeId)
             AND (:cookLevelId IS NULL OR r.cookLevel.id = :cookLevelId)
-            AND (:typesIds IS NULL OR r.type.id IN :typesIds)
-            AND (:categoriesIds IS NULL OR c.id IN :categoriesIds)
+            AND (:mealTypesIds IS NULL OR mt.id IN :mealTypesIds)
+            AND (:dietId IS NULL OR r.diet.id = :dietId)
+            AND (:dietaryNeedIds IS NULL OR (
+                SELECT COUNT(dn2) FROM recipe r2
+                JOIN r2.dietaryNeeds dn2
+                WHERE r2.id = r.id AND dn2.id IN :dietaryNeedIds
+            ) = :#{#dietaryNeedIds == null ? 0 : #dietaryNeedIds.size()})
+            AND (:allergyIds IS NULL OR NOT EXISTS (
+                SELECT 1 FROM recipe r2
+                JOIN r2.allergies a2
+                WHERE r2.id = r.id AND a2.id IN :allergyIds
+            ))
     """)
     List<RecipeHibernateModel> execute(
             @Param("recipeIds") List<Long> recipeIds,
             @Param("preparationTimeId") Integer preparationTimeId,
             @Param("cookLevelId") Integer cookLevelId,
-            @Param("typesIds") List<Integer> typesIds,
-            @Param("categoriesIds") List<Integer> categoriesIds,
+            @Param("dietId") Integer dietId,
+            @Param("mealTypesIds") List<Integer> mealTypesIds,
+            @Param("allergyIds") List<Integer> allergyIds,
+            @Param("dietaryNeedIds") List<Integer> dietaryNeedIds,
             Pageable pageable
     );
 }

@@ -13,6 +13,6 @@ import java.util.List;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RecipeConfiguration {
-    private Integer recipesSize;
+    private Integer size;
     private List<Long> notInclude;
 }

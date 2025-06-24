@@ -1,7 +1,6 @@
 package com.cuoco.adapter.out.hibernate.model;
 
 import com.cuoco.application.usecase.model.Ingredient;
-import com.cuoco.application.usecase.model.MealCategory;
 import com.cuoco.application.usecase.model.Recipe;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -11,7 +10,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -43,38 +44,56 @@ public class RecipeHibernateModel {
     private PreparationTimeHibernateModel preparationTime;
 
     @ManyToOne
-    @JoinColumn(name = "type_id")
-    private MealTypeHibernateModel type;
+    private CookLevelHibernateModel cookLevel;
 
     @ManyToOne
-    private CookLevelHibernateModel cookLevel;
+    private DietHibernateModel diet;
+
+    @ManyToMany
+    @JoinTable(
+            name = "recipe_meal_types",
+            joinColumns = @JoinColumn(name = "recipe_id"),
+            inverseJoinColumns = @JoinColumn(name = "meal_type_id")
+    )
+    private List<MealTypeHibernateModel> mealTypes;
+
+    @ManyToMany
+    @JoinTable(
+            name = "recipe_allergies",
+            joinColumns = @JoinColumn(name = "recipe_id"),
+            inverseJoinColumns = @JoinColumn(name = "allergy_id")
+    )
+    private List<AllergyHibernateModel> allergies;
+
+    @ManyToMany
+    @JoinTable(
+            name = "recipe_dietary_needs",
+            joinColumns = @JoinColumn(name = "recipe_id"),
+            inverseJoinColumns = @JoinColumn(name = "dietary_need_id")
+    )
+    private List<DietaryNeedHibernateModel> dietaryNeeds;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<RecipeIngredientsHibernateModel> ingredients;
-
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<RecipeMealCategoriesHibernateModel> categories;
 
     public Recipe toDomain() {
         List<Ingredient> domainIngredients = ingredients.stream()
                 .map(ri -> ri.toDomain().getIngredient())
                 .toList();
 
-        List<MealCategory> domainCategories = categories.stream()
-                .map(c -> c.toDomain().getCategory())
-                .toList();
-
         return Recipe.builder()
                 .id(id)
                 .name(name)
-                .image(imageUrl)
                 .subtitle(subtitle)
                 .description(description)
                 .instructions(instructions)
+                .image(imageUrl)
                 .preparationTime(preparationTime.toDomain())
-                .type(type.toDomain())
                 .cookLevel(cookLevel.toDomain())
-                .categories(domainCategories)
+                .diet(diet.toDomain())
+                .mealTypes(mealTypes.stream().map(MealTypeHibernateModel::toDomain).toList())
+                .allergies(allergies.stream().map(AllergyHibernateModel::toDomain).toList())
+                .dietaryNeeds(dietaryNeeds.stream().map(DietaryNeedHibernateModel::toDomain).toList())
                 .ingredients(domainIngredients)
                 .build();
     }

@@ -6,6 +6,7 @@ import com.cuoco.adapter.out.rest.gemini.model.wrapper.GeminiResponseModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.GenerationConfigurationGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PartGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PromptBodyGeminiRequestModel;
+import com.cuoco.adapter.out.rest.gemini.utils.Constants;
 import com.cuoco.adapter.out.rest.gemini.utils.Utils;
 import com.cuoco.application.port.out.GetMealPrepsFromIngredientsRepository;
 import com.cuoco.application.usecase.model.Ingredient;
@@ -59,8 +60,8 @@ public class GetMealPrepsFromIngredientsGeminiRestRepositoryAdapter implements G
 
             log.info("Building basic prompt...");
             String basicPrompt = BASIC_PROMPT
-                    .replace("{ingredients}", ingredientNames)
-                    .replace("{max_meal_preps}", mealPrep.getFilters().getQuantity().toString());
+                    .replace(Constants.INGREDIENTS.getValue(), ingredientNames)
+                    .replace(Constants.MAX_MEAL_PREPS.getValue(), mealPrep.getFilters().getQuantity().toString());
 
             String filtersPrompt = buildFiltersPrompt(mealPrep.getFilters());
             log.info("Filters prompt built: {}", filtersPrompt);
@@ -109,11 +110,11 @@ public class GetMealPrepsFromIngredientsGeminiRestRepositoryAdapter implements G
         String types = filters.getTypes() != null ? String.join(",", filters.getTypes()) : "";
 
         return FILTERS_PROMPT
-                .replace("{QUANTITY}", filters.getQuantity() != null ? filters.getQuantity().toString() : "1")
-                .replace("{COOK_LEVEL}", filters.getDifficulty() != null ? filters.getDifficulty().toString() : "")
-                .replace("{DIET}", filters.getDiet() != null ? filters.getDiet() : "")
-                .replace("{FREEZE}", filters.getFreeze() != null ? filters.getFreeze().toString() : "")
-                .replace("{FOOD_TYPES}", types);
+                .replace(Constants.QUANTITY.getValue(), filters.getQuantity() != null ? filters.getQuantity().toString() : "1")
+                .replace(Constants.COOK_LEVEL.getValue(), filters.getDifficulty() != null ? filters.getDifficulty().toString() : "")
+                .replace(Constants.DIET.getValue(), filters.getDiet() != null ? filters.getDiet() : "")
+                .replace(Constants.FREEZE.getValue(), filters.getFreeze() != null ? filters.getFreeze().toString() : "")
+                .replace(Constants.MEAL_TYPES.getValue(), types);
     }
 
     private PromptBodyGeminiRequestModel buildPromptBody(String prompt) {
