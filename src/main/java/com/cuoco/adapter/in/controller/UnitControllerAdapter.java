@@ -1,6 +1,7 @@
 package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
+import com.cuoco.adapter.in.controller.model.UnitResponse;
 import com.cuoco.application.port.in.GetAllUnitsQuery;
 import com.cuoco.application.usecase.model.Unit;
 import com.cuoco.shared.GlobalExceptionHandler;
@@ -51,17 +52,17 @@ public class UnitControllerAdapter {
                     )
             )
     })
-    public ResponseEntity<List<ParametricResponse>> getAll() {
+    public ResponseEntity<List<UnitResponse>> getAll() {
         log.info("Executing GET all measure units");
         List<Unit> units = getAllUnitsQuery.execute();
-        List<ParametricResponse> response = units.stream().map(this::buildParametricResponse).toList();
+        List<UnitResponse> response = units.stream().map(this::buildParametricResponse).toList();
 
         log.info("All units are retrieved successfully");
         return ResponseEntity.ok(response);
     }
 
-    private ParametricResponse buildParametricResponse(Unit unit) {
-        return ParametricResponse.builder()
+    private UnitResponse buildParametricResponse(Unit unit) {
+        return UnitResponse.builder()
                 .id(unit.getId())
                 .description(unit.getDescription())
                 .symbol(unit.getSymbol())
