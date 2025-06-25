@@ -1,7 +1,6 @@
 package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.QuickRecipeRequest;
-import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.application.port.in.FindOrGenerateRecipeCommand;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.factory.domain.RecipeFactory;
@@ -29,11 +28,9 @@ public class QuickRecipeControllerAdapterTest {
     @Mock
     private FindOrGenerateRecipeCommand findOrGenerateRecipeCommand;
 
-    private QuickRecipeControllerAdapter controller;
-
     @BeforeEach
     void setUp() {
-        controller = new QuickRecipeControllerAdapter(findOrGenerateRecipeCommand);
+        QuickRecipeControllerAdapter controller = new QuickRecipeControllerAdapter(findOrGenerateRecipeCommand);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         objectMapper = new ObjectMapper();
     }

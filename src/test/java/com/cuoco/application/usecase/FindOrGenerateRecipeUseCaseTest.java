@@ -18,7 +18,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -111,9 +110,7 @@ class FindOrGenerateRecipeUseCaseTest {
                 .build();
 
         // When & Then
-        RecipeGenerationException exception = assertThrows(RecipeGenerationException.class, () -> {
-            useCase.execute(command);
-        });
+        RecipeGenerationException exception = assertThrows(RecipeGenerationException.class, () -> useCase.execute(command));
 
         assertEquals("Could not generate recipe for: " + recipeName, exception.getDescription());
         
