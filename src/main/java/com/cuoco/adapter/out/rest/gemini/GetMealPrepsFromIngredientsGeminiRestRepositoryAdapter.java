@@ -1,5 +1,6 @@
 package com.cuoco.adapter.out.rest.gemini;
 
+import com.cuoco.adapter.exception.UnprocessableException;
 import com.cuoco.adapter.out.rest.gemini.model.MealPrepResponseGeminiModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.ContentGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.GeminiResponseModel;
@@ -13,6 +14,7 @@ import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.MealPrep;
 import com.cuoco.application.usecase.model.MealPrepFilter;
 import com.cuoco.shared.FileReader;
+import com.cuoco.shared.model.ErrorDescription;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -58,34 +60,26 @@ public class GetMealPrepsFromIngredientsGeminiRestRepositoryAdapter implements G
                     .map(Ingredient::getName)
                     .collect(Collectors.joining(","));
 
-            log.info("Building basic prompt...");
             String basicPrompt = BASIC_PROMPT
                     .replace(Constants.INGREDIENTS.getValue(), ingredientNames)
-                    .replace(Constants.MAX_MEAL_PREPS.getValue(), mealPrep.getFilters().getQuantity().toString());
+                    .replace(Constants.MAX_MEAL_PREPS.getValue(), mealPrep.getFilters().getServings().toString());
 
             String filtersPrompt = buildFiltersPrompt(mealPrep.getFilters());
-            log.info("Filters prompt built: {}", filtersPrompt);
-
             String finalPrompt =  basicPrompt.concat(filtersPrompt);
-            log.info("Final prompt: {}", finalPrompt);
+
             PromptBodyGeminiRequestModel prompt = buildPromptBody(finalPrompt);
-            log.info("Prompt body created.");
 
             String geminiUrl = url + "?key=" + apiKey;
 
             GeminiResponseModel response = restTemplate.postForObject(geminiUrl, prompt, GeminiResponseModel.class);
             log.info("Received response from Gemini.");
 
-
             if (response == null) {
-                throw new RuntimeException("Gemini response is null");
+                throw new UnprocessableException(ErrorDescription.NOT_AVAILABLE.getValue());
             }
 
             String sanitizedResponse = Utils.sanitizeJsonResponse(response);
-            log.info("Sanitized response: {}", sanitizedResponse);
-
             ObjectMapper mapper = new ObjectMapper();
-            log.info("Mapped response to domain objects.");
             List<MealPrepResponseGeminiModel> mealPrepResponses = mapper.readValue(
                     sanitizedResponse,
                     new TypeReference<>() {}

@@ -14,8 +14,13 @@ public class MealPrep {
     private String subtitle;
     private List<String> recipes;
     private List<Instruction> instructions;
-    private String preparationTime;
+    private PreparationTime preparationTime;
     private CookLevel cookLevel;
+    private Diet diet;
+    private List<MealType> mealTypes;
+    private List<Allergy> allergies;
+    private List<DietaryNeed> dietaryNeeds;
     private List<Ingredient> ingredients;
+    
     private MealPrepFilter filters;
 }

@@ -1,8 +1,10 @@
 package com.cuoco.adapter.out.rest.gemini;
 
 import com.cuoco.adapter.exception.NotAvailableException;
+import com.cuoco.adapter.out.rest.gemini.utils.Constants;
 import com.cuoco.application.port.out.GenerateRecipeImagesRepository;
 import com.cuoco.application.usecase.domainservice.ImageDomainService;
+import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.RecipeImage;
 import com.cuoco.shared.FileReader;
@@ -17,10 +19,15 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 @Slf4j
 public class GetRecipeImagesGeminiRestRepositoryAdapter implements GenerateRecipeImagesRepository {
+
+    private final String DELIMITER = com.cuoco.shared.utils.Constants.COMMA.getValue();
+
+    private final String MAIN_IMAGE_SUFFIX = "_main";
 
     private final String MAIN_IMAGE_PROMPT = FileReader.execute("prompt/generateimages/generateRecipeImagePrompt.txt");
     private final String STEP_IMAGE_PROMPT = FileReader.execute("prompt/generateimages/generateStepImagePrompt.txt");
@@ -42,10 +49,12 @@ public class GetRecipeImagesGeminiRestRepositoryAdapter implements GenerateRecip
     @Override
     public List<RecipeImage> execute(Recipe recipe) {
         log.info("Generating images for recipe: {}", recipe.getName());
+
         List<RecipeImage> images = new ArrayList<>();
 
         try {
             RecipeImage mainImage = buildMainRecipeImage(recipe);
+
             if (mainImage != null) {
                 images.add(mainImage);
             }
@@ -64,24 +73,19 @@ public class GetRecipeImagesGeminiRestRepositoryAdapter implements GenerateRecip
 
     private RecipeImage buildMainRecipeImage(Recipe recipe) {
         try {
-            String mainIngredients = recipe.getIngredients().stream()
+            String mainIngredients =recipe.getIngredients().stream()
+                    .map(Ingredient::getName)
                     .limit(5)
-                    .map(ingredient -> ingredient.getName())
-                    .reduce((a, b) -> a + ", " + b)
-                    .orElse("");
+                    .collect(Collectors.joining(DELIMITER));
 
             String prompt = MAIN_IMAGE_PROMPT
-                    .replace("{RECIPE_NAME}", recipe.getName())
-                    .replace("{MAIN_INGREDIENTS}", mainIngredients);
+                    .replace(Constants.RECIPE_NAME.getValue(), recipe.getName())
+                    .replace(Constants.MAIN_INGREDIENTS.getValue(), mainIngredients);
 
             byte[] imageData = buildImageFromGemini(prompt);
 
             if (imageData != null) {
-                String sanitizedName = imageDomainService.sanitizeRecipeName(recipe.getName());
-                String imageName = imageDomainService.buildMainImageName(sanitizedName);
-                String imagePath = imageDomainService.buildMainImagePath(sanitizedName);
-                String imageUrl = imageDomainService.buildMainImageUrl(sanitizedName, imageName);
-                String fullPath = imageDomainService.saveImageToFile(imagePath, imageName, imageData);
+                String imageName = recipe.getId().toString() + MAIN_IMAGE_SUFFIX;
 
                 return RecipeImage.builder()
                         .imageName(imageName)

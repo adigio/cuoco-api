@@ -17,8 +17,16 @@ public interface GetMealPrepFromIngredientsCommand {
     @Builder
     @ToString
     class Command {
-        private MealPrepFilter filters;
         private List<Ingredient> ingredients;
+
+        private Boolean freeze;
+        private Integer servings;
+        private Integer preparationTimeId;
+        private Integer cookLevelId;
+        private Integer dietId;
+        private List<Integer> typeIds;
+        private List<Integer> allergiesIds;
+        private List<Integer> dietaryNeedsIds;
     }
 }
 

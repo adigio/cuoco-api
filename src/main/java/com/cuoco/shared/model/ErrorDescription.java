@@ -23,7 +23,7 @@ public enum ErrorDescription {
     INVALID_AUDIO_FILE_EXTENSION("La extensión del archivo de audio no es valida"),
     AUDIO_FILE_IS_REQUIRED("El archivo de audio no esta presente y es requerido"),
     AUDIO_FILE_PROCESSING_ERROR("Error procesando el archivo de audio"),
-
+    PRO_FEATURE("Esta funcionalidad solo es para usuarios PRO"),
     UNAUTHORIZED("El token no esta presente"),
     UNEXPECTED_ERROR("An unexpected error occurred: "),
     UNHANDLED("Ha ocurrido un error inesperado"),

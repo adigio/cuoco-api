@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecipeImage {
+    private Long id;
     private String imageType;
     private String imageName;
     private String imagePath;

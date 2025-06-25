@@ -25,8 +25,12 @@ public class MealPrepResponseGeminiModel {
     private String subtitle;
     private List<String> recipes;
     private List<InstructionResponseGeminiModel> instructions;
-    private String preparationTime;
+    private PreparationTimeResponseGeminiModel preparationTime;
     private CookLevelResponseGeminiModel cookLevel;
+    private DietResponseGeminiModel diet;
+    private List<MealTypeResponseGeminiModel> mealTypes;
+    private List<AllergyResponseGeminiModel> allergies;
+    private List<DietaryNeedResponseGeminiModel> dietaryNeeds;
     private List<IngredientResponseGeminiModel> ingredients;
 
     public MealPrep toDomain() {
@@ -35,9 +39,13 @@ public class MealPrepResponseGeminiModel {
                 .subtitle(subtitle)
                 .recipes(recipes)
                 .instructions(instructions.stream().map(InstructionResponseGeminiModel::toDomain).toList())
-                .preparationTime(preparationTime)
-                .ingredients(ingredients.stream().map(IngredientResponseGeminiModel::toDomain).toList())
+                .preparationTime(preparationTime.toDomain())
                 .cookLevel(cookLevel.toDomain())
+                .diet(diet != null ? diet.toDomain() : null)
+                .mealTypes(mealTypes != null ? mealTypes.stream().map(MealTypeResponseGeminiModel::toDomain).toList() : List.of())
+                .allergies(allergies != null ? allergies.stream().map(AllergyResponseGeminiModel::toDomain).toList() : List.of())
+                .dietaryNeeds(dietaryNeeds != null ? dietaryNeeds.stream().map(DietaryNeedResponseGeminiModel::toDomain).toList() : List.of())
+                .ingredients(ingredients.stream().map(IngredientResponseGeminiModel::toDomain).toList())
                 .build();
     }
 }

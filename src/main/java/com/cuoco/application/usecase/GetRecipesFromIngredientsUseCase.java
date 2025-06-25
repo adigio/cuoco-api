@@ -51,8 +51,6 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
     private final GetAllergiesByIdRepository getAllergiesByIdRepository;
     private final GetDietaryNeedsByIdRepository getDietaryNeedsByIdRepository;
 
-    private final GetRecipesFromIngredientsRepository getRecipesFromIngredientsRepository;
-
     public GetRecipesFromIngredientsUseCase(
             RecipeDomainService recipeDomainService,
             GetPreparationTimeByIdRepository getPreparationTimeByIdRepository,
@@ -60,8 +58,7 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
             GetMealTypeByIdRepository getMealTypeByIdRepository,
             GetDietByIdRepository getDietByIdRepository,
             GetAllergiesByIdRepository getAllergiesByIdRepository,
-            GetDietaryNeedsByIdRepository getDietaryNeedsByIdRepository,
-            @Qualifier("repository") GetRecipesFromIngredientsRepository getRecipesFromIngredientsRepository
+            GetDietaryNeedsByIdRepository getDietaryNeedsByIdRepository
     ) {
         this.recipeDomainService = recipeDomainService;
         this.getPreparationTimeByIdRepository = getPreparationTimeByIdRepository;
@@ -70,7 +67,6 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
         this.getDietByIdRepository = getDietByIdRepository;
         this.getAllergiesByIdRepository = getAllergiesByIdRepository;
         this.getDietaryNeedsByIdRepository = getDietaryNeedsByIdRepository;
-        this.getRecipesFromIngredientsRepository = getRecipesFromIngredientsRepository;
     }
 
     public List<Recipe> execute(Command command) {
@@ -80,9 +76,7 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
 
         Recipe recipeToFind = buildRecipe(command, userPlan);
 
-        List<Recipe> foundedRecipes = getRecipesFromIngredientsRepository.execute(recipeToFind);
-
-        List<Recipe> recipesToResponse = recipeDomainService.generateIfNeeded(recipeToFind, foundedRecipes);
+        List<Recipe> recipesToResponse = recipeDomainService.getOrCreate(recipeToFind);
 
         return recipesToResponse;
     }

@@ -1,6 +1,8 @@
 package com.cuoco.application.usecase.domainservice;
 
+import com.cuoco.application.port.out.CreateRecipeImagesRepository;
 import com.cuoco.application.port.out.CreateRecipeRepository;
+import com.cuoco.application.port.out.GenerateRecipeImagesRepository;
 import com.cuoco.application.port.out.GetAllAllergiesRepository;
 import com.cuoco.application.port.out.GetAllCookLevelsRepository;
 import com.cuoco.application.port.out.GetAllDietaryNeedsRepository;
@@ -11,6 +13,7 @@ import com.cuoco.application.port.out.GetAllUnitsRepository;
 import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
 import com.cuoco.application.usecase.model.ParametricData;
 import com.cuoco.application.usecase.model.Recipe;
+import com.cuoco.application.usecase.model.RecipeImage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -22,8 +25,12 @@ import java.util.stream.Stream;
 @Component
 public class RecipeDomainService {
 
+    private final GetRecipesFromIngredientsRepository getRecipesFromIngredientsRepository;
     private final GetRecipesFromIngredientsRepository getRecipesFromIngredientsProvider;
     private final CreateRecipeRepository createRecipeRepository;
+    private final CreateRecipeImagesRepository createRecipeImagesRepository;
+
+    private final GenerateRecipeImagesRepository generateRecipeImagesRepository;
 
     private final GetAllUnitsRepository getAllUnitsRepository;
     private final GetAllPreparationTimesRepository getAllPreparationTimesRepository;
@@ -34,8 +41,11 @@ public class RecipeDomainService {
     private final GetAllDietaryNeedsRepository getAllDietaryNeedsRepository;
 
     public RecipeDomainService(
+            @Qualifier("repository") GetRecipesFromIngredientsRepository getRecipesFromIngredientsRepository,
             @Qualifier("provider") GetRecipesFromIngredientsRepository getRecipesFromIngredientsProvider,
             CreateRecipeRepository createRecipeRepository,
+            CreateRecipeImagesRepository createRecipeImagesRepository,
+            GenerateRecipeImagesRepository generateRecipeImagesRepository,
             GetAllUnitsRepository getAllUnitsRepository,
             GetAllPreparationTimesRepository getAllPreparationTimesRepository,
             GetAllCookLevelsRepository getAllCookLevelsRepository,
@@ -44,8 +54,11 @@ public class RecipeDomainService {
             GetAllAllergiesRepository getAllAllergiesRepository,
             GetAllDietaryNeedsRepository getAllDietaryNeedsRepository
     ) {
+        this.getRecipesFromIngredientsRepository = getRecipesFromIngredientsRepository;
         this.getRecipesFromIngredientsProvider = getRecipesFromIngredientsProvider;
         this.createRecipeRepository = createRecipeRepository;
+        this.createRecipeImagesRepository =  createRecipeImagesRepository;
+        this.generateRecipeImagesRepository = generateRecipeImagesRepository;
         this.getAllUnitsRepository = getAllUnitsRepository;
         this.getAllPreparationTimesRepository = getAllPreparationTimesRepository;
         this.getAllCookLevelsRepository = getAllCookLevelsRepository;
@@ -55,41 +68,60 @@ public class RecipeDomainService {
         this.getAllDietaryNeedsRepository = getAllDietaryNeedsRepository;
     }
 
-    public List<Recipe> generateIfNeeded(Recipe input, List<Recipe> existing) {
-        int targetSize = input.getConfiguration().getSize();
+    public List<Recipe> getOrCreate(Recipe recipeToFind) {
+        List<Recipe> foundedRecipes = getRecipesFromIngredientsRepository.execute(recipeToFind);
 
-        if(existing.isEmpty()) {
+        int targetSize = recipeToFind.getConfiguration().getSize();
+
+        if(foundedRecipes.isEmpty()) {
             log.info("Can't find saved recipes with the provided ingredients and filters. Generating new ones");
 
-            input.getConfiguration().setParametricData(buildParametricData());
+            recipeToFind.getConfiguration().setParametricData(buildParametricData());
 
-            return getRecipesFromIngredientsProvider.execute(input)
-                    .stream()
-                    .map(createRecipeRepository::execute)
+            return generateRecipes(recipeToFind, targetSize);
+        }
+
+        if(foundedRecipes.size() < targetSize) {
+            int remaining = targetSize - foundedRecipes.size();
+
+            log.info("Founded only {} saved recipes. Generating {} new recipes to complete", foundedRecipes.size(), remaining);
+
+            recipeToFind.getConfiguration().setParametricData(buildParametricData());
+
+            List<Recipe> newRecipes = generateRecipes(recipeToFind, remaining);
+
+            return Stream.concat(foundedRecipes.stream(), newRecipes.stream())
                     .limit(targetSize)
                     .toList();
         }
 
-        if(existing.size() < targetSize) {
-            int remaining = targetSize - existing.size();
+        log.info("Founded enough {} saved recipes with the provided ingredients and filters.", foundedRecipes.size());
+        return foundedRecipes.stream().limit(targetSize).toList();
+    }
 
-            log.info("Founded only {} saved recipes. Generating {} new recipes to complete", existing.size(), remaining);
+    private List<Recipe> generateRecipes(Recipe recipeParameters, int size) {
+        List<Recipe> recipesToSave = getRecipesFromIngredientsProvider.execute(recipeParameters);
 
-            input.getConfiguration().setParametricData(buildParametricData());
+        List<Recipe> createdRecipes = recipesToSave.stream().map(recipe -> {
+            Recipe savedRecipe = createRecipeRepository.execute(recipe);
+            return generateImages(savedRecipe);
+        }).toList();
 
-            List<Recipe> newRecipes = getRecipesFromIngredientsProvider.execute(input).stream()
-                    .map(createRecipeRepository::execute)
-                    .limit(remaining)
-                    .toList();
+        return createdRecipes.stream().limit(size).toList();
+    }
 
-            return Stream.concat(existing.stream(), newRecipes.stream())
-                    .limit(targetSize)
-                    .toList();
+    public Recipe generateImages(Recipe recipe) {
+        log.info("Executing image creation for recipe with ID {}", recipe.getId());
 
-        }
+        recipe.setImages(generateRecipeImagesRepository.execute(recipe));
 
-        log.info("Founded enough {} saved recipes with the provided ingredients and filters.", existing.size());
-        return existing.stream().limit(targetSize).toList();
+        List<RecipeImage> savedImages = createRecipeImagesRepository.execute(recipe);
+
+        recipe.setImages(savedImages);
+
+        log.info("Successfully generated {} images for recipe with ID {}", savedImages.size(), recipe.getId());
+
+        return recipe;
     }
 
     private ParametricData buildParametricData() {

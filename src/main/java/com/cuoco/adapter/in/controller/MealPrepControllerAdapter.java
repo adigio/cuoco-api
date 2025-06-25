@@ -7,6 +7,7 @@ import com.cuoco.adapter.in.controller.model.MealPrepFilterRequest;
 import com.cuoco.adapter.in.controller.model.MealPrepRequest;
 import com.cuoco.adapter.in.controller.model.MealPrepResponse;
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
+import com.cuoco.adapter.in.controller.model.RecipeFilterRequest;
 import com.cuoco.adapter.in.controller.model.UnitResponse;
 import com.cuoco.application.port.in.GetMealPrepFromIngredientsCommand;
 import com.cuoco.application.usecase.model.CookLevel;
@@ -51,22 +52,15 @@ public class MealPrepControllerAdapter {
 
     private GetMealPrepFromIngredientsCommand.Command buildGenerateMealPrepCommand(MealPrepRequest mealPrepRequest) {
         return GetMealPrepFromIngredientsCommand.Command.builder()
-                .filters(mealPrepRequest.getFilters() != null ? buildFilter(mealPrepRequest.getFilters()) : null)
                 .ingredients(mealPrepRequest.getIngredients().stream().map(this::buildIngredient).toList())
-                .build();
-    }
-
-    private MealPrepFilter buildFilter(MealPrepFilterRequest filter) {
-        return MealPrepFilter.builder()
-                .difficulty(
-                        CookLevel.builder()
-                                .description(filter.getDifficulty())
-                                .build()
-                )
-                .diet(filter.getDiet())
-                .quantity(filter.getQuantity())
-                .freeze(filter.getFreeze())
-                .types(filter.getTypes())
+                .freeze(mealPrepRequest.getFilters().getFreeze())
+                .preparationTimeId(mealPrepRequest.getFilters().getPreparationTimeId())
+                .servings(mealPrepRequest.getFilters().getServings())
+                .cookLevelId(mealPrepRequest.getFilters().getCookLevelId())
+                .dietId(mealPrepRequest.getFilters().getDietId())
+                .typeIds(mealPrepRequest.getFilters().getTypeIds())
+                .allergiesIds(mealPrepRequest.getFilters().getAllergiesIds())
+                .dietaryNeedsIds(mealPrepRequest.getFilters().getDietaryNeedsIds())
                 .build();
     }
 

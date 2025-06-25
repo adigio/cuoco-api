@@ -1,4 +1,4 @@
-Creá una foto realista de '{RECIPE_NAME}' con ingredientes: {MAIN_INGREDIENTS}.
+Creá una foto realista de '{[RECIPE_NAME}}' con ingredientes: {{MAIN_INGREDIENTS}}.
 
 Foto casera con celular, iluminación natural, mesa de madera, apariencia auténtica y apetitosa.
 
