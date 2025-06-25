@@ -15,6 +15,10 @@ public class GetPreparationTimeByIdDatabaseRepositoryAdapter implements GetPrepa
 
     public GetPreparationTimeByIdHibernateRepositoryAdapter getPreparationTimeByIdHibernateRepositoryAdapter;
 
+    public GetPreparationTimeByIdDatabaseRepositoryAdapter(GetPreparationTimeByIdHibernateRepositoryAdapter getPreparationTimeByIdHibernateRepositoryAdapter) {
+        this.getPreparationTimeByIdHibernateRepositoryAdapter = getPreparationTimeByIdHibernateRepositoryAdapter;
+    }
+
     @Override
     public PreparationTime execute(Integer id) {
         Optional<PreparationTimeHibernateModel> preparationTime = getPreparationTimeByIdHibernateRepositoryAdapter.findById(id);
