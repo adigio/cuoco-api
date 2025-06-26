@@ -8,12 +8,15 @@ import com.cuoco.adapter.out.rest.gemini.model.wrapper.GenerationConfigurationGe
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.InlineDataGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PartGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PromptBodyGeminiRequestModel;
+import com.cuoco.adapter.out.rest.gemini.utils.Constants;
 import com.cuoco.adapter.out.rest.gemini.utils.Utils;
 import com.cuoco.application.port.out.GetIngredientsGroupedFromImagesRepository;
 import com.cuoco.application.usecase.model.File;
 import com.cuoco.application.usecase.model.Ingredient;
+import com.cuoco.application.usecase.model.ParametricData;
 import com.cuoco.shared.FileReader;
 import com.cuoco.shared.model.ErrorDescription;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -41,21 +44,28 @@ public class GetIngredientsGroupedFromImagesGeminiRestFromImagesRepositoryAdapte
     @Value("${gemini.temperature}")
     private Double temperature;
 
+    private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;
 
-    public GetIngredientsGroupedFromImagesGeminiRestFromImagesRepositoryAdapter(RestTemplate restTemplate) {
+    public GetIngredientsGroupedFromImagesGeminiRestFromImagesRepositoryAdapter(
+            ObjectMapper objectMapper,
+            RestTemplate restTemplate
+    ) {
+        this.objectMapper = objectMapper;
         this.restTemplate = restTemplate;
     }
 
     @Override
-    public Map<String, List<Ingredient>> execute(List<File> files) {
+    public Map<String, List<Ingredient>> execute(List<File> files, ParametricData parametricData) {
         log.info("Getting ingredients from Gemini grouped by image");
 
         Map<String, List<Ingredient>> ingredientsByImage = new LinkedHashMap<>();
 
         try {
+            String promptWithData = PROMPT.replace(Constants.PARAMETRIC_UNITS.getValue(), objectMapper.writeValueAsString(parametricData.getUnits()));
+
             for (File file : files) {
-                PromptBodyGeminiRequestModel prompt = buildPromptBody(file.getFileBase64(), file.getMimeType(), PROMPT);
+                PromptBodyGeminiRequestModel prompt = buildPromptBody(file.getFileBase64(), file.getMimeType(), promptWithData);
                 String geminiUrl = url + "?key=" + apiKey;
                 GeminiResponseModel response = restTemplate.postForObject(geminiUrl, prompt, GeminiResponseModel.class);
 
@@ -77,11 +87,11 @@ public class GetIngredientsGroupedFromImagesGeminiRestFromImagesRepositoryAdapte
                 ingredientsByImage.put(file.getFileName(), ingredientsFromImage);
             }
 
-
-
             log.info("Successfully got all ingredients grouped by image processed by Gemini");
-
             return ingredientsByImage;
+        } catch (JsonProcessingException e) {
+            log.error("Failed to process JSON: ", e);
+            throw new NotAvailableException(ErrorDescription.NOT_AVAILABLE.getValue());
         } catch (Exception e) {
             log.error("Error sending images to Gemini to process ingredients: ", e);
             throw new NotAvailableException(ErrorDescription.NOT_AVAILABLE.getValue());

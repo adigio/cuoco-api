@@ -16,8 +16,8 @@ FORMATO DE RESPUESTA:
 - La estructura del objeto debe ser asi:
 
 [
-    { "name": "ingrediente1", "quantity": "500", "unit": "gr" },
-    { "name": "ingrediente2", "quantity": "1", "unit": "unidad" },
+    { "name": "ingrediente1", "quantity": "500", "unit": { "id": 1, "description": "gr" } },
+    { "name": "ingrediente2", "quantity": "1", "unit": { "id": 2, "description": "ml" } },
     { "name": "ingrediente3" }
 ]
 
@@ -25,9 +25,9 @@ EJEMPLOS:
 Si ves una banana, una botella de salsa de tomate por la mitad y 3 huevos, responde:
 
 [
-    { "name": "banana", "quantity": 1, "unit": "unidad" },
-    { "name": "salsa de tomate", "quantity": 500, "unit": "ml" },
-    { "name": "huevo", "quantity": 3, "unit": "unidad" },
+    { "name": "banana", "quantity": 1, "unit": { "id": 1, "description": "gr" } },
+    { "name": "salsa de tomate", "quantity": 500, "unit": { "id": 1, "description": "gr" } },
+    { "name": "huevo", "quantity": 3, "unit": { "id": 1, "description": "gr" } },
 ]
 
 
@@ -37,5 +37,8 @@ Si ves una botella de leche pero no sabes la cantidad exacta, entonces responde:
     { "name": "leche" }
 ]
 
+DATOS PARAMETRICOS:
+
+UNITS POSIBLES (Usa una de las unidades que estan en el siguiente JSON): {{PARAMETRIC_UNITS}}
 
 No des explicaciones, solo devuelve el JSON correspondiente.
