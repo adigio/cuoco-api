@@ -37,9 +37,9 @@ public class RecipeDomainService {
     private final CreateAllRecipesRepository createAllRecipesRepository;
     private final CreateRecipeImagesRepository createRecipeImagesRepository;
 
-    private final GenerateRecipeMainImageRepository generateRecipeMainImageRepository;
     private final GetRecipeStepsImagesRepository getRecipeStepsImagesRepository;
 
+    private final AsyncRecipeDomainService asyncRecipeDomainService;
     private final GetAllUnitsRepository getAllUnitsRepository;
     private final GetAllPreparationTimesRepository getAllPreparationTimesRepository;
     private final GetAllCookLevelsRepository getAllCookLevelsRepository;
@@ -55,6 +55,7 @@ public class RecipeDomainService {
             CreateRecipeImagesRepository createRecipeImagesRepository,
             GenerateRecipeMainImageRepository generateRecipeMainImageRepository,
             GetRecipeStepsImagesRepository getRecipeStepsImagesRepository,
+            AsyncRecipeDomainService asyncRecipeDomainService,
             GetAllUnitsRepository getAllUnitsRepository,
             GetAllPreparationTimesRepository getAllPreparationTimesRepository,
             GetAllCookLevelsRepository getAllCookLevelsRepository,
@@ -67,7 +68,7 @@ public class RecipeDomainService {
         this.getRecipesFromIngredientsProvider = getRecipesFromIngredientsProvider;
         this.createAllRecipesRepository = createAllRecipesRepository;
         this.createRecipeImagesRepository =  createRecipeImagesRepository;
-        this.generateRecipeMainImageRepository = generateRecipeMainImageRepository;
+        this.asyncRecipeDomainService = asyncRecipeDomainService;
         this.getRecipeStepsImagesRepository = getRecipeStepsImagesRepository;
         this.getAllUnitsRepository = getAllUnitsRepository;
         this.getAllPreparationTimesRepository = getAllPreparationTimesRepository;
@@ -114,16 +115,9 @@ public class RecipeDomainService {
 
         List<Recipe> savedRecipes = createAllRecipesRepository.execute(recipesToSave);
 
-        savedRecipes.forEach(this::generateMainImage);
+        savedRecipes.forEach(asyncRecipeDomainService::generateMainImage);
 
         return savedRecipes.stream().limit(size).toList();
-    }
-
-    @Async
-    public void generateMainImage(Recipe recipe) {
-        log.info("Executing main image creation for new recipe with ID {}", recipe.getId());
-
-        generateRecipeMainImageRepository.execute(recipe);
     }
 
     public Recipe generateImages(Recipe recipe) {
