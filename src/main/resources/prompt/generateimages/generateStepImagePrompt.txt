@@ -1,4 +1,4 @@
-Fotografía realista del proceso de cocina: {STEP_INSTRUCTION}
+Fotografía realista del proceso de cocina: {{STEP_INSTRUCTION}}
 
 CREAR IMAGEN SIN NINGÚN TEXTO VISIBLE - SOLO MANOS COCINANDO
 

@@ -27,8 +27,9 @@ gemini:
     url: ${GEMINI_IMAGE_URL}
   temperature: ${GEMINI_TEMPERATURE}
 shared:
-  plan:
-    free:
-      max-recipes: ${FREE_MAX_RECIPES}
-    premium:
-      max-recipes: ${PREMIUM_MAX_RECIPES}
+  recipes:
+    max-recipes:
+      free: ${FREE_MAX_RECIPES:3}
+      pro: ${PRO_MAX_RECIPES:5}
+    images:
+      base-path: ${RECIPE_IMAGES_BASE_PATH}

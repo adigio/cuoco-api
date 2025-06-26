@@ -5,6 +5,6 @@ import com.cuoco.application.usecase.model.RecipeImage;
 
 import java.util.List;
 
-public interface GenerateRecipeImagesRepository {
+public interface GetRecipeStepsImagesRepository {
     List<RecipeImage> execute(Recipe recipe);
 } 

@@ -5,5 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ExistUserRecipesHibernateRepositoryAdapter extends JpaRepository<UserRecipesHibernateModel, Long> {
     boolean existsByUserIdAndRecipeId(Long userId, Long recipeId);
-
 }

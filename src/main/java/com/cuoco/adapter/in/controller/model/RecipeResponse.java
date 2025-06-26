@@ -19,13 +19,15 @@ public class RecipeResponse {
     private String name;
     private String subtitle;
     private String description;
-    private String image;
     private String instructions;
+    private String image;
     private ParametricResponse preparationTime;
-    private ParametricResponse type;
     private ParametricResponse cookLevel;
-    private List<ParametricResponse> categories;
+    private ParametricResponse diet;
+    private List<ParametricResponse> mealTypes;
+    private List<ParametricResponse> allergies;
+    private List<ParametricResponse> dietaryNeeds;
     private List<IngredientResponse> ingredients;
 
-    private List<RecipeImageResponse> generatedImages;
+    private List<RecipeImageResponse> steps;
 }

@@ -20,7 +20,11 @@ public class MealPrepResponse {
     private String subtitle;
     private List<String> recipes;
     private List<InstructionResponse> instructions;
-    private String preparationTime;
-    private List<IngredientResponse> ingredients;
+    private ParametricResponse preparationTime;
     private ParametricResponse cookLevel;
+    private ParametricResponse diet;
+    private List<ParametricResponse> mealTypes;
+    private List<ParametricResponse> allergies;
+    private List<ParametricResponse> dietaryNeeds;
+    private List<IngredientResponse> ingredients;
 }

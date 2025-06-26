@@ -1,6 +1,5 @@
 package com.cuoco.adapter.in.controller.model;
 
-import com.cuoco.application.usecase.model.RecipeImage;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -18,23 +17,9 @@ import lombok.NoArgsConstructor;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RecipeImageResponse {
+    private Long id;
+    private String imageName;
     private String imageType;
-    private String imagePath;
     private Integer stepNumber;
     private String stepDescription;
-    private String imageUrl;
-
-    public static RecipeImageResponse fromDomain(RecipeImage recipeImage) {
-        if (recipeImage == null) {
-            return null;
-        }
-        
-        return RecipeImageResponse.builder()
-                .imageType(recipeImage.getImageType())
-                .imagePath(recipeImage.getImagePath())
-                .stepNumber(recipeImage.getStepNumber())
-                .stepDescription(recipeImage.getStepDescription())
-                .imageUrl(recipeImage.getImageUrl())
-                .build();
-    }
 } 

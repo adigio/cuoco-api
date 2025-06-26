@@ -9,12 +9,16 @@ import com.cuoco.adapter.in.controller.model.RecipeImageResponse;
 import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.adapter.in.controller.model.UnitResponse;
-import com.cuoco.application.port.in.GenerateRecipeImagesCommand;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
+import com.cuoco.application.usecase.model.Allergy;
+import com.cuoco.application.usecase.model.CookLevel;
+import com.cuoco.application.usecase.model.Diet;
+import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.PreparationTime;
 import com.cuoco.application.usecase.model.Recipe;
+import com.cuoco.application.usecase.model.RecipeImage;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -33,14 +37,9 @@ import java.util.List;
 public class RecipeControllerAdapter {
 
     private final GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand;
-    private final GenerateRecipeImagesCommand generateRecipeImagesCommand;
 
-    public RecipeControllerAdapter(
-            GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand,
-            GenerateRecipeImagesCommand generateRecipeImagesCommand
-    ) {
+    public RecipeControllerAdapter(GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand) {
         this.getRecipesFromIngredientsCommand = getRecipesFromIngredientsCommand;
-        this.generateRecipeImagesCommand = generateRecipeImagesCommand;
     }
 
     @PostMapping()
@@ -58,7 +57,7 @@ public class RecipeControllerAdapter {
 
     private GetRecipesFromIngredientsCommand.Command buildGenerateRecipeCommand(RecipeRequest recipeRequest) {
 
-        Boolean filtersEnabled = true;
+        boolean filtersEnabled = true;
 
         if(recipeRequest.getFilters() == null) {
             filtersEnabled = false;
@@ -94,31 +93,16 @@ public class RecipeControllerAdapter {
                 .name(recipe.getName())
                 .subtitle(recipe.getSubtitle())
                 .description(recipe.getDescription())
-                .image(recipe.getImage())
                 .instructions(recipe.getInstructions())
+                .image(recipe.getImage())
                 .preparationTime(buildParametricResponse(recipe.getPreparationTime()))
+                .cookLevel(buildParametricResponse(recipe.getCookLevel()))
+                .diet(buildParametricResponse(recipe.getDiet()))
+                .mealTypes(recipe.getMealTypes().stream().map(this::buildParametricResponse).toList())
+                .allergies(recipe.getAllergies().stream().map(this::buildParametricResponse).toList())
+                .dietaryNeeds(recipe.getDietaryNeeds().stream().map(this::buildParametricResponse).toList())
                 .ingredients(recipe.getIngredients().stream().map(this::buildIngredientResponse).toList())
-                .cookLevel(
-                        ParametricResponse.builder()
-                                .id(recipe.getCookLevel().getId())
-                                .description(recipe.getCookLevel().getDescription())
-                                .build()
-                )
-                .generatedImages(buildImages(recipe))
                 .build();
-    }
-
-    private List<RecipeImageResponse> buildImages(Recipe recipe) {
-        try {
-            if (generateRecipeImagesCommand != null) {
-                return generateRecipeImagesCommand.execute(GenerateRecipeImagesCommand.Command.builder().recipe(recipe).build())
-                        .stream().map(RecipeImageResponse::fromDomain).toList();
-            }
-            return List.of();
-        } catch (Exception e) {
-            log.warn("Failed to generate images for recipe: {}", recipe.getName(), e);
-            return List.of();
-        }
     }
 
     private IngredientResponse buildIngredientResponse(Ingredient ingredient) {
@@ -135,10 +119,13 @@ public class RecipeControllerAdapter {
                 .build();
     }
 
-    private ParametricResponse buildParametricResponse(MealType mealType) {
-        return ParametricResponse.builder()
-                .id(mealType.getId())
-                .description(mealType.getDescription())
+    private RecipeImageResponse buildRecipeImageResponse(RecipeImage recipeImage) {
+        return RecipeImageResponse.builder()
+                .id(recipeImage.getId())
+                .imageName(recipeImage.getImageName())
+                .imageType(recipeImage.getImageType())
+                .stepNumber(recipeImage.getStepNumber())
+                .stepDescription(recipeImage.getStepDescription())
                 .build();
     }
 
@@ -146,6 +133,41 @@ public class RecipeControllerAdapter {
         return ParametricResponse.builder()
                 .id(preparationTime.getId())
                 .description(preparationTime.getDescription())
+                .build();
+    }
+
+    private ParametricResponse buildParametricResponse(CookLevel cookLevel) {
+        return ParametricResponse.builder()
+                .id(cookLevel.getId())
+                .description(cookLevel.getDescription())
+                .build();
+    }
+
+    private ParametricResponse buildParametricResponse(Diet diet) {
+        return ParametricResponse.builder()
+                .id(diet.getId())
+                .description(diet.getDescription())
+                .build();
+    }
+
+    private ParametricResponse buildParametricResponse(MealType mealType) {
+        return ParametricResponse.builder()
+                .id(mealType.getId())
+                .description(mealType.getDescription())
+                .build();
+    }
+
+    private ParametricResponse buildParametricResponse(Allergy allergy) {
+        return ParametricResponse.builder()
+                .id(allergy.getId())
+                .description(allergy.getDescription())
+                .build();
+    }
+
+    private ParametricResponse buildParametricResponse(DietaryNeed dietaryNeed) {
+        return ParametricResponse.builder()
+                .id(dietaryNeed.getId())
+                .description(dietaryNeed.getDescription())
                 .build();
     }
 }

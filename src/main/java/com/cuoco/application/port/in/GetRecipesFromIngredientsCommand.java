@@ -18,7 +18,6 @@ public interface GetRecipesFromIngredientsCommand {
     class Command {
         private List<Ingredient> ingredients;
         private Boolean filtersEnabled;
-        private Boolean useProfilePreferences;
 
         private Integer servings;
         private Integer preparationTimeId;

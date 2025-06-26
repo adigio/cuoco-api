@@ -1,7 +1,7 @@
 package com.cuoco.application.usecase;
 
 import com.cuoco.application.port.in.GenerateRecipeImagesCommand;
-import com.cuoco.application.port.out.GenerateRecipeImagesRepository;
+import com.cuoco.application.port.out.GetRecipeStepsImagesRepository;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.RecipeImage;
 import lombok.extern.slf4j.Slf4j;
@@ -13,10 +13,10 @@ import java.util.List;
 @Service
 public class GenerateRecipeImagesUseCase implements GenerateRecipeImagesCommand {
 
-    private final GenerateRecipeImagesRepository generateRecipeImagesRepository;
+    private final GetRecipeStepsImagesRepository getRecipeStepsImagesRepository;
 
-    public GenerateRecipeImagesUseCase(GenerateRecipeImagesRepository generateRecipeImagesRepository) {
-        this.generateRecipeImagesRepository = generateRecipeImagesRepository;
+    public GenerateRecipeImagesUseCase(GetRecipeStepsImagesRepository getRecipeStepsImagesRepository) {
+        this.getRecipeStepsImagesRepository = getRecipeStepsImagesRepository;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class GenerateRecipeImagesUseCase implements GenerateRecipeImagesCommand 
         log.info("Executing recipe images generation for recipe: {}", recipe.getName());
         
         try {
-            List<RecipeImage> generatedImages = generateRecipeImagesRepository.execute(recipe);
+            List<RecipeImage> generatedImages = getRecipeStepsImagesRepository.execute(recipe);
             
             if (generatedImages == null) {
                 generatedImages = List.of();

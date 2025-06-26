@@ -92,6 +92,18 @@ CREATE TABLE `recipe_meal_types`
     CONSTRAINT `FK_recipe_meal_types_recipe_id` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`)
 );
 
+CREATE TABLE `recipe_steps_images`
+(
+    `id`                bigint NOT NULL AUTO_INCREMENT,
+    `recipe_id`         bigint NOT NULL,
+    `image_name`        varchar(100),
+    `image_type`        varchar(10),
+    `step_number`       int,
+    `step_description`  text,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `FK_recipe_steps_images_recipe_id` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`)
+);
+
 CREATE TABLE `user_recipes`
 (
     `id`        bigint NOT NULL AUTO_INCREMENT,

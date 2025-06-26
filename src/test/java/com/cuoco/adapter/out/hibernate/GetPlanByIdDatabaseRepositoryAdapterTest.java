@@ -35,13 +35,13 @@ class GetPlanByIdDatabaseRepositoryAdapterTest {
     @Test
     void WHEN_execute_with_existing_id_THEN_return_plan() {
         Integer id = 1;
-        PlanHibernateModel model = PlanHibernateModelFactory.create(id, "Premium");
+        PlanHibernateModel model = PlanHibernateModelFactory.create(id, "Pro");
 
         when(hibernateRepository.findById(id)).thenReturn(Optional.of(model));
 
         Plan result = adapter.execute(id);
 
-        assertEquals("Premium", result.getDescription());
+        assertEquals("Pro", result.getDescription());
         assertEquals(id, result.getId());
         verify(hibernateRepository).findById(id);
     }

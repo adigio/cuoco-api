@@ -2,14 +2,12 @@ package com.cuoco.application.usecase;
 
 import com.cuoco.application.exception.BadRequestException;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
-import com.cuoco.application.port.out.CreateRecipeRepository;
 import com.cuoco.application.port.out.GetAllergiesByIdRepository;
 import com.cuoco.application.port.out.GetCookLevelByIdRepository;
 import com.cuoco.application.port.out.GetDietByIdRepository;
 import com.cuoco.application.port.out.GetDietaryNeedsByIdRepository;
 import com.cuoco.application.port.out.GetMealTypeByIdRepository;
 import com.cuoco.application.port.out.GetPreparationTimeByIdRepository;
-import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
 import com.cuoco.application.usecase.domainservice.RecipeDomainService;
 import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.CookLevel;
@@ -24,23 +22,21 @@ import com.cuoco.application.usecase.model.User;
 import com.cuoco.shared.model.ErrorDescription;
 import com.cuoco.shared.utils.PlanConstants;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 @Slf4j
 @Component
 public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredientsCommand {
 
-    @Value("${shared.plan.free.max-recipes}")
+    @Value("${shared.recipes.max-recipes.free}")
     private int FREE_MAX_RECIPES;
 
-    @Value("${shared.plan.premium.max-recipes}")
-    private int PREMIUM_MAX_RECIPES;
+    @Value("${shared.recipes.max-recipes.pro}")
+    private int PRO_MAX_RECIPES;
 
     private final RecipeDomainService recipeDomainService;
 
@@ -51,8 +47,6 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
     private final GetAllergiesByIdRepository getAllergiesByIdRepository;
     private final GetDietaryNeedsByIdRepository getDietaryNeedsByIdRepository;
 
-    private final GetRecipesFromIngredientsRepository getRecipesFromIngredientsRepository;
-
     public GetRecipesFromIngredientsUseCase(
             RecipeDomainService recipeDomainService,
             GetPreparationTimeByIdRepository getPreparationTimeByIdRepository,
@@ -60,8 +54,7 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
             GetMealTypeByIdRepository getMealTypeByIdRepository,
             GetDietByIdRepository getDietByIdRepository,
             GetAllergiesByIdRepository getAllergiesByIdRepository,
-            GetDietaryNeedsByIdRepository getDietaryNeedsByIdRepository,
-            @Qualifier("repository") GetRecipesFromIngredientsRepository getRecipesFromIngredientsRepository
+            GetDietaryNeedsByIdRepository getDietaryNeedsByIdRepository
     ) {
         this.recipeDomainService = recipeDomainService;
         this.getPreparationTimeByIdRepository = getPreparationTimeByIdRepository;
@@ -70,7 +63,6 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
         this.getDietByIdRepository = getDietByIdRepository;
         this.getAllergiesByIdRepository = getAllergiesByIdRepository;
         this.getDietaryNeedsByIdRepository = getDietaryNeedsByIdRepository;
-        this.getRecipesFromIngredientsRepository = getRecipesFromIngredientsRepository;
     }
 
     public List<Recipe> execute(Command command) {
@@ -80,9 +72,7 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
 
         Recipe recipeToFind = buildRecipe(command, userPlan);
 
-        List<Recipe> foundedRecipes = getRecipesFromIngredientsRepository.execute(recipeToFind);
-
-        List<Recipe> recipesToResponse = recipeDomainService.generateIfNeeded(recipeToFind, foundedRecipes);
+        List<Recipe> recipesToResponse = recipeDomainService.getOrCreate(recipeToFind);
 
         return recipesToResponse;
     }
@@ -133,8 +123,8 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
     }
 
     private RecipeConfiguration buildConfiguration(Command command, int userPlan) {
-        if(userPlan == PlanConstants.PREMIUM.getValue()) {
-            int size = command.getSize() != null ? command.getSize() : PREMIUM_MAX_RECIPES;
+        if(userPlan == PlanConstants.PRO.getValue()) {
+            int size = command.getSize() != null ? command.getSize() : PRO_MAX_RECIPES;
 
             return RecipeConfiguration.builder()
                     .size(size)

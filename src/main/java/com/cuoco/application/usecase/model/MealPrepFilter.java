@@ -15,10 +15,12 @@ import java.util.List;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MealPrepFilter {
-
-    private CookLevel difficulty;
-    private String diet;
-    private Integer quantity;
     private Boolean freeze;
-    private List<String> types;
+    private Integer servings;
+    private PreparationTime preparationTime;
+    private CookLevel cookLevel;
+    private Diet diet;
+    private List<MealType> mealTypes;
+    private List<Allergy> allergies;
+    private List<DietaryNeed> dietaryNeeds;
 }

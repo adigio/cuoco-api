@@ -1,7 +1,7 @@
 package com.cuoco.application.usecase;
 
 import com.cuoco.application.port.in.GenerateRecipeImagesCommand;
-import com.cuoco.application.port.out.GenerateRecipeImagesRepository;
+import com.cuoco.application.port.out.GetRecipeStepsImagesRepository;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.RecipeImage;
 import com.cuoco.factory.domain.RecipeFactory;
@@ -25,13 +25,13 @@ import static org.mockito.Mockito.when;
 class GenerateRecipeImagesUseCaseTest {
 
     @Mock
-    private GenerateRecipeImagesRepository generateRecipeImagesRepository;
+    private GetRecipeStepsImagesRepository getRecipeStepsImagesRepository;
 
     private GenerateRecipeImagesUseCase generateRecipeImagesUseCase;
 
     @BeforeEach
     void setUp() {
-        generateRecipeImagesUseCase = new GenerateRecipeImagesUseCase(generateRecipeImagesRepository);
+        generateRecipeImagesUseCase = new GenerateRecipeImagesUseCase(getRecipeStepsImagesRepository);
     }
 
     @Test
@@ -46,14 +46,14 @@ class GenerateRecipeImagesUseCaseTest {
                 .recipe(recipe)
                 .build();
 
-        when(generateRecipeImagesRepository.execute(any(Recipe.class)))
+        when(getRecipeStepsImagesRepository.execute(any(Recipe.class)))
                 .thenReturn(expectedImages);
 
         List<RecipeImage> result = generateRecipeImagesUseCase.execute(command);
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        verify(generateRecipeImagesRepository).execute(recipe);
+        verify(getRecipeStepsImagesRepository).execute(recipe);
     }
 
     @Test
@@ -63,14 +63,14 @@ class GenerateRecipeImagesUseCaseTest {
                 .recipe(recipe)
                 .build();
 
-        when(generateRecipeImagesRepository.execute(any(Recipe.class)))
+        when(getRecipeStepsImagesRepository.execute(any(Recipe.class)))
                 .thenReturn(null);
 
         List<RecipeImage> result = generateRecipeImagesUseCase.execute(command);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(generateRecipeImagesRepository).execute(recipe);
+        verify(getRecipeStepsImagesRepository).execute(recipe);
     }
 
     @Test
@@ -80,14 +80,14 @@ class GenerateRecipeImagesUseCaseTest {
                 .recipe(recipe)
                 .build();
 
-        when(generateRecipeImagesRepository.execute(any(Recipe.class)))
+        when(getRecipeStepsImagesRepository.execute(any(Recipe.class)))
                 .thenThrow(new RuntimeException("Test exception"));
 
         List<RecipeImage> result = generateRecipeImagesUseCase.execute(command);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(generateRecipeImagesRepository).execute(recipe);
+        verify(getRecipeStepsImagesRepository).execute(recipe);
     }
 
     @Test
@@ -97,13 +97,13 @@ class GenerateRecipeImagesUseCaseTest {
                 .recipe(recipe)
                 .build();
 
-        when(generateRecipeImagesRepository.execute(any(Recipe.class)))
+        when(getRecipeStepsImagesRepository.execute(any(Recipe.class)))
                 .thenReturn(List.of());
 
         List<RecipeImage> result = generateRecipeImagesUseCase.execute(command);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(generateRecipeImagesRepository).execute(recipe);
+        verify(getRecipeStepsImagesRepository).execute(recipe);
     }
 } 
