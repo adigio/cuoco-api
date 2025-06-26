@@ -1,6 +1,7 @@
 package com.cuoco.adapter.out.hibernate;
 
-import com.cuoco.adapter.out.hibernate.model.RecipeImagesHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.RecipeHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.RecipeStepsImagesHibernateModel;
 import com.cuoco.adapter.out.hibernate.repository.CreateRecipeImagesHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.CreateRecipeImagesRepository;
 import com.cuoco.application.usecase.model.Recipe;
@@ -24,23 +25,32 @@ public class CreateRecipeImagesDatabaseRepositoryAdapter implements CreateRecipe
     public List<RecipeImage> execute(Recipe recipe) {
         log.info("Executing recipe images creation in database for recipe with ID {} and with {} images", recipe.getId(), recipe.getImages().size());
 
-        List<RecipeImagesHibernateModel> recipeImages = recipe.getImages().stream().map(this::buildRecipeImagesHibernateModel).toList();
+        RecipeHibernateModel recipeHibernateModel = buildRecipeHibernateModel(recipe);
 
-        List<RecipeImagesHibernateModel> savedImages = createRecipeImagesHibernateRepositoryAdapter.saveAll(recipeImages);
+        List<RecipeStepsImagesHibernateModel> recipeImages = recipe.getImages().stream()
+                .map(recipeImage -> buildRecipeImagesHibernateModel(recipeHibernateModel, recipeImage))
+                .toList();
+
+        List<RecipeStepsImagesHibernateModel> savedImages = createRecipeImagesHibernateRepositoryAdapter.saveAll(recipeImages);
 
         log.info("Successfully saved recipe images");
 
-        return savedImages.stream().map(RecipeImagesHibernateModel::toDomain).toList();
+        return savedImages.stream().map(RecipeStepsImagesHibernateModel::toDomain).toList();
     }
 
-    private RecipeImagesHibernateModel buildRecipeImagesHibernateModel(RecipeImage recipeImage) {
-        return RecipeImagesHibernateModel.builder()
+    private RecipeHibernateModel buildRecipeHibernateModel(Recipe recipe) {
+        return RecipeHibernateModel.builder()
+                .id(recipe.getId())
+                .build();
+    }
+
+    private RecipeStepsImagesHibernateModel buildRecipeImagesHibernateModel(RecipeHibernateModel recipe, RecipeImage recipeImage) {
+        return RecipeStepsImagesHibernateModel.builder()
+                .recipe(recipe)
                 .imageType(recipeImage.getImageType())
                 .imageName(recipeImage.getImageName())
-                .imagePath(recipeImage.getImagePath())
                 .stepNumber(recipeImage.getStepNumber())
                 .stepDescription(recipeImage.getStepDescription())
-                .imageUrl(recipeImage.getImageUrl())
                 .build();
     }
 }

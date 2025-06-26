@@ -13,9 +13,7 @@ public class RecipeImage {
     private Long id;
     private String imageType;
     private String imageName;
-    private String imagePath;
     private Integer stepNumber;
     private String stepDescription;
-    private String imageUrl;
     private byte[] imageData;
 } 

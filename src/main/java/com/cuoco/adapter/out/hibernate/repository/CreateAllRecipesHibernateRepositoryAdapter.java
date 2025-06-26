@@ -6,6 +6,4 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-public interface CreateRecipeHibernateRepositoryAdapter extends JpaRepository<RecipeHibernateModel, Long> {
-    Optional<RecipeHibernateModel> findByNameIgnoreCase(String name);
-}
+public interface CreateAllRecipesHibernateRepositoryAdapter extends JpaRepository<RecipeHibernateModel, Long> {}

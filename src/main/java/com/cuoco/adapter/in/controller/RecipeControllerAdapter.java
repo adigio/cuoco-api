@@ -9,7 +9,6 @@ import com.cuoco.adapter.in.controller.model.RecipeImageResponse;
 import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.adapter.in.controller.model.UnitResponse;
-import com.cuoco.application.port.in.GenerateRecipeImagesCommand;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
 import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.CookLevel;
@@ -19,6 +18,7 @@ import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.PreparationTime;
 import com.cuoco.application.usecase.model.Recipe;
+import com.cuoco.application.usecase.model.RecipeImage;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -37,14 +37,9 @@ import java.util.List;
 public class RecipeControllerAdapter {
 
     private final GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand;
-    private final GenerateRecipeImagesCommand generateRecipeImagesCommand;
 
-    public RecipeControllerAdapter(
-            GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand,
-            GenerateRecipeImagesCommand generateRecipeImagesCommand
-    ) {
+    public RecipeControllerAdapter(GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand) {
         this.getRecipesFromIngredientsCommand = getRecipesFromIngredientsCommand;
-        this.generateRecipeImagesCommand = generateRecipeImagesCommand;
     }
 
     @PostMapping()
@@ -62,7 +57,7 @@ public class RecipeControllerAdapter {
 
     private GetRecipesFromIngredientsCommand.Command buildGenerateRecipeCommand(RecipeRequest recipeRequest) {
 
-        Boolean filtersEnabled = true;
+        boolean filtersEnabled = true;
 
         if(recipeRequest.getFilters() == null) {
             filtersEnabled = false;
@@ -107,21 +102,7 @@ public class RecipeControllerAdapter {
                 .allergies(recipe.getAllergies().stream().map(this::buildParametricResponse).toList())
                 .dietaryNeeds(recipe.getDietaryNeeds().stream().map(this::buildParametricResponse).toList())
                 .ingredients(recipe.getIngredients().stream().map(this::buildIngredientResponse).toList())
-                .generatedImages(buildImages(recipe))
                 .build();
-    }
-
-    private List<RecipeImageResponse> buildImages(Recipe recipe) {
-        try {
-            if (generateRecipeImagesCommand != null) {
-                return generateRecipeImagesCommand.execute(GenerateRecipeImagesCommand.Command.builder().recipe(recipe).build())
-                        .stream().map(RecipeImageResponse::fromDomain).toList();
-            }
-            return List.of();
-        } catch (Exception e) {
-            log.warn("Failed to generate images for recipe: {}", recipe.getName(), e);
-            return List.of();
-        }
     }
 
     private IngredientResponse buildIngredientResponse(Ingredient ingredient) {
@@ -135,6 +116,16 @@ public class RecipeControllerAdapter {
                         .symbol(ingredient.getUnit().getSymbol())
                         .build()
                 )
+                .build();
+    }
+
+    private RecipeImageResponse buildRecipeImageResponse(RecipeImage recipeImage) {
+        return RecipeImageResponse.builder()
+                .id(recipeImage.getId())
+                .imageName(recipeImage.getImageName())
+                .imageType(recipeImage.getImageType())
+                .stepNumber(recipeImage.getStepNumber())
+                .stepDescription(recipeImage.getStepDescription())
                 .build();
     }
 

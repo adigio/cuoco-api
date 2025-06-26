@@ -18,5 +18,4 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GeminiResponseModel {
     private List<CandidateGeminiResponseModel> candidates;
-
 }

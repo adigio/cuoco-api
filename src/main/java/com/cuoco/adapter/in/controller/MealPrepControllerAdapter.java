@@ -10,11 +10,16 @@ import com.cuoco.adapter.in.controller.model.ParametricResponse;
 import com.cuoco.adapter.in.controller.model.RecipeFilterRequest;
 import com.cuoco.adapter.in.controller.model.UnitResponse;
 import com.cuoco.application.port.in.GetMealPrepFromIngredientsCommand;
+import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.CookLevel;
+import com.cuoco.application.usecase.model.Diet;
+import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.Instruction;
 import com.cuoco.application.usecase.model.MealPrep;
 import com.cuoco.application.usecase.model.MealPrepFilter;
+import com.cuoco.application.usecase.model.MealType;
+import com.cuoco.application.usecase.model.PreparationTime;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -76,7 +81,9 @@ public class MealPrepControllerAdapter {
                 .name(mealPrep.getName())
                 .subtitle(mealPrep.getSubtitle())
                 .recipes(mealPrep.getRecipes())
-                .preparationTime(mealPrep.getPreparationTime())
+                .preparationTime(buildParametricResponse(mealPrep.getPreparationTime()))
+                .cookLevel(buildParametricResponse(mealPrep.getCookLevel()))
+                .diet(buildParametricResponse(mealPrep.getDiet()))
                 .instructions(
                         mealPrep.getInstructions().stream().map(this::buildIntructionResponse).toList())
                 .ingredients(
@@ -109,6 +116,48 @@ public class MealPrepControllerAdapter {
                         .symbol(ingredient.getUnit().getSymbol())
                         .build()
                 )
+                .build();
+    }
+
+    private ParametricResponse buildParametricResponse(PreparationTime preparationTime) {
+        return ParametricResponse.builder()
+                .id(preparationTime.getId())
+                .description(preparationTime.getDescription())
+                .build();
+    }
+
+    private ParametricResponse buildParametricResponse(CookLevel cookLevel) {
+        return ParametricResponse.builder()
+                .id(cookLevel.getId())
+                .description(cookLevel.getDescription())
+                .build();
+    }
+
+    private ParametricResponse buildParametricResponse(Diet diet) {
+        return ParametricResponse.builder()
+                .id(diet.getId())
+                .description(diet.getDescription())
+                .build();
+    }
+
+    private ParametricResponse buildParametricResponse(MealType mealType) {
+        return ParametricResponse.builder()
+                .id(mealType.getId())
+                .description(mealType.getDescription())
+                .build();
+    }
+
+    private ParametricResponse buildParametricResponse(Allergy allergy) {
+        return ParametricResponse.builder()
+                .id(allergy.getId())
+                .description(allergy.getDescription())
+                .build();
+    }
+
+    private ParametricResponse buildParametricResponse(DietaryNeed dietaryNeed) {
+        return ParametricResponse.builder()
+                .id(dietaryNeed.getId())
+                .description(dietaryNeed.getDescription())
                 .build();
     }
 }

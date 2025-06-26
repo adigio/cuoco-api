@@ -17,7 +17,6 @@ import com.cuoco.application.usecase.model.MealPrep;
 import com.cuoco.application.usecase.model.MealPrepFilter;
 import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.PreparationTime;
-import com.cuoco.application.usecase.model.RecipeFilter;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.shared.model.ErrorDescription;
 import com.cuoco.shared.utils.PlanConstants;
@@ -26,7 +25,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -65,8 +63,8 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
         log.info("Executing get recipes from ingredients and filters use case with command {}", command);
 
         int userPlan = getUserPlan();
-        if (userPlan != PlanConstants.PREMIUM.getValue()) {
-            log.warn("User plan is not premium. Access denied.");
+        if (userPlan != PlanConstants.PRO.getValue()) {
+            log.warn("User plan is not PRO. Access denied.");
             throw new ForbiddenException(ErrorDescription.PRO_FEATURE.getValue());
         }
 

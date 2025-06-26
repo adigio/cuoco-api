@@ -12,12 +12,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "recipe_ingredients")
+@Entity(name = "recipe_steps_images")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecipeImagesHibernateModel {
+public class RecipeStepsImagesHibernateModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,20 +29,16 @@ public class RecipeImagesHibernateModel {
 
     private String imageType;
     private String imageName;
-    private String imagePath;
     private Integer stepNumber;
     private String stepDescription;
-    private String imageUrl;
 
     public RecipeImage toDomain() {
         return RecipeImage.builder()
                 .id(id)
-                .imageType(imageType)
                 .imageName(imageName)
-                .imagePath(imagePath)
+                .imageType(imageType)
                 .stepNumber(stepNumber)
                 .stepDescription(stepDescription)
-                .imageUrl(imageUrl)
                 .build();
     }
 }

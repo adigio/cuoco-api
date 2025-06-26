@@ -1,10 +1,11 @@
 package com.cuoco.shared.utils;
 
 import java.util.List;
+import java.util.Map;
 
 public class FileUtils {
 
-    public static final List<String> SUPPORTED_EXTENSIONS = List.of(
+    public static final List<String> SUPPORTED_AUDIO_EXTENSIONS = List.of(
             AudioConstants.MP3,
             AudioConstants.WAV,
             AudioConstants.OGG,
@@ -30,4 +31,18 @@ public class FileUtils {
         };
     }
 
+    public static String getImageFormat(String mimeType) {
+
+        if (mimeType == null) {
+            return null;
+        }
+
+        Map<String, String> formatMap = Map.of(
+                ImageConstants.MIME_TYPE_BASE.getValue() + ImageConstants.JPEG_FORMAT.getValue(), ImageConstants.JPEG_FORMAT.getValue(),
+                ImageConstants.MIME_TYPE_BASE.getValue() + ImageConstants.WEBP_FORMAT.getValue(), ImageConstants.WEBP_FORMAT.getValue()
+        );
+
+        String format = formatMap.getOrDefault(mimeType, ImageConstants.PNG_FORMAT.getValue());
+        return Constants.DOT.getValue() + format;
+    }
 }

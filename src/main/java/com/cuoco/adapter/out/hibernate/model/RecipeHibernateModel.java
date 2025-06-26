@@ -73,7 +73,7 @@ public class RecipeHibernateModel {
     )
     private List<DietaryNeedHibernateModel> dietaryNeeds;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<RecipeIngredientsHibernateModel> ingredients;
 
     public Recipe toDomain() {
