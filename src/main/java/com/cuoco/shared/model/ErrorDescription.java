@@ -8,6 +8,12 @@ public enum ErrorDescription {
     PLAN_NOT_EXISTS("El plan ingresado no existe"),
     COOK_LEVEL_NOT_EXISTS("El nivel de dificulad ingresado no existe"),
     DIET_NOT_EXISTS("La dieta ingresada no existe"),
+    MEAL_CATEGORY_NOT_EXISTS("La categoria de la receta ingresada no existe"),
+    MEAL_TYPE_NOT_EXISTS("El tipo de receta ingresado no existe"),
+    PREPARATION_TIME_NOT_EXISTS("El tiempo de preparacion ingresado no existe"),
+
+    INGREDIENTS_EMPTY("Es necesario por lo menos un ingrediente para continuar"),
+
     USER_NOT_EXISTS("El usuario ingresado no existe"),
     USER_DUPLICATED("El usuario ya existe"),
     INVALID_CREDENTIALS("Las credenciales no son válidas"),
@@ -17,7 +23,7 @@ public enum ErrorDescription {
     INVALID_AUDIO_FILE_EXTENSION("La extensión del archivo de audio no es valida"),
     AUDIO_FILE_IS_REQUIRED("El archivo de audio no esta presente y es requerido"),
     AUDIO_FILE_PROCESSING_ERROR("Error procesando el archivo de audio"),
-
+    PRO_FEATURE("Esta funcionalidad solo es para usuarios PRO"),
     UNAUTHORIZED("El token no esta presente"),
     UNEXPECTED_ERROR("An unexpected error occurred: "),
     UNHANDLED("Ha ocurrido un error inesperado"),

@@ -52,7 +52,7 @@ public class DietaryNeedControllerAdapter {
             )
     })
     public ResponseEntity<List<ParametricResponse>> getAll() {
-        log.info("GET all dietary needs");
+        log.info("Executing GET all dietary needs");
 
         List<DietaryNeed> dietaryNeeds = getAllDietaryNeedsQuery.execute();
         List<ParametricResponse> response = dietaryNeeds.stream().map(this::buildParametricResponse).toList();

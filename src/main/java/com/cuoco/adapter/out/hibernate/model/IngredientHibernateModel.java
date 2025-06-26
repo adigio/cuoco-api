@@ -12,7 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "ingredient")
+@Entity(name = "ingredients")
 @Data
 @Builder
 @NoArgsConstructor
@@ -32,9 +32,12 @@ public class IngredientHibernateModel {
     @JoinColumn(name = "unit_id", referencedColumnName = "id")
     private UnitHibernateModel unit;
 
-    public Ingredient toDomain() {
+    public Ingredient toDomain(Double quantity, Boolean optional) {
         return Ingredient.builder()
+                .id(id)
                 .name(name)
+                .quantity(quantity)
+                .optional(optional)
                 .unit(unit.toDomain())
                 .build();
     }

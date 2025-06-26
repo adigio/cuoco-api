@@ -33,7 +33,7 @@ public class FileDomainService {
 
         if (filename != null && filename.contains(Constants.SLASH.getValue())) {
             String extension = filename.substring(filename.lastIndexOf(Constants.DOT.getValue()) + 1).toLowerCase();
-            return !FileUtils.SUPPORTED_EXTENSIONS.contains(extension);
+            return !FileUtils.SUPPORTED_AUDIO_EXTENSIONS.contains(extension);
         }
 
         return true;

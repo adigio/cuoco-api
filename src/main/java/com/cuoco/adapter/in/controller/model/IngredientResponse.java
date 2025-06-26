@@ -14,11 +14,12 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IngredientResponse {
 
+    private Long id;
     private String name;
     private Double quantity;
     private UnitResponse unit;
     private Boolean optional;
     private String source;
-    private boolean confirmed;
+    private Boolean confirmed;
 
 }

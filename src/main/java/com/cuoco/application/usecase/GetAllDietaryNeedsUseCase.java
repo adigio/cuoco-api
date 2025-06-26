@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class GetAllDietaryNeedsUseCase implements GetAllDietaryNeedsQuery {
 
-    private GetAllDietaryNeedsRepository getAllDietaryNeedsRepository;
+    private final GetAllDietaryNeedsRepository getAllDietaryNeedsRepository;
 
     public GetAllDietaryNeedsUseCase(GetAllDietaryNeedsRepository getAllDietaryNeedsRepository) {
         this.getAllDietaryNeedsRepository = getAllDietaryNeedsRepository;

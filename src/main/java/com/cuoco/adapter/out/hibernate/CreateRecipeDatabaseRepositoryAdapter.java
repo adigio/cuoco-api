@@ -1,8 +1,13 @@
 package com.cuoco.adapter.out.hibernate;
 
 import com.cuoco.adapter.exception.UnprocessableException;
+import com.cuoco.adapter.out.hibernate.model.AllergyHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.CookLevelHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.DietHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.DietaryNeedHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.IngredientHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.MealTypeHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.PreparationTimeHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.RecipeHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.RecipeIngredientsHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.UnitHibernateModel;
@@ -12,7 +17,10 @@ import com.cuoco.adapter.out.hibernate.repository.CreateRecipeIngredientsHiberna
 import com.cuoco.adapter.out.hibernate.repository.GetIngredientByNameHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.GetUnitBySymbolHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.CreateRecipeRepository;
+import com.cuoco.application.usecase.model.Allergy;
+import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.Ingredient;
+import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.shared.model.ErrorDescription;
 import jakarta.transaction.Transactional;
@@ -61,9 +69,9 @@ public class CreateRecipeDatabaseRepositoryAdapter implements CreateRecipeReposi
 
         RecipeHibernateModel savedRecipe = createRecipeHibernateRepositoryAdapter.save(buildRecipeHibernateModel(recipe));
 
-        List<RecipeIngredientsHibernateModel> recipeIngredientsHibernateModel = recipe.getIngredients().stream().map(ingredient -> buildRecipeIngredientHibernateModel(savedRecipe, ingredient)).toList();
-        List<RecipeIngredientsHibernateModel> savedRecipeIngredients = createRecipeIngredientsHibernateRepositoryAdapter.saveAll(recipeIngredientsHibernateModel);
-        savedRecipe.setRecipeIngredients(savedRecipeIngredients);
+        List<RecipeIngredientsHibernateModel> recipeIngredientsHibernateModels = recipe.getIngredients().stream().map(ingredient -> buildRecipeIngredientHibernateModel(savedRecipe, ingredient)).toList();
+        List<RecipeIngredientsHibernateModel> savedRecipeIngredients = createRecipeIngredientsHibernateRepositoryAdapter.saveAll(recipeIngredientsHibernateModels);
+        savedRecipe.setIngredients(savedRecipeIngredients);
 
         Recipe recipeResponse = savedRecipe.toDomain();
 
@@ -75,17 +83,28 @@ public class CreateRecipeDatabaseRepositoryAdapter implements CreateRecipeReposi
     private RecipeHibernateModel buildRecipeHibernateModel(Recipe recipe) {
         return RecipeHibernateModel.builder()
                 .name(recipe.getName())
-                .imageUrl(recipe.getImage())
                 .subtitle(recipe.getSubtitle())
                 .description(recipe.getDescription())
+                .imageUrl(recipe.getImage())
                 .instructions(recipe.getInstructions())
-                .preparationTime(recipe.getPreparationTime())
-                .cookLevel(
-                        CookLevelHibernateModel.builder()
-                                .id(recipe.getCookLevel().getId())
-                                .description(recipe.getCookLevel().getDescription())
-                                .build()
+                .preparationTime(PreparationTimeHibernateModel.builder()
+                        .id(recipe.getPreparationTime().getId())
+                        .description(recipe.getPreparationTime().getDescription())
+                        .build())
+                .cookLevel(CookLevelHibernateModel.builder()
+                        .id(recipe.getCookLevel().getId())
+                        .description(recipe.getCookLevel().getDescription())
+                        .build()
                 )
+                .diet(recipe.getDiet() != null ?
+                        DietHibernateModel.builder()
+                                .id(recipe.getDiet().getId())
+                                .description(recipe.getDiet().getDescription()).build()
+                        : null
+                )
+                .mealTypes(recipe.getMealTypes().stream().map(this::buildMealTypeHibernateModel).toList())
+                .allergies(recipe.getAllergies().stream().map(this::buildAllergiesHibernateModel).toList())
+                .dietaryNeeds(recipe.getDietaryNeeds().stream().map(this::buildDietaryNeedsHibernateModel).toList())
                 .build();
     }
 
@@ -103,16 +122,35 @@ public class CreateRecipeDatabaseRepositoryAdapter implements CreateRecipeReposi
     }
 
     private IngredientHibernateModel buildIngredientHibernateModel(Ingredient ingredient) {
-        Optional<UnitHibernateModel> unitHibernateModel = getUnitBySymbolHibernateRepositoryAdapter.findBySymbolEqualsIgnoreCase(ingredient.getUnit().getSymbol());
-
-        if (unitHibernateModel.isEmpty()) {
-            log.warn("No unit found for symbol: {}", ingredient.getUnit());
-            throw new UnprocessableException(ErrorDescription.UNEXPECTED_ERROR.getValue());
-        }
-
         return IngredientHibernateModel.builder()
                 .name(ingredient.getName())
-                .unit(unitHibernateModel.get())
+                .unit(UnitHibernateModel.builder()
+                        .id(ingredient.getUnit().getId())
+                        .description(ingredient.getUnit().getDescription())
+                        .symbol(ingredient.getUnit().getSymbol())
+                        .build()
+                )
+                .build();
+    }
+
+    private DietaryNeedHibernateModel buildDietaryNeedsHibernateModel(DietaryNeed dietaryNeed) {
+        return DietaryNeedHibernateModel.builder()
+                .id(dietaryNeed.getId())
+                .description(dietaryNeed.getDescription())
+                .build();
+    }
+
+    private AllergyHibernateModel buildAllergiesHibernateModel(Allergy allergy) {
+        return AllergyHibernateModel.builder()
+                .id(allergy.getId())
+                .description(allergy.getDescription())
+                .build();
+    }
+
+    private MealTypeHibernateModel buildMealTypeHibernateModel(MealType mealType) {
+        return MealTypeHibernateModel.builder()
+                .id(mealType.getId())
+                .description(mealType.getDescription())
                 .build();
     }
 }

@@ -49,7 +49,7 @@ class GetRecipesFromIngredientsUseCaseTest {
 
 
         ReflectionTestUtils.setField(useCase, "FREE_MAX_RECIPES", 3);
-        ReflectionTestUtils.setField(useCase, "PREMIUM_MAX_RECIPES", 5);
+        ReflectionTestUtils.setField(useCase, "PRO_MAX_RECIPES", 5);
 
         User user = User.builder()
                 .plan(Plan.builder().id(PlanConstants.FREE.getValue()).build())

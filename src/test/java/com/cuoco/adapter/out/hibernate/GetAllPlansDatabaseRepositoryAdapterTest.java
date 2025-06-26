@@ -32,8 +32,8 @@ class GetAllPlansDatabaseRepositoryAdapterTest {
     @Test
     void WHEN_execute_THEN_return_all_plans() {
         List<PlanHibernateModel> mockList = List.of(
-                PlanHibernateModelFactory.create(1, "Basic"),
-                PlanHibernateModelFactory.create(2, "Premium")
+                PlanHibernateModelFactory.create(1, "Free"),
+                PlanHibernateModelFactory.create(2, "Pro")
         );
 
         when(hibernateRepository.findAll()).thenReturn(mockList);
@@ -41,8 +41,8 @@ class GetAllPlansDatabaseRepositoryAdapterTest {
         List<Plan> result = adapter.execute();
 
         assertEquals(2, result.size());
-        assertEquals("Basic", result.get(0).getDescription());
-        assertEquals("Premium", result.get(1).getDescription());
+        assertEquals("Free", result.get(0).getDescription());
+        assertEquals("Pro", result.get(1).getDescription());
 
         verify(hibernateRepository).findAll();
     }
