@@ -28,7 +28,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -88,6 +90,19 @@ public class RecipeControllerAdapter {
     }
 
     private RecipeResponse buildResponse(Recipe recipe) {
+
+        ParametricResponse diet = recipe.getDiet() != null ? buildParametricResponse(recipe.getDiet()) : null;
+
+        List<ParametricResponse> allergies = Optional.ofNullable(recipe.getAllergies()).orElse(Collections.emptyList())
+                .stream()
+                .map(this::buildParametricResponse)
+                .toList();
+
+        List<ParametricResponse> dietaryNeeds = Optional.ofNullable(recipe.getDietaryNeeds()).orElse(Collections.emptyList())
+                .stream()
+                .map(this::buildParametricResponse)
+                .toList();
+
         return RecipeResponse.builder()
                 .id(recipe.getId())
                 .name(recipe.getName())
@@ -97,10 +112,10 @@ public class RecipeControllerAdapter {
                 .image(recipe.getImage())
                 .preparationTime(buildParametricResponse(recipe.getPreparationTime()))
                 .cookLevel(buildParametricResponse(recipe.getCookLevel()))
-                .diet(buildParametricResponse(recipe.getDiet()))
+                .diet(diet)
                 .mealTypes(recipe.getMealTypes().stream().map(this::buildParametricResponse).toList())
-                .allergies(recipe.getAllergies().stream().map(this::buildParametricResponse).toList())
-                .dietaryNeeds(recipe.getDietaryNeeds().stream().map(this::buildParametricResponse).toList())
+                .allergies(allergies)
+                .dietaryNeeds(dietaryNeeds)
                 .ingredients(recipe.getIngredients().stream().map(this::buildIngredientResponse).toList())
                 .build();
     }
