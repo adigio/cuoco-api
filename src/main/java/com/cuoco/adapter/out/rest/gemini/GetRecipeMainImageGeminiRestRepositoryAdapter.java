@@ -53,11 +53,8 @@ public class GetRecipeMainImageGeminiRestRepositoryAdapter implements GenerateRe
         }
 
         try {
-            int maxIngredients = Integer.parseInt(ImageConstants.MAX_INGREDIENTS_SIZE_INT.getValue());
-
             String mainIngredients = recipe.getIngredients().stream()
                     .map(Ingredient::getName)
-                    .limit(maxIngredients)
                     .collect(Collectors.joining(DELIMITER));
 
             String prompt = MAIN_IMAGE_PROMPT
