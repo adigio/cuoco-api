@@ -1,6 +1,7 @@
 package com.cuoco.adapter.out.rest.gemini;
 
 import autovalue.shaded.kotlin.Pair;
+import com.cuoco.adapter.exception.ConflictException;
 import com.cuoco.adapter.exception.NotAvailableException;
 import com.cuoco.adapter.exception.UnprocessableException;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.GeminiResponseModel;
@@ -44,15 +45,14 @@ public class GetRecipeMainImageGeminiRestRepositoryAdapter implements GenerateRe
     }
 
     @Override
-    public void execute(Recipe recipe) {
+    public boolean execute(Recipe recipe) {
         log.info("Generating main image for recipe with ID {}", recipe.getId());
 
-        if(imageUtils.imageExists(recipe.getId(), ImageConstants.MAIN_IMAGE_NAME.getValue())) {
-            log.info("Main image for recipe with ID {} already exists", recipe.getId());
-            return;
-        }
-
         try {
+            if(imageUtils.imageExists(recipe.getId(), ImageConstants.MAIN_IMAGE_NAME.getValue())) {
+                throw new ConflictException("Main image for recipe with ID " + recipe.getId() + " already exists");
+            }
+
             String mainIngredients = recipe.getIngredients().stream()
                     .map(Ingredient::getName)
                     .collect(Collectors.joining(DELIMITER));
@@ -72,8 +72,14 @@ public class GetRecipeMainImageGeminiRestRepositoryAdapter implements GenerateRe
 
                 log.info("Successfully generated and saved main image for recipe with ID {}", recipe.getId());
 
-            } else log.warn("Failed to generate main image for recipe with ID {}", recipe.getId());
-
+                return true;
+            } else {
+                log.warn("Failed to generate main image for recipe with ID {}", recipe.getId());
+                return false;
+            }
+        } catch (ConflictException e) {
+            log.info("Main image for recipe with ID {} already exists", recipe.getId());
+            return true;
         } catch (Exception e) {
             log.error("Error generating images for recipe with ID {}", recipe.getId(), e);
             throw new NotAvailableException("Could not generate main image for recipe with ID " + recipe.getId());
