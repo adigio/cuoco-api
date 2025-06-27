@@ -6,7 +6,7 @@ Objetivo:
 
 Instrucciones CRÍTICAS:
 
-- OBLIGATORIO: Cada receta DEBE incluir TODOS los ingredientes proporcionados como ingredientes principales
+- OBLIGATORIO: Cada receta DEBE incluir TODOS los ingredientes proporcionados como ingredientes principales, pueden tener mas pero debe incluir todos
 - Los ingredientes proporcionados deben aparecer en la lista de ingredientes de cada receta
 - Las recetas deben ser lógicas combinando TODOS los ingredientes dados
 - Ejemplo: si dan "queso, arroz" las recetas deben usar tanto queso como arroz juntos
