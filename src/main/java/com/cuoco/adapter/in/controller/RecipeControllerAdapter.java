@@ -9,6 +9,7 @@ import com.cuoco.adapter.in.controller.model.StepResponse;
 import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.adapter.in.controller.model.UnitResponse;
+import com.cuoco.application.port.in.GetRecipeByIdQuery;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
 import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.CookLevel;
@@ -23,6 +24,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,15 +42,32 @@ import java.util.Optional;
 public class RecipeControllerAdapter {
 
     private final GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand;
+    private final GetRecipeByIdQuery getRecipeByIdQuery;
 
-    public RecipeControllerAdapter(GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand) {
+    public RecipeControllerAdapter(
+            GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand,
+            GetRecipeByIdQuery getRecipeByIdQuery
+    ) {
         this.getRecipesFromIngredientsCommand = getRecipesFromIngredientsCommand;
+        this.getRecipeByIdQuery = getRecipeByIdQuery;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<RecipeResponse> getRecipe(@PathVariable(name = "id") Long recipeId) {
+        log.info("Executing GET for find recipe with ID {}", recipeId);
+
+        Recipe recipe = getRecipeByIdQuery.execute(recipeId);
+
+        RecipeResponse recipeResponse = buildResponse(recipe);
+
+        log.info("Successfully obtained recipe with ID {}", recipeResponse.getId());
+        return ResponseEntity.ok(recipeResponse);
     }
 
     @PostMapping()
     public ResponseEntity<List<RecipeResponse>> generate(@RequestBody @Valid RecipeRequest recipeRequest) {
 
-        log.info("Executing GET recipes from ingredients with body {}", recipeRequest);
+        log.info("Executing POST for get or creation of recipes by ingredients with body {}", recipeRequest);
 
         List<Recipe> recipes = getRecipesFromIngredientsCommand.execute(buildGenerateRecipeCommand(recipeRequest));
 
