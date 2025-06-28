@@ -1,7 +1,7 @@
 package com.cuoco.adapter.out.hibernate;
 
 import com.cuoco.adapter.out.hibernate.model.RecipeHibernateModel;
-import com.cuoco.adapter.out.hibernate.repository.GetRecipeByIDHibernateRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.GetRecipeByIdHibernateRepositoryAdapter;
 import com.cuoco.application.usecase.model.Recipe;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,15 +14,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class GetRecipeFromIDRepositoryAdapterTest {
+public class GetRecipeByIdDatabaseRepositoryAdapterTest {
 
-    private GetRecipeByIDHibernateRepositoryAdapter hibernateRepository;
-    private GetRecipeFromIDRepositoryAdapter adapter;
+    private GetRecipeByIdHibernateRepositoryAdapter hibernateRepository;
+    private GetRecipeByIdDatabaseRepositoryAdapter adapter;
 
     @BeforeEach
     public void setUp() {
-        hibernateRepository = mock(GetRecipeByIDHibernateRepositoryAdapter.class);
-        adapter = new GetRecipeFromIDRepositoryAdapter(hibernateRepository);
+        hibernateRepository = mock(GetRecipeByIdHibernateRepositoryAdapter.class);
+        adapter = new GetRecipeByIdDatabaseRepositoryAdapter(hibernateRepository);
     }
 
     @Test
