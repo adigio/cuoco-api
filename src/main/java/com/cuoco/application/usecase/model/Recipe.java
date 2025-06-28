@@ -26,8 +26,8 @@ public class Recipe {
     private List<DietaryNeed> dietaryNeeds;
     private List<Ingredient> ingredients;
 
-    private List<RecipeImage> images;
+    private List<Step> images;
 
-    private RecipeFilter filters;
+    private Filters filters;
     private RecipeConfiguration configuration;
 }

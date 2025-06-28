@@ -9,7 +9,7 @@ import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.RecipeFilter;
+import com.cuoco.application.usecase.model.Filters;
 import com.cuoco.shared.model.ErrorDescription;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -52,7 +52,7 @@ public class GetRecipesFromIngredientsDatabaseRepositoryAdapter implements GetRe
             List<Integer> dietaryNeedsIds = null;
 
             if (recipe.getFilters().getEnable()) {
-                RecipeFilter filters = recipe.getFilters();
+                Filters filters = recipe.getFilters();
 
                 if(filters.getPreparationTime() != null) {
                     preparationTimeId = filters.getPreparationTime().getId();
@@ -66,8 +66,8 @@ public class GetRecipesFromIngredientsDatabaseRepositoryAdapter implements GetRe
                     cookLevelId = filters.getCookLevel().getId();
                 }
 
-                if(filters.getTypes() != null && !filters.getTypes().isEmpty()) {
-                    mealTypesIds = filters.getTypes().stream().map(MealType::getId).toList();
+                if(filters.getMealTypes() != null && !filters.getMealTypes().isEmpty()) {
+                    mealTypesIds = filters.getMealTypes().stream().map(MealType::getId).toList();
                 }
 
                 if(filters.getAllergies() != null && !filters.getAllergies().isEmpty()) {

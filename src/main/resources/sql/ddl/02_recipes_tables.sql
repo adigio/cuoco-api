@@ -49,8 +49,10 @@ CREATE TABLE `recipes`
     `cook_level_id`       int          DEFAULT NULL,
     `diet_id`             int          DEFAULT NULL,
     `preparation_time_id` int          DEFAULT NULL,
-
     PRIMARY KEY (`id`),
+    KEY `FK_recipe_cook_level_id` (`cook_level_id`),
+    KEY `FK_recipe_diet_id` (`diet_id`),
+    KEY `FK_recipe_preparation_time_id` (`preparation_time_id`),
     CONSTRAINT `FK_recipe_cook_level_id` FOREIGN KEY (`cook_level_id`) REFERENCES `cook_levels` (`id`),
     CONSTRAINT `FK_recipe_diet_id` FOREIGN KEY (`diet_id`) REFERENCES `diets` (`id`),
     CONSTRAINT `FK_recipe_preparation_time_id` FOREIGN KEY (`preparation_time_id`) REFERENCES `preparation_times` (`id`)
@@ -92,7 +94,7 @@ CREATE TABLE `recipe_meal_types`
     CONSTRAINT `FK_recipe_meal_types_recipe_id` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`)
 );
 
-CREATE TABLE `recipe_steps_images`
+CREATE TABLE `recipe_steps`
 (
     `id`                bigint NOT NULL AUTO_INCREMENT,
     `recipe_id`         bigint NOT NULL,
@@ -101,16 +103,15 @@ CREATE TABLE `recipe_steps_images`
     `step_number`       int,
     `step_description`  text,
     PRIMARY KEY (`id`),
-    CONSTRAINT `FK_recipe_steps_images_recipe_id` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`)
+    CONSTRAINT `FK_recipe_steps__recipe_id` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`)
 );
 
 CREATE TABLE `user_recipes`
 (
-    `id`        bigint NOT NULL AUTO_INCREMENT,
-    `favorite`  bit(1) DEFAULT NULL,
-    `recipe_id` bigint DEFAULT NULL,
     `user_id`   bigint DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    CONSTRAINT `FK_user_recipes_recipe_id` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`),
-    CONSTRAINT `FK_user_recipes_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+    `recipe_id` bigint DEFAULT NULL,
+    KEY `FK_user_recipes_user_id` (`user_id`),
+    KEY `FK_user_recipes_recipe_id` (`recipe_id`),
+    CONSTRAINT `FK_user_recipes_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+    CONSTRAINT `FK_user_recipes_recipe_id` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`)
 );

@@ -17,7 +17,7 @@ import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.PreparationTime;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.RecipeConfiguration;
-import com.cuoco.application.usecase.model.RecipeFilter;
+import com.cuoco.application.usecase.model.Filters;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.shared.model.ErrorDescription;
 import com.cuoco.shared.utils.PlanConstants;
@@ -95,10 +95,10 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
                 .build();
     }
 
-    private RecipeFilter buildFilters(Command command, int userPlan) {
+    private Filters buildFilters(Command command, int userPlan) {
 
         if(userPlan == PlanConstants.FREE.getValue() || !command.getFiltersEnabled()) {
-            return RecipeFilter.builder()
+            return Filters.builder()
                     .enable(false)
                     .build();
         }
@@ -110,12 +110,12 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
         List<DietaryNeed> dietaryNeeds = command.getDietaryNeedsIds() != null ? getDietaryNeedsByIdRepository.execute(command.getDietaryNeedsIds()) : null;
         List<Allergy> allergies = command.getAllergiesIds() != null ? getAllergiesByIdRepository.execute(command.getAllergiesIds()) : null;
 
-        return RecipeFilter.builder()
+        return Filters.builder()
                 .enable(true)
                 .servings(command.getServings())
                 .preparationTime(preparationTime)
                 .cookLevel(cookLevel)
-                .types(types)
+                .mealTypes(types)
                 .diet(diet)
                 .allergies(allergies)
                 .dietaryNeeds(dietaryNeeds)

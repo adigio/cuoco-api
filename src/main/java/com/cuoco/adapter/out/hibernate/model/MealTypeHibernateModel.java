@@ -22,6 +22,13 @@ public class MealTypeHibernateModel {
     private Integer id;
     private String description;
 
+    public static MealTypeHibernateModel fromDomain(MealType mealType) {
+        return MealTypeHibernateModel.builder()
+                .id(mealType.getId())
+                .description(mealType.getDescription())
+                .build();
+    }
+
     public MealType toDomain() {
         return MealType.builder()
                 .id(id)

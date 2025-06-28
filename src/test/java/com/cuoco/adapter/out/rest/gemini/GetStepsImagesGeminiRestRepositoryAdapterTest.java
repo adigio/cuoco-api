@@ -2,7 +2,7 @@ package com.cuoco.adapter.out.rest.gemini;
 
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.GeminiResponseModel;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.RecipeImage;
+import com.cuoco.application.usecase.model.Step;
 import com.cuoco.factory.domain.RecipeFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class GetRecipeStepsImagesGeminiRestRepositoryAdapterTest {
+class GetStepsImagesGeminiRestRepositoryAdapterTest {
 
     @Mock
     private RestTemplate restTemplate;
@@ -45,7 +45,7 @@ class GetRecipeStepsImagesGeminiRestRepositoryAdapterTest {
 
         when(restTemplate.postForObject(anyString(), any(), any())).thenReturn(geminiResponseModel);
         
-        List<RecipeImage> result = adapter.execute(recipe);
+        List<Step> result = adapter.execute(recipe);
         
         assertNotNull(result);
     }
@@ -56,7 +56,7 @@ class GetRecipeStepsImagesGeminiRestRepositoryAdapterTest {
 
         when(restTemplate.postForObject(anyString(), any(), any())).thenReturn(null);
         
-        List<RecipeImage> result = adapter.execute(recipe);
+        List<Step> result = adapter.execute(recipe);
         
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -68,7 +68,7 @@ class GetRecipeStepsImagesGeminiRestRepositoryAdapterTest {
 
         when(restTemplate.postForObject(anyString(), any(), any())).thenReturn(geminiResponseModel);
         
-        List<RecipeImage> result = adapter.execute(recipeWithEmptyInstructions);
+        List<Step> result = adapter.execute(recipeWithEmptyInstructions);
         
         assertNotNull(result);
     }
@@ -79,7 +79,7 @@ class GetRecipeStepsImagesGeminiRestRepositoryAdapterTest {
 
         when(restTemplate.postForObject(anyString(), any(), any())).thenReturn(geminiResponseModel);
         
-        List<RecipeImage> result = adapter.execute(recipeWithManySteps);
+        List<Step> result = adapter.execute(recipeWithManySteps);
         
         assertNotNull(result);
     }

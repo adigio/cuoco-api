@@ -20,5 +20,5 @@ import java.util.List;
 public class MealPrepRequest {
     @NotEmpty(message = "Es requerido un ingrediente como minimo")
     private List<IngredientRequest> ingredients;
-    private MealPrepFilterRequest filters = new MealPrepFilterRequest();
+    private MealPrepFilterRequest filters;
 }

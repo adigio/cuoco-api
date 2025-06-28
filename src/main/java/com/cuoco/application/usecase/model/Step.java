@@ -9,11 +9,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecipeImage {
+public class Step {
     private Long id;
-    private String imageType;
+    private String title;
+    private Integer number;
+    private String description;
+    private String time;
     private String imageName;
-    private Integer stepNumber;
-    private String stepDescription;
     private byte[] imageData;
 } 

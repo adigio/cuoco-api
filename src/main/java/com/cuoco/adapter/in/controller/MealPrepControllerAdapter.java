@@ -8,6 +8,8 @@ import com.cuoco.adapter.in.controller.model.MealPrepRequest;
 import com.cuoco.adapter.in.controller.model.MealPrepResponse;
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
 import com.cuoco.adapter.in.controller.model.RecipeFilterRequest;
+import com.cuoco.adapter.in.controller.model.RecipeResponse;
+import com.cuoco.adapter.in.controller.model.StepResponse;
 import com.cuoco.adapter.in.controller.model.UnitResponse;
 import com.cuoco.application.port.in.GetMealPrepFromIngredientsCommand;
 import com.cuoco.application.usecase.model.Allergy;
@@ -20,6 +22,8 @@ import com.cuoco.application.usecase.model.MealPrep;
 import com.cuoco.application.usecase.model.MealPrepFilter;
 import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.PreparationTime;
+import com.cuoco.application.usecase.model.Recipe;
+import com.cuoco.application.usecase.model.Step;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +32,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -78,31 +84,33 @@ public class MealPrepControllerAdapter {
     private MealPrepResponse buildResponse(MealPrep mealPrep) {
         return MealPrepResponse.builder()
                 .id(mealPrep.getId())
-                .name(mealPrep.getName())
-                .subtitle(mealPrep.getSubtitle())
-                .recipes(mealPrep.getRecipes())
-                .preparationTime(buildParametricResponse(mealPrep.getPreparationTime()))
-                .cookLevel(buildParametricResponse(mealPrep.getCookLevel()))
-                .diet(buildParametricResponse(mealPrep.getDiet()))
-                .instructions(
-                        mealPrep.getInstructions().stream().map(this::buildIntructionResponse).toList())
-                .ingredients(
-                        mealPrep.getIngredients().stream().map(this::buildIngredientResponse).toList()
-                )
-                .cookLevel(
-                        ParametricResponse.builder()
-                                .id(mealPrep.getCookLevel().getId())
-                                .description(mealPrep.getCookLevel().getDescription())
-                                .build()
-                )
+                .title(mealPrep.getTitle())
+                .estimatedCookingTime(mealPrep.getEstimatedCookingTime())
+                .servings(mealPrep.getServings())
+                .freeze(mealPrep.getFreeze())
+                .steps(mealPrep.getSteps().stream().map(this::buildStepsResponse).toList())
+                .recipes(mealPrep.getRecipes().stream().map(this::buildRecipeResponse).toList())
+                .ingredients(mealPrep.getIngredients().stream().map(this::buildIngredientResponse).toList())
                 .build();
     }
 
-    private InstructionResponse buildIntructionResponse(Instruction instruction) {
-        return InstructionResponse.builder()
-                .title(instruction.getTitle())
-                .time(instruction.getTime())
-                .description(instruction.getDescription())
+    private StepResponse buildStepsResponse(Step step) {
+        return StepResponse.builder()
+                .id(step.getId())
+                .title(step.getTitle())
+                .number(step.getNumber())
+                .description(step.getDescription())
+                .time(step.getTime())
+                .build();
+    }
+
+    private RecipeResponse buildRecipeResponse(Recipe recipe) {
+        return RecipeResponse.builder()
+                .id(recipe.getId())
+                .name(recipe.getName())
+                .subtitle(recipe.getSubtitle())
+                .description(recipe.getDescription())
+                .image(recipe.getImage())
                 .build();
     }
 
@@ -116,48 +124,6 @@ public class MealPrepControllerAdapter {
                         .symbol(ingredient.getUnit().getSymbol())
                         .build()
                 )
-                .build();
-    }
-
-    private ParametricResponse buildParametricResponse(PreparationTime preparationTime) {
-        return ParametricResponse.builder()
-                .id(preparationTime.getId())
-                .description(preparationTime.getDescription())
-                .build();
-    }
-
-    private ParametricResponse buildParametricResponse(CookLevel cookLevel) {
-        return ParametricResponse.builder()
-                .id(cookLevel.getId())
-                .description(cookLevel.getDescription())
-                .build();
-    }
-
-    private ParametricResponse buildParametricResponse(Diet diet) {
-        return ParametricResponse.builder()
-                .id(diet.getId())
-                .description(diet.getDescription())
-                .build();
-    }
-
-    private ParametricResponse buildParametricResponse(MealType mealType) {
-        return ParametricResponse.builder()
-                .id(mealType.getId())
-                .description(mealType.getDescription())
-                .build();
-    }
-
-    private ParametricResponse buildParametricResponse(Allergy allergy) {
-        return ParametricResponse.builder()
-                .id(allergy.getId())
-                .description(allergy.getDescription())
-                .build();
-    }
-
-    private ParametricResponse buildParametricResponse(DietaryNeed dietaryNeed) {
-        return ParametricResponse.builder()
-                .id(dietaryNeed.getId())
-                .description(dietaryNeed.getDescription())
                 .build();
     }
 }

@@ -22,6 +22,13 @@ public class AllergyHibernateModel {
     private Integer id;
     private String description;
 
+    public static AllergyHibernateModel fromDomain(Allergy allergy) {
+        return AllergyHibernateModel.builder()
+                .id(allergy.getId())
+                .description(allergy.getDescription())
+                .build();
+    }
+
     public Allergy toDomain() {
         return Allergy.builder()
                 .id(id)

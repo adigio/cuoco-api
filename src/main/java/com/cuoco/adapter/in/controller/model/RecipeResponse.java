@@ -29,5 +29,5 @@ public class RecipeResponse {
     private List<ParametricResponse> dietaryNeeds;
     private List<IngredientResponse> ingredients;
 
-    private List<RecipeImageResponse> steps;
+    private List<StepResponse> steps;
 }

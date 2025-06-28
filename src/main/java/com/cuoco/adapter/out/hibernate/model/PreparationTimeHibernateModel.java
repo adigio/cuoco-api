@@ -22,6 +22,13 @@ public class PreparationTimeHibernateModel {
     private Integer id;
     private String description;
 
+    public static PreparationTimeHibernateModel fromDomain(PreparationTime preparationTime) {
+        return PreparationTimeHibernateModel.builder()
+                .id(preparationTime.getId())
+                .description(preparationTime.getDescription())
+                .build();
+    }
+
     public PreparationTime toDomain() {
         return PreparationTime.builder()
                 .id(id)

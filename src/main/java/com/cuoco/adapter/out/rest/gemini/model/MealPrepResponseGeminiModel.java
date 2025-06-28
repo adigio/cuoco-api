@@ -20,31 +20,21 @@ import java.util.List;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MealPrepResponseGeminiModel {
-    private String id;
-    private String name;
-    private String subtitle;
-    private List<String> recipes;
-    private List<InstructionResponseGeminiModel> instructions;
-    private PreparationTimeResponseGeminiModel preparationTime;
-    private CookLevelResponseGeminiModel cookLevel;
-    private DietResponseGeminiModel diet;
-    private List<MealTypeResponseGeminiModel> mealTypes;
-    private List<AllergyResponseGeminiModel> allergies;
-    private List<DietaryNeedResponseGeminiModel> dietaryNeeds;
+    private String title;
+    private String estimatedCookingTime;
+    private Integer servings;
+    private Boolean freeze;
+    private List<Long> recipeIds;
+    private List<RecipeStepResponseGeminiModel> steps;
     private List<IngredientResponseGeminiModel> ingredients;
 
     public MealPrep toDomain() {
         return MealPrep.builder()
-                .name(name)
-                .subtitle(subtitle)
-                .recipes(recipes)
-                .instructions(instructions.stream().map(InstructionResponseGeminiModel::toDomain).toList())
-                .preparationTime(preparationTime.toDomain())
-                .cookLevel(cookLevel.toDomain())
-                .diet(diet != null ? diet.toDomain() : null)
-                .mealTypes(mealTypes != null ? mealTypes.stream().map(MealTypeResponseGeminiModel::toDomain).toList() : List.of())
-                .allergies(allergies != null ? allergies.stream().map(AllergyResponseGeminiModel::toDomain).toList() : List.of())
-                .dietaryNeeds(dietaryNeeds != null ? dietaryNeeds.stream().map(DietaryNeedResponseGeminiModel::toDomain).toList() : List.of())
+                .title(title)
+                .estimatedCookingTime(estimatedCookingTime)
+                .servings(servings)
+                .freeze(freeze)
+                .steps(steps.stream().map(RecipeStepResponseGeminiModel::toDomain).toList())
                 .ingredients(ingredients.stream().map(IngredientResponseGeminiModel::toDomain).toList())
                 .build();
     }

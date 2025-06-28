@@ -14,7 +14,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RecipeFilter {
+public class Filters {
 
     private Boolean useProfilePreferences;
     private Boolean enable;
@@ -23,9 +23,8 @@ public class RecipeFilter {
     private PreparationTime preparationTime;
     private CookLevel cookLevel;
     private Diet diet;
-    private List<MealType> types;
+    private List<MealType> mealTypes;
     private List<Allergy> allergies;
     private List<DietaryNeed> dietaryNeeds;
-
-    private Integer maxRecipes;
+    private Boolean freeze;
 }

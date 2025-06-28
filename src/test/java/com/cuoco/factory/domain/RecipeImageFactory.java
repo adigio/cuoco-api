@@ -1,11 +1,11 @@
 package com.cuoco.factory.domain;
 
-import com.cuoco.application.usecase.model.RecipeImage;
+import com.cuoco.application.usecase.model.Step;
 
 public class RecipeImageFactory {
 
-    public static RecipeImage createMainRecipeImage() {
-        return RecipeImage.builder()
+    public static Step createMainRecipeImage() {
+        return Step.builder()
                 .imageType("MAIN")
                 .imagePath("src/main/resources/imagenes/recetas/test-recipe/test-recipe-main.jpg")
                 .stepNumber(null)
@@ -15,12 +15,12 @@ public class RecipeImageFactory {
                 .build();
     }
 
-    public static RecipeImage createStepRecipeImage() {
+    public static Step createStepRecipeImage() {
         return createStepRecipeImageWithNumber(1);
     }
 
-    public static RecipeImage createStepRecipeImageWithNumber(Integer stepNumber) {
-        return RecipeImage.builder()
+    public static Step createStepRecipeImageWithNumber(Integer stepNumber) {
+        return Step.builder()
                 .imageType("STEP")
                 .stepNumber(stepNumber)
                 .stepDescription("Step " + stepNumber + " description")
@@ -30,7 +30,7 @@ public class RecipeImageFactory {
                 .build();
     }
 
-    public static RecipeImage create() {
+    public static Step create() {
         return createMainRecipeImage();
     }
 } 

@@ -9,7 +9,7 @@ import com.cuoco.adapter.out.rest.gemini.utils.Constants;
 import com.cuoco.adapter.out.rest.gemini.utils.ImageUtils;
 import com.cuoco.application.port.out.GetRecipeStepsImagesRepository;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.RecipeImage;
+import com.cuoco.application.usecase.model.Step;
 import com.cuoco.shared.FileReader;
 import com.cuoco.shared.model.ErrorDescription;
 import com.cuoco.shared.utils.FileUtils;
@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.cuoco.shared.utils.ImageConstants.STEP_INFIX;
-import static com.cuoco.shared.utils.ImageConstants.STEP_TYPE;
 
 @Slf4j
 @Repository
@@ -45,13 +44,13 @@ public class GetRecipeStepsImagesGeminiRestRepositoryAdapter implements GetRecip
     }
 
     @Override
-    public List<RecipeImage> execute(Recipe recipe) {
+    public List<Step> execute(Recipe recipe) {
         log.info("Generating steps images for recipe with ID {}", recipe.getId());
 
-        List<RecipeImage> imagesCreated = new ArrayList<>();
+        List<Step> imagesCreated = new ArrayList<>();
 
         try {
-            List<RecipeImage> stepImages = recipe.getImages().stream().map(stepImage -> buildStepImage(recipe.getId(), stepImage)).toList();
+            List<Step> stepImages = recipe.getImages().stream().map(stepImage -> buildStepImage(recipe.getId(), stepImage)).toList();
 
             if(!stepImages.isEmpty()) {
                 imagesCreated.addAll(stepImages);
@@ -67,15 +66,15 @@ public class GetRecipeStepsImagesGeminiRestRepositoryAdapter implements GetRecip
         }
     }
 
-    private RecipeImage buildStepImage(Long recipeId, RecipeImage stepImage) {
-        String prompt = STEP_IMAGE_PROMPT.replace(Constants.STEP_INSTRUCTION.getValue(), stepImage.getStepDescription());
+    private Step buildStepImage(Long recipeId, Step stepImage) {
+        String prompt = STEP_IMAGE_PROMPT.replace(Constants.STEP_INSTRUCTION.getValue(), stepImage.getDescription());
 
         Pair<String, byte[]> imageData = sendToGemini(prompt);
 
         if (imageData != null) {
-            log.info("Recipe ID {}: Generated image for step {}. Saving file in recipe folder.", recipeId, stepImage.getStepNumber());
+            log.info("Recipe ID {}: Generated image for step {}. Saving file in recipe folder.", recipeId, stepImage.getNumber());
 
-            String imageName = recipeId + STEP_INFIX.getValue() + stepImage.getStepNumber() + FileUtils.getImageFormat(imageData.getFirst());
+            String imageName = recipeId + STEP_INFIX.getValue() + stepImage.getNumber() + FileUtils.getImageFormat(imageData.getFirst());
 
             imageUtils.saveImageFile(imageData.getSecond(), recipeId, imageName);
 
@@ -83,7 +82,7 @@ public class GetRecipeStepsImagesGeminiRestRepositoryAdapter implements GetRecip
 
             return stepImage;
         } else {
-            log.warn("Failed to create step {} image for recipe with ID {}. Skipping", stepImage.getStepNumber(), recipeId);
+            log.warn("Failed to create step {} image for recipe with ID {}. Skipping", stepImage.getNumber(), recipeId);
             return null;
         }
     }
