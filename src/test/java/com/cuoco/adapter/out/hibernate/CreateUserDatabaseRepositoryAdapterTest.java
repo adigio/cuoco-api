@@ -1,12 +1,11 @@
-package com.cuoco.adapter.out.database;
+package com.cuoco.adapter.out.hibernate;
 
-import com.cuoco.adapter.out.hibernate.CreateUserDatabaseRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.model.UserHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.UserPreferencesHibernateModel;
-import com.cuoco.adapter.out.hibernate.repository.CreateUserAllergiesHibernateRepositoryAdapter;
-import com.cuoco.adapter.out.hibernate.repository.CreateUserDietaryNeedsHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.CreateUserHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.CreateUserPreferencesHibernateRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.UserAllergiesRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.UserDietaryNeedsRepositoryAdapter;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.factory.domain.UserFactory;
 import com.cuoco.factory.hibernate.UserHibernateModelFactory;
@@ -18,9 +17,7 @@ import org.mockito.Mock;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 class CreateUserDatabaseRepositoryAdapterTest {
@@ -32,10 +29,10 @@ class CreateUserDatabaseRepositoryAdapterTest {
     private CreateUserPreferencesHibernateRepositoryAdapter preferencesRepository;
 
     @Mock
-    private CreateUserDietaryNeedsHibernateRepositoryAdapter dietaryNeedsRepository;
+    private UserDietaryNeedsRepositoryAdapter dietaryNeedsRepository;
 
     @Mock
-    private CreateUserAllergiesHibernateRepositoryAdapter allergiesRepository;
+    private UserAllergiesRepositoryAdapter allergiesRepository;
 
     @InjectMocks
     private CreateUserDatabaseRepositoryAdapter adapter;

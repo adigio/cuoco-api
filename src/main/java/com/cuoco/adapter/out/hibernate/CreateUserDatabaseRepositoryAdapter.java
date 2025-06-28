@@ -9,8 +9,8 @@ import com.cuoco.adapter.out.hibernate.model.UserAllergiesHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.UserDietaryNeedsHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.UserHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.UserPreferencesHibernateModel;
-import com.cuoco.adapter.out.hibernate.repository.CreateUserAllergiesHibernateRepositoryAdapter;
-import com.cuoco.adapter.out.hibernate.repository.CreateUserDietaryNeedsHibernateRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.UserAllergiesRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.UserDietaryNeedsRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.CreateUserHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.CreateUserPreferencesHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.CreateUserRepository;
@@ -30,19 +30,19 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
 
     private final CreateUserHibernateRepositoryAdapter createUserHibernateRepositoryAdapter;
     private final CreateUserPreferencesHibernateRepositoryAdapter createUserPreferencesHibernateRepositoryAdapter;
-    private final CreateUserDietaryNeedsHibernateRepositoryAdapter createUserDietaryNeedsHibernateRepositoryAdapter;
-    private final CreateUserAllergiesHibernateRepositoryAdapter createUserAllergiesHibernateRepositoryAdapter;
+    private final UserDietaryNeedsRepositoryAdapter userDietaryNeedsRepositoryAdapter;
+    private final UserAllergiesRepositoryAdapter userAllergiesRepositoryAdapter;
 
     public CreateUserDatabaseRepositoryAdapter(
             CreateUserHibernateRepositoryAdapter createUserHibernateRepositoryAdapter,
             CreateUserPreferencesHibernateRepositoryAdapter createUserPreferencesHibernateRepositoryAdapter,
-            CreateUserDietaryNeedsHibernateRepositoryAdapter createUserDietaryNeedsHibernateRepositoryAdapter,
-            CreateUserAllergiesHibernateRepositoryAdapter createUserAllergiesHibernateRepositoryAdapter
+            UserDietaryNeedsRepositoryAdapter userDietaryNeedsRepositoryAdapter,
+            UserAllergiesRepositoryAdapter userAllergiesRepositoryAdapter
     ) {
         this.createUserHibernateRepositoryAdapter = createUserHibernateRepositoryAdapter;
         this.createUserPreferencesHibernateRepositoryAdapter = createUserPreferencesHibernateRepositoryAdapter;
-        this.createUserDietaryNeedsHibernateRepositoryAdapter = createUserDietaryNeedsHibernateRepositoryAdapter;
-        this.createUserAllergiesHibernateRepositoryAdapter = createUserAllergiesHibernateRepositoryAdapter;
+        this.userDietaryNeedsRepositoryAdapter = userDietaryNeedsRepositoryAdapter;
+        this.userAllergiesRepositoryAdapter = userAllergiesRepositoryAdapter;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
                 .map(allergy -> buildUserAllergies(savedUser, allergy))
                 .toList();
 
-        createUserAllergiesHibernateRepositoryAdapter.saveAll(allergies);
+                    userAllergiesRepositoryAdapter.saveAll(allergies);
     }
 
     private void saveDietaryNeeds(User user, UserHibernateModel savedUser) {
@@ -88,7 +88,7 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
                 .map(dietaryNeed -> buildUserDietaryNeedsHibernateModel(savedUser, dietaryNeed))
                 .toList();
 
-        createUserDietaryNeedsHibernateRepositoryAdapter.saveAll(dietaryNeeds);
+                    userDietaryNeedsRepositoryAdapter.saveAll(dietaryNeeds);
     }
 
     private UserHibernateModel buildHibernateUser(User user) {
