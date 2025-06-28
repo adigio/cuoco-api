@@ -12,7 +12,7 @@ import java.util.List;
 public interface GetRecipesByIngredientsAndFiltersHibernateRepositoryAdapter extends JpaRepository<RecipeHibernateModel, Long> {
 
     @Query("""
-        SELECT DISTINCT r FROM recipe r
+        SELECT DISTINCT r FROM recipes r
         JOIN FETCH r.recipeIngredients ri
         JOIN FETCH ri.ingredient i
         WHERE LOWER(i.name) IN :ingredientNames

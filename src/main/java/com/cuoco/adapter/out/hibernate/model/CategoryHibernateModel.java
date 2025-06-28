@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "category")
+@Entity(name = "categories")
 @Data
 @Builder
 @NoArgsConstructor

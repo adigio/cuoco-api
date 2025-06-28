@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Entity(name = "recipe")
+@Entity(name = "recipes")
 @Data
 @Builder
 @NoArgsConstructor
