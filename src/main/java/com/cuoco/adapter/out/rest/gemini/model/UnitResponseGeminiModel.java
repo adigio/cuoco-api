@@ -1,6 +1,5 @@
 package com.cuoco.adapter.out.rest.gemini.model;
 
-import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.Unit;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

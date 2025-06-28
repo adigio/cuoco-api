@@ -1,6 +1,5 @@
 package com.cuoco.adapter.out.hibernate.model;
 
-import com.cuoco.application.usecase.model.CookLevel;
 import com.cuoco.application.usecase.model.Diet;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

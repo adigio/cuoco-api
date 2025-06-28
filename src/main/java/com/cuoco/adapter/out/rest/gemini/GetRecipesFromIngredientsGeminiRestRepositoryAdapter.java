@@ -11,10 +11,10 @@ import com.cuoco.adapter.out.rest.gemini.model.wrapper.PromptBodyGeminiRequestMo
 import com.cuoco.adapter.out.rest.gemini.utils.Constants;
 import com.cuoco.adapter.out.rest.gemini.utils.Utils;
 import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
+import com.cuoco.application.usecase.model.Filters;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.ParametricData;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.Filters;
 import com.cuoco.shared.FileReader;
 import com.cuoco.shared.model.ErrorDescription;
 import com.fasterxml.jackson.core.JsonProcessingException;

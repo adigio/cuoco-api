@@ -2,7 +2,6 @@ package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
 import com.cuoco.application.port.in.GetAllMealTypesQuery;
-import com.cuoco.application.usecase.model.Diet;
 import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.shared.GlobalExceptionHandler;
 import io.swagger.v3.oas.annotations.Operation;

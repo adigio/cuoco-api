@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,6 +54,9 @@ public class UserHibernateModel {
             inverseJoinColumns = @JoinColumn(name = "dietary_need_id")
     )
     private List<DietaryNeedHibernateModel> dietaryNeeds;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserRecipesHibernateModel> recipes;
 
     @ManyToMany
     @JoinTable(

@@ -2,26 +2,14 @@ package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.IngredientRequest;
 import com.cuoco.adapter.in.controller.model.IngredientResponse;
-import com.cuoco.adapter.in.controller.model.InstructionResponse;
-import com.cuoco.adapter.in.controller.model.MealPrepFilterRequest;
 import com.cuoco.adapter.in.controller.model.MealPrepRequest;
 import com.cuoco.adapter.in.controller.model.MealPrepResponse;
-import com.cuoco.adapter.in.controller.model.ParametricResponse;
-import com.cuoco.adapter.in.controller.model.RecipeFilterRequest;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.adapter.in.controller.model.StepResponse;
 import com.cuoco.adapter.in.controller.model.UnitResponse;
 import com.cuoco.application.port.in.GetMealPrepFromIngredientsCommand;
-import com.cuoco.application.usecase.model.Allergy;
-import com.cuoco.application.usecase.model.CookLevel;
-import com.cuoco.application.usecase.model.Diet;
-import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.Ingredient;
-import com.cuoco.application.usecase.model.Instruction;
 import com.cuoco.application.usecase.model.MealPrep;
-import com.cuoco.application.usecase.model.MealPrepFilter;
-import com.cuoco.application.usecase.model.MealType;
-import com.cuoco.application.usecase.model.PreparationTime;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.Step;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,9 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController

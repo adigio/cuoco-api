@@ -5,9 +5,9 @@ import com.cuoco.adapter.in.controller.model.IngredientResponse;
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
 import com.cuoco.adapter.in.controller.model.RecipeConfiguration;
 import com.cuoco.adapter.in.controller.model.RecipeFilterRequest;
-import com.cuoco.adapter.in.controller.model.StepResponse;
 import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
+import com.cuoco.adapter.in.controller.model.StepResponse;
 import com.cuoco.adapter.in.controller.model.UnitResponse;
 import com.cuoco.application.port.in.GetRecipeByIdQuery;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
@@ -20,6 +20,12 @@ import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.PreparationTime;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.Step;
+import com.cuoco.shared.GlobalExceptionHandler;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +59,32 @@ public class RecipeControllerAdapter {
     }
 
     @GetMapping("/{id}")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Return the specific recipe with the provided ID",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = RecipeResponse.class))
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Recipe not found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Service unavailable",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            )
+    })
     public ResponseEntity<RecipeResponse> getRecipe(@PathVariable(name = "id") Long recipeId) {
         log.info("Executing GET for find recipe with ID {}", recipeId);
 
@@ -65,6 +97,32 @@ public class RecipeControllerAdapter {
     }
 
     @PostMapping()
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Return a list of recipes with the provided ingredients and filters",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = RecipeResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Recipe not found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Service unavailable",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            )
+    })
     public ResponseEntity<List<RecipeResponse>> generate(@RequestBody @Valid RecipeRequest recipeRequest) {
 
         log.info("Executing POST for get or creation of recipes by ingredients with body {}", recipeRequest);

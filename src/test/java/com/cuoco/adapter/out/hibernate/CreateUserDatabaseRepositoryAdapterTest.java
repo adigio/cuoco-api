@@ -1,6 +1,5 @@
 package com.cuoco.adapter.out.hibernate;
 
-import com.cuoco.adapter.out.hibernate.CreateUserDatabaseRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.model.UserHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.UserPreferencesHibernateModel;
 import com.cuoco.adapter.out.hibernate.repository.CreateUserHibernateRepositoryAdapter;

@@ -2,8 +2,6 @@ package com.cuoco.application.usecase.domainservice;
 
 import com.cuoco.application.port.out.CreateAllRecipesRepository;
 import com.cuoco.application.port.out.CreateRecipeImagesRepository;
-import com.cuoco.application.port.out.GetRecipeStepsImagesRepository;
-import com.cuoco.application.port.out.GenerateRecipeMainImageRepository;
 import com.cuoco.application.port.out.GetAllAllergiesRepository;
 import com.cuoco.application.port.out.GetAllCookLevelsRepository;
 import com.cuoco.application.port.out.GetAllDietaryNeedsRepository;
@@ -11,6 +9,7 @@ import com.cuoco.application.port.out.GetAllDietsRepository;
 import com.cuoco.application.port.out.GetAllMealTypesRepository;
 import com.cuoco.application.port.out.GetAllPreparationTimesRepository;
 import com.cuoco.application.port.out.GetAllUnitsRepository;
+import com.cuoco.application.port.out.GetRecipeStepsImagesRepository;
 import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
 import com.cuoco.application.usecase.model.ParametricData;
 import com.cuoco.application.usecase.model.Recipe;

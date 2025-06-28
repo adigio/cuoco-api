@@ -1,6 +1,6 @@
 package com.cuoco.adapter.out.hibernate;
 
-import com.cuoco.adapter.out.hibernate.repository.SaveUserRecipeHibernateRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.CreateUserRecipeHibernateRepositoryAdapter;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserRecipe;
@@ -13,15 +13,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class FavRecipeRepositoryAdapterTest {
+public class CreateUserRecipeRepositoryAdapterTest {
 
-    private SaveUserRecipeHibernateRepositoryAdapter saveAdapter;
-    private FavRecipeRepositoryAdapter repository;
+    private CreateUserRecipeHibernateRepositoryAdapter saveAdapter;
+    private CreateUserRecipeRepositoryAdapter repository;
 
     @BeforeEach
     public void setUp() {
-        saveAdapter = mock(SaveUserRecipeHibernateRepositoryAdapter.class);
-        repository = new FavRecipeRepositoryAdapter(saveAdapter);
+        saveAdapter = mock(CreateUserRecipeHibernateRepositoryAdapter.class);
+        repository = new CreateUserRecipeRepositoryAdapter(saveAdapter);
     }
 
     @Test
