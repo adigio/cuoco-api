@@ -25,7 +25,7 @@ public class MealPrepResponseGeminiModel {
     private Integer servings;
     private Boolean freeze;
     private List<Long> recipeIds;
-    private List<RecipeStepResponseGeminiModel> steps;
+    private List<StepResponseGeminiModel> steps;
     private List<IngredientResponseGeminiModel> ingredients;
 
     public MealPrep toDomain() {
@@ -34,7 +34,7 @@ public class MealPrepResponseGeminiModel {
                 .estimatedCookingTime(estimatedCookingTime)
                 .servings(servings)
                 .freeze(freeze)
-                .steps(steps.stream().map(RecipeStepResponseGeminiModel::toDomain).toList())
+                .steps(steps.stream().map(StepResponseGeminiModel::toDomain).toList())
                 .ingredients(ingredients.stream().map(IngredientResponseGeminiModel::toDomain).toList())
                 .build();
     }

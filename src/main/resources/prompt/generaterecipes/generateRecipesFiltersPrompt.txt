@@ -8,3 +8,7 @@ El ID pertenece a su correspondiente JSON de informacion parametrica que te pase
 -   MEAL_TYPES: Debe ser para estos tipos de receta (Como desayuno, almuerzo, etc.): {{MEAL_TYPES}}
 -   ALLERGIES: No debe contener ingredientes que pueda tener este tipo de alergias: {{ALLERGIES}}
 -   DIETARY_NEEDS: Debe estar considerada la siguiente necesidad alimentaria: {{DIETARY_NEEDS}}
+
+Las recetas no pueden ser ninguna de estas:
+
+{{NOT_INCLUDE}}

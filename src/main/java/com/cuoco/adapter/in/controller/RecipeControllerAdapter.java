@@ -9,6 +9,7 @@ import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.adapter.in.controller.model.StepResponse;
 import com.cuoco.adapter.in.controller.model.UnitResponse;
+import com.cuoco.adapter.in.utils.Utils;
 import com.cuoco.application.port.in.GetRecipeByIdQuery;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
 import com.cuoco.application.usecase.model.Allergy;
@@ -168,100 +169,20 @@ public class RecipeControllerAdapter {
     }
 
     private RecipeResponse buildResponse(Recipe recipe) {
-
-        ParametricResponse diet = recipe.getDiet() != null ? buildParametricResponse(recipe.getDiet()) : null;
-
-        List<ParametricResponse> allergies = Optional.ofNullable(recipe.getAllergies()).orElse(Collections.emptyList())
-                .stream()
-                .map(this::buildParametricResponse)
-                .toList();
-
-        List<ParametricResponse> dietaryNeeds = Optional.ofNullable(recipe.getDietaryNeeds()).orElse(Collections.emptyList())
-                .stream()
-                .map(this::buildParametricResponse)
-                .toList();
-
         return RecipeResponse.builder()
                 .id(recipe.getId())
                 .name(recipe.getName())
                 .subtitle(recipe.getSubtitle())
                 .description(recipe.getDescription())
-                .instructions(recipe.getInstructions())
+                .steps(recipe.getSteps().stream().map(StepResponse::fromDomain).toList())
                 .image(recipe.getImage())
-                .preparationTime(buildParametricResponse(recipe.getPreparationTime()))
-                .cookLevel(buildParametricResponse(recipe.getCookLevel()))
-                .diet(diet)
-                .mealTypes(recipe.getMealTypes().stream().map(this::buildParametricResponse).toList())
-                .allergies(allergies)
-                .dietaryNeeds(dietaryNeeds)
-                .ingredients(recipe.getIngredients().stream().map(this::buildIngredientResponse).toList())
-                .build();
-    }
-
-    private IngredientResponse buildIngredientResponse(Ingredient ingredient) {
-        return IngredientResponse.builder()
-                .id(ingredient.getId())
-                .name(ingredient.getName())
-                .quantity(ingredient.getQuantity())
-                .unit(UnitResponse.builder()
-                        .id(ingredient.getUnit().getId())
-                        .description(ingredient.getUnit().getDescription())
-                        .symbol(ingredient.getUnit().getSymbol())
-                        .build()
-                )
-                .build();
-    }
-
-    private StepResponse buildStepsResponse(Step step) {
-        return StepResponse.builder()
-                .id(step.getId())
-                .title(step.getTitle())
-                .number(step.getNumber())
-                .description(step.getDescription())
-                .time(step.getTime())
-                .imageName(step.getImageName())
-                .build();
-    }
-
-    private ParametricResponse buildParametricResponse(PreparationTime preparationTime) {
-        return ParametricResponse.builder()
-                .id(preparationTime.getId())
-                .description(preparationTime.getDescription())
-                .build();
-    }
-
-    private ParametricResponse buildParametricResponse(CookLevel cookLevel) {
-        return ParametricResponse.builder()
-                .id(cookLevel.getId())
-                .description(cookLevel.getDescription())
-                .build();
-    }
-
-    private ParametricResponse buildParametricResponse(Diet diet) {
-        return ParametricResponse.builder()
-                .id(diet.getId())
-                .description(diet.getDescription())
-                .build();
-    }
-
-    private ParametricResponse buildParametricResponse(MealType mealType) {
-        return ParametricResponse.builder()
-                .id(mealType.getId())
-                .description(mealType.getDescription())
-                .build();
-    }
-
-    private ParametricResponse buildParametricResponse(Allergy allergy) {
-        return ParametricResponse.builder()
-                .id(allergy.getId())
-                .description(allergy.getDescription())
-                .build();
-    }
-
-    private ParametricResponse buildParametricResponse(DietaryNeed dietaryNeed) {
-        return ParametricResponse.builder()
-                .id(dietaryNeed.getId())
-                .description(dietaryNeed.getDescription())
+                .preparationTime(ParametricResponse.fromDomain(recipe.getPreparationTime()))
+                .cookLevel(ParametricResponse.fromDomain(recipe.getCookLevel()))
+                .diet(Utils.mapNull(recipe.getDiet()))
+                .mealTypes(recipe.getMealTypes().stream().map(ParametricResponse::fromDomain).toList())
+                .allergies(Utils.mapNullOrEmpty(recipe.getAllergies()))
+                .dietaryNeeds(Utils.mapNullOrEmpty(recipe.getDietaryNeeds()))
+                .ingredients(recipe.getIngredients().stream().map(IngredientResponse::fromDomain).toList())
                 .build();
     }
 }

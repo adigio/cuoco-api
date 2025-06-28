@@ -16,7 +16,7 @@ public class Recipe {
     private String name;
     private String subtitle;
     private String description;
-    private String instructions;
+    private List<Step> steps;
     private String image;
     private PreparationTime preparationTime;
     private CookLevel cookLevel;

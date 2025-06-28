@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class MealType {
+public class MealType implements Parametric {
     private Integer id;
     private String description;
 }

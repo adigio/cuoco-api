@@ -41,7 +41,7 @@ public class MealPrepStepsHibernateModel {
     public Step toDomain() {
         return Step.builder()
                 .id(id)
-                .time(title)
+                .title(title)
                 .number(number)
                 .description(description)
                 .time(time)

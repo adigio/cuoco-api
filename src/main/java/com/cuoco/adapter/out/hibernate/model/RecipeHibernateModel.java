@@ -36,9 +36,9 @@ public class RecipeHibernateModel {
     private String subtitle;
     private String description;
     private String imageUrl;
-    @Lob
-    @Column(name = "instructions", columnDefinition = "TEXT")
-    private String instructions;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<RecipeStepsHibernateModel> steps;
 
     @ManyToOne
     private PreparationTimeHibernateModel preparationTime;
@@ -86,7 +86,7 @@ public class RecipeHibernateModel {
                 .name(name)
                 .subtitle(subtitle)
                 .description(description)
-                .instructions(instructions)
+                .steps(steps.stream().map(RecipeStepsHibernateModel::toDomain).toList())
                 .image(imageUrl)
                 .preparationTime(preparationTime.toDomain())
                 .cookLevel(cookLevel.toDomain())
