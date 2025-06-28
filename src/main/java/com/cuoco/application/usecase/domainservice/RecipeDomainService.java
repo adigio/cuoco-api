@@ -53,7 +53,6 @@ public class RecipeDomainService {
             @Qualifier("provider") GetRecipesFromIngredientsRepository getRecipesFromIngredientsProvider,
             CreateAllRecipesRepository createAllRecipesRepository,
             CreateRecipeImagesRepository createRecipeImagesRepository,
-            GenerateRecipeMainImageRepository generateRecipeMainImageRepository,
             GetRecipeStepsImagesRepository getRecipeStepsImagesRepository,
             AsyncRecipeDomainService asyncRecipeDomainService,
             GetAllUnitsRepository getAllUnitsRepository,
@@ -115,7 +114,7 @@ public class RecipeDomainService {
 
         List<Recipe> savedRecipes = createAllRecipesRepository.execute(recipesToSave);
 
-        savedRecipes.forEach(asyncRecipeDomainService::generateMainImage);
+        asyncRecipeDomainService.generateMainImages(savedRecipes);
 
         return savedRecipes.stream().limit(size).toList();
     }
