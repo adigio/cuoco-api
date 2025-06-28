@@ -74,19 +74,9 @@ public class MealPrepControllerAdapter {
                 .estimatedCookingTime(mealPrep.getEstimatedCookingTime())
                 .servings(mealPrep.getServings())
                 .freeze(mealPrep.getFreeze())
-                .steps(mealPrep.getSteps().stream().map(this::buildStepsResponse).toList())
+                .steps(mealPrep.getSteps().stream().map(StepResponse::fromDomain).toList())
                 .recipes(mealPrep.getRecipes().stream().map(this::buildRecipeResponse).toList())
-                .ingredients(mealPrep.getIngredients().stream().map(this::buildIngredientResponse).toList())
-                .build();
-    }
-
-    private StepResponse buildStepsResponse(Step step) {
-        return StepResponse.builder()
-                .id(step.getId())
-                .title(step.getTitle())
-                .number(step.getNumber())
-                .description(step.getDescription())
-                .time(step.getTime())
+                .ingredients(mealPrep.getIngredients().stream().map(IngredientResponse::fromDomain).toList())
                 .build();
     }
 
@@ -97,19 +87,6 @@ public class MealPrepControllerAdapter {
                 .subtitle(recipe.getSubtitle())
                 .description(recipe.getDescription())
                 .image(recipe.getImage())
-                .build();
-    }
-
-    private IngredientResponse buildIngredientResponse(Ingredient ingredient) {
-        return IngredientResponse.builder()
-                .name(ingredient.getName())
-                .quantity(ingredient.getQuantity())
-                .unit(UnitResponse.builder()
-                        .id(ingredient.getUnit().getId())
-                        .description(ingredient.getUnit().getDescription())
-                        .symbol(ingredient.getUnit().getSymbol())
-                        .build()
-                )
                 .build();
     }
 }

@@ -118,10 +118,8 @@ public class RecipeDomainService {
     public Recipe generateImages(Recipe recipe) {
         log.info("Executing image creation for recipe with ID {}", recipe.getId());
 
-        List<Step> stepsImagesToCreate = splitInstructionsSteps(recipe.getInstructions());
-        recipe.setImages(stepsImagesToCreate);
-
         List<Step> recipeImagesToSave = getRecipeStepsImagesRepository.execute(recipe);
+
         recipe.setImages(recipeImagesToSave);
 
         if(!recipe.getImages().isEmpty()) {
@@ -133,30 +131,6 @@ public class RecipeDomainService {
         }
 
         return recipe;
-    }
-
-    private List<Step> splitInstructionsSteps(String instructions) {
-        int maxStepsSize = Integer.parseInt(ImageConstants.MAX_STEPS_SIZE_INT.getValue());
-
-        List<String> stepsInstructions = Pattern.compile(ImageConstants.INSTRUCTIONS_SPLIT_PATTERN.getValue())
-                .splitAsStream(instructions)
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .limit(maxStepsSize)
-                .toList();
-
-        AtomicInteger stepCounter = new AtomicInteger(1);
-        return stepsInstructions.stream()
-                .map(stepInstruction -> buildRecipeImage(stepCounter.getAndIncrement(), stepInstruction))
-                .toList();
-
-    }
-
-    private Step buildRecipeImage(int currentStepNumber, String currentStepInstruction) {
-        return Step.builder()
-                .number(currentStepNumber)
-                .description(currentStepInstruction)
-                .build();
     }
 
     private ParametricData buildParametricData() {

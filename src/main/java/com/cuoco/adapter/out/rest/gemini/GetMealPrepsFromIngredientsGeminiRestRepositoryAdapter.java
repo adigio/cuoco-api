@@ -32,9 +32,6 @@ import java.util.stream.Collectors;
 @Qualifier("provider")
 public class GetMealPrepsFromIngredientsGeminiRestRepositoryAdapter implements GetMealPrepsFromIngredientsRepository {
 
-    private final String DELIMITER = com.cuoco.shared.utils.Constants.COMMA.getValue();
-    private final String EMPTY_STRING = com.cuoco.shared.utils.Constants.EMPTY.getValue();
-
     private final String BASIC_PROMPT = FileReader.execute("prompt/generateMealPrep/generateMealPrepFromIngredientsHeaderPrompt.txt");
 
     @Value("${gemini.api.url}")

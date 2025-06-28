@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RecipeStepResponseGeminiModel {
+public class StepResponseGeminiModel {
     private String title;
     private Integer stepNumber;
     private String description;

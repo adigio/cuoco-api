@@ -25,7 +25,7 @@ public class RecipeResponseGeminiModel {
     private String name;
     private String subtitle;
     private String description;
-    private String instructions;
+    private List<StepResponseGeminiModel> steps;
     private String image;
     private PreparationTimeResponseGeminiModel preparationTime;
     private CookLevelResponseGeminiModel cookLevel;
@@ -40,7 +40,7 @@ public class RecipeResponseGeminiModel {
                 .name(name)
                 .subtitle(subtitle)
                 .description(description)
-                .instructions(instructions)
+                .steps(steps.stream().map(StepResponseGeminiModel::toDomain).toList())
                 .image(ImageConstants.MAIN_IMAGE_NAME.getValue())
                 .preparationTime(preparationTime.toDomain())
                 .cookLevel(cookLevel.toDomain())

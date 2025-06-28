@@ -1,5 +1,6 @@
 package com.cuoco.adapter.in.controller.model;
 
+import com.cuoco.application.usecase.model.Step;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -23,4 +24,15 @@ public class StepResponse {
     private String description;
     private String time;
     private String imageName;
+
+    public static StepResponse fromDomain(Step domain) {
+        return StepResponse.builder()
+                .id(domain.getId())
+                .title(domain.getTitle())
+                .number(domain.getNumber())
+                .description(domain.getDescription())
+                .time(domain.getTime())
+                .imageName(domain.getImageName())
+                .build();
+    }
 } 

@@ -1,5 +1,6 @@
 package com.cuoco.adapter.in.controller.model;
 
+import com.cuoco.application.usecase.model.UserPreferences;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -15,4 +16,11 @@ import lombok.Data;
 public class UserPreferencesResponse {
     private ParametricResponse cookLevel;
     private ParametricResponse diet;
+
+    public static UserPreferencesResponse fromDomain(UserPreferences domain) {
+        return UserPreferencesResponse.builder()
+                .cookLevel(ParametricResponse.fromDomain(domain.getCookLevel()))
+                .diet(ParametricResponse.fromDomain(domain.getDiet()))
+                .build();
+    }
 }

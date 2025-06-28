@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class PreparationTime {
+public class PreparationTime implements Parametric {
     private Integer id;
     private String description;
 }

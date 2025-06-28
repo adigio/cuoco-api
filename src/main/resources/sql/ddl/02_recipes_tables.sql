@@ -45,7 +45,6 @@ CREATE TABLE `recipes`
     `subtitle`            varchar(255) DEFAULT NULL,
     `description`         varchar(255) DEFAULT NULL,
     `image_url`           varchar(255) DEFAULT NULL,
-    `instructions`        text,
     `cook_level_id`       int          DEFAULT NULL,
     `diet_id`             int          DEFAULT NULL,
     `preparation_time_id` int          DEFAULT NULL,
@@ -98,10 +97,10 @@ CREATE TABLE `recipe_steps`
 (
     `id`                bigint NOT NULL AUTO_INCREMENT,
     `recipe_id`         bigint NOT NULL,
+    `number`            int,
+    `title`             varchar(100),
+    `description`       text,
     `image_name`        varchar(100),
-    `image_type`        varchar(10),
-    `step_number`       int,
-    `step_description`  text,
     PRIMARY KEY (`id`),
     CONSTRAINT `FK_recipe_steps__recipe_id` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`)
 );

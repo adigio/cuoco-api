@@ -12,6 +12,7 @@ import com.cuoco.adapter.out.hibernate.model.MealTypeHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.PreparationTimeHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.RecipeHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.RecipeIngredientsHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.RecipeStepsHibernateModel;
 import com.cuoco.adapter.out.hibernate.repository.CreateAllMealPrepsHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.CreateIngredientHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.GetIngredientByNameHibernateRepositoryAdapter;
@@ -71,7 +72,7 @@ public class CreateAllMealPrepsDatabaseRepository implements CreateAllMealPrepsR
                 .build();
 
         List<MealPrepStepsHibernateModel> stepsToSave = mealPrep.getSteps().stream()
-                .map(step -> buildStepsHibernateModel(mealPrepToSave, step))
+                .map(step -> buildMealPrepStepHibernateModel(mealPrepToSave, step))
                 .toList();
 
         mealPrepToSave.setSteps(stepsToSave);
@@ -85,7 +86,7 @@ public class CreateAllMealPrepsDatabaseRepository implements CreateAllMealPrepsR
         return mealPrepToSave;
     }
 
-    private MealPrepStepsHibernateModel buildStepsHibernateModel(MealPrepHibernateModel mealPrep, Step step) {
+    private MealPrepStepsHibernateModel buildMealPrepStepHibernateModel(MealPrepHibernateModel mealPrep, Step step) {
         return MealPrepStepsHibernateModel.builder()
                 .mealPrep(mealPrep)
                 .title(step.getTitle())
@@ -116,7 +117,6 @@ public class CreateAllMealPrepsDatabaseRepository implements CreateAllMealPrepsR
                 .subtitle(recipe.getSubtitle())
                 .description(recipe.getDescription())
                 .imageUrl(recipe.getImage())
-                .instructions(recipe.getInstructions())
                 .preparationTime(PreparationTimeHibernateModel.fromDomain(recipe.getPreparationTime()))
                 .cookLevel(CookLevelHibernateModel.fromDomain(recipe.getCookLevel()))
                 .diet(recipe.getDiet() != null ? DietHibernateModel.fromDomain(recipe.getDiet()) : null)
@@ -125,6 +125,12 @@ public class CreateAllMealPrepsDatabaseRepository implements CreateAllMealPrepsR
                 .dietaryNeeds(recipe.getDietaryNeeds().stream().map(DietaryNeedHibernateModel::fromDomain).toList())
                 .build();
 
+        List<RecipeStepsHibernateModel> stepsHibernateModel = recipe.getSteps().stream()
+                .map(step -> buildRecipeStepHibernateModel(recipeHibernate, step))
+                .toList();
+
+        recipeHibernate.setSteps(stepsHibernateModel);
+
         List<RecipeIngredientsHibernateModel> recipeIngredientsToSave = recipe.getIngredients().stream()
                 .map(ingredient -> buildRecipeIngredientHibernateModel(recipeHibernate, ingredient))
                 .toList();
@@ -132,6 +138,16 @@ public class CreateAllMealPrepsDatabaseRepository implements CreateAllMealPrepsR
         recipeHibernate.setIngredients(recipeIngredientsToSave);
 
         return recipeHibernate;
+    }
+
+    private RecipeStepsHibernateModel buildRecipeStepHibernateModel(RecipeHibernateModel savedRecipe, Step step) {
+        return RecipeStepsHibernateModel.builder()
+                .recipe(savedRecipe)
+                .number(step.getNumber())
+                .title(step.getTitle())
+                .description(step.getDescription())
+                .imageName(step.getImageName())
+                .build();
     }
 
     @NotNull

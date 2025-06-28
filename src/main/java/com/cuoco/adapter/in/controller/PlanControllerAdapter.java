@@ -54,16 +54,9 @@ public class PlanControllerAdapter {
     public ResponseEntity<List<ParametricResponse>> getAll() {
         log.info("Executing GET all available plans");
         List<Plan> plans = getAllPlansQuery.execute();
-        List<ParametricResponse> response = plans.stream().map(this::buildParametricResponse).toList();
+        List<ParametricResponse> response = plans.stream().map(ParametricResponse::fromDomain).toList();
 
         log.info("All plans are retrieved successfully");
         return ResponseEntity.ok(response);
-    }
-
-    private ParametricResponse buildParametricResponse(Plan plan) {
-        return ParametricResponse.builder()
-                .id(plan.getId())
-                .description(plan.getDescription())
-                .build();
     }
 }
