@@ -19,14 +19,14 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StepResponseGeminiModel {
     private String title;
-    private Integer stepNumber;
+    private Integer number;
     private String description;
     private String time;
 
     public Step toDomain() {
         return Step.builder()
                 .title(title)
-                .number(stepNumber)
+                .number(number)
                 .description(description)
                 .time(time)
                 .build();

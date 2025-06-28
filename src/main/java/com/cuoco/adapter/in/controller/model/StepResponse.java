@@ -19,8 +19,8 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StepResponse {
     private Long id;
+    private Integer stepNumber;
     private String title;
-    private Integer number;
     private String description;
     private String time;
     private String imageName;
@@ -28,8 +28,8 @@ public class StepResponse {
     public static StepResponse fromDomain(Step domain) {
         return StepResponse.builder()
                 .id(domain.getId())
+                .stepNumber(domain.getNumber())
                 .title(domain.getTitle())
-                .number(domain.getNumber())
                 .description(domain.getDescription())
                 .time(domain.getTime())
                 .imageName(domain.getImageName())

@@ -30,8 +30,8 @@ ESTRUCTURA DEL JSON (respetar exactamente):
     "steps": [
         {
             "number": 1,
-            "title": "Precalentar horno",
-            "description": "Calentar el horno a 200 grados"
+            "title": "Precalentar horno", //OBLIGATORIO
+            "description": "Calentar el horno a 200 grados" //OBLIGATORIO
         },
         {
             "number": 2,
