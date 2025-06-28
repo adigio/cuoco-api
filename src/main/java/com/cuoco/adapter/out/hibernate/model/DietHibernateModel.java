@@ -1,5 +1,6 @@
 package com.cuoco.adapter.out.hibernate.model;
 
+import com.cuoco.application.usecase.model.CookLevel;
 import com.cuoco.application.usecase.model.Diet;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,6 +22,13 @@ public class DietHibernateModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String description;
+
+    public static DietHibernateModel fromDomain(Diet diet) {
+        return DietHibernateModel.builder()
+                .id(diet.getId())
+                .description(diet.getDescription())
+                .build();
+    }
 
     public Diet toDomain() {
         return Diet

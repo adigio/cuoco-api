@@ -54,6 +54,14 @@ public class UserHibernateModel {
     )
     private List<DietaryNeedHibernateModel> dietaryNeeds;
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_meal_preps",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "meal_prep_id")
+    )
+    private List<MealPrepHibernateModel> mealPreps;
+
     public User toDomain() {
         return User.builder()
                 .id(id)

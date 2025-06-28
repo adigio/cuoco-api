@@ -18,6 +18,7 @@ OBJETIVO:
 - En cada meal prep estimar el tiempo de preparacion y coccion de las tres recetas que incluye y agregarlo en estimated_cooking_time
 - Agrupar los ingredientes de cada una de las tres recetas, calcular cantidad en conjunto y agregarla en el atributo ingredients como en el ejemplo
 - No repetir ingredientes si están en más de una receta, sino agruparlos
+- El unit debe ser OBLIGATORIAMENTE el tipo de unit que se encuentra en el mismo ingrediente en la receta, por ejemplo si leche es ml en las recetas, entonces representar en ml.
 - En recipe_ids dame los IDs de las recetas con las cual preparaste el correspondiente meal prep. Los IDs corresponden a la lista de recetas que te pase.
 - Tener un paso a paso general para cocinar todas las recetas en conjunto. Cada paso debe tener:
     - Título del paso

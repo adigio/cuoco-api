@@ -1,7 +1,7 @@
 package com.cuoco.adapter.out.hibernate;
 
 import com.cuoco.adapter.out.hibernate.model.RecipeHibernateModel;
-import com.cuoco.adapter.out.hibernate.model.RecipeStepsImagesHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.RecipeStepsHibernateModel;
 import com.cuoco.adapter.out.hibernate.repository.CreateRecipeImagesHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.CreateRecipeImagesRepository;
 import com.cuoco.application.usecase.model.Recipe;
@@ -27,15 +27,15 @@ public class CreateRecipeImagesDatabaseRepositoryAdapter implements CreateRecipe
 
         RecipeHibernateModel recipeHibernateModel = buildRecipeHibernateModel(recipe);
 
-        List<RecipeStepsImagesHibernateModel> recipeImages = recipe.getImages().stream()
+        List<RecipeStepsHibernateModel> recipeImages = recipe.getImages().stream()
                 .map(recipeImage -> buildRecipeImagesHibernateModel(recipeHibernateModel, recipeImage))
                 .toList();
 
-        List<RecipeStepsImagesHibernateModel> savedImages = createRecipeImagesHibernateRepositoryAdapter.saveAll(recipeImages);
+        List<RecipeStepsHibernateModel> savedImages = createRecipeImagesHibernateRepositoryAdapter.saveAll(recipeImages);
 
         log.info("Successfully saved recipe images");
 
-        return savedImages.stream().map(RecipeStepsImagesHibernateModel::toDomain).toList();
+        return savedImages.stream().map(RecipeStepsHibernateModel::toDomain).toList();
     }
 
     private RecipeHibernateModel buildRecipeHibernateModel(Recipe recipe) {
@@ -44,8 +44,8 @@ public class CreateRecipeImagesDatabaseRepositoryAdapter implements CreateRecipe
                 .build();
     }
 
-    private RecipeStepsImagesHibernateModel buildRecipeImagesHibernateModel(RecipeHibernateModel recipe, Step step) {
-        return RecipeStepsImagesHibernateModel.builder()
+    private RecipeStepsHibernateModel buildRecipeImagesHibernateModel(RecipeHibernateModel recipe, Step step) {
+        return RecipeStepsHibernateModel.builder()
                 .recipe(recipe)
                 .imageName(step.getImageName())
                 .build();

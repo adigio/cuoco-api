@@ -12,12 +12,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "recipe_steps_images")
+@Entity(name = "recipe_steps")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecipeStepsImagesHibernateModel {
+public class RecipeStepsHibernateModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

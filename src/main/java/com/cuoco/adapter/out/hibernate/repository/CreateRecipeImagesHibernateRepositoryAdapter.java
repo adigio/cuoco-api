@@ -1,6 +1,6 @@
 package com.cuoco.adapter.out.hibernate.repository;
 
-import com.cuoco.adapter.out.hibernate.model.RecipeStepsImagesHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.RecipeStepsHibernateModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CreateRecipeImagesHibernateRepositoryAdapter extends JpaRepository<RecipeStepsImagesHibernateModel, Long> {}
+public interface CreateRecipeImagesHibernateRepositoryAdapter extends JpaRepository<RecipeStepsHibernateModel, Long> {}

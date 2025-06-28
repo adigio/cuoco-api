@@ -3,6 +3,7 @@ package com.cuoco.application.usecase;
 import com.cuoco.application.exception.BadRequestException;
 import com.cuoco.application.exception.ForbiddenException;
 import com.cuoco.application.port.in.GetMealPrepFromIngredientsCommand;
+import com.cuoco.application.port.out.CreateAllMealPrepsRepository;
 import com.cuoco.application.port.out.GetAllergiesByIdRepository;
 import com.cuoco.application.port.out.GetCookLevelByIdRepository;
 import com.cuoco.application.port.out.GetDietByIdRepository;
@@ -27,6 +28,7 @@ import com.cuoco.shared.model.ErrorDescription;
 import com.cuoco.shared.utils.PlanConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -36,12 +38,12 @@ import java.util.List;
 @Component
 public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngredientsCommand {
 
-    private static final int MEAL_PREP_SIZE = 9;
+    @Value("${shared.meal-preps.recipes-size}")
+    private int MEAL_PREP_RECIPES_SIZE;
 
     private final RecipeDomainService recipeDomainService;
-
     private final GetMealPrepsFromIngredientsRepository getMealPrepsFromIngredientsProvider;
-
+    private final CreateAllMealPrepsRepository createAllMealPrepsRepository;
     private final GetPreparationTimeByIdRepository getPreparationTimeByIdRepository;
     private final GetCookLevelByIdRepository getCookLevelByIdRepository;
     private final GetMealTypeByIdRepository getMealTypeByIdRepository;
@@ -52,6 +54,7 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
     public GetMealPrepsFromIngredientsUseCase(
             RecipeDomainService recipeDomainService,
             @Qualifier("provider") GetMealPrepsFromIngredientsRepository getMealPrepsFromIngredientsProvider,
+            CreateAllMealPrepsRepository createAllMealPrepsRepository,
             GetPreparationTimeByIdRepository getPreparationTimeByIdRepository,
             GetCookLevelByIdRepository getCookLevelByIdRepository,
             GetMealTypeByIdRepository getMealTypeByIdRepository,
@@ -61,6 +64,7 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
     ) {
         this.recipeDomainService = recipeDomainService;
         this.getMealPrepsFromIngredientsProvider = getMealPrepsFromIngredientsProvider;
+        this.createAllMealPrepsRepository = createAllMealPrepsRepository;
         this.getPreparationTimeByIdRepository = getPreparationTimeByIdRepository;
         this.getCookLevelByIdRepository = getCookLevelByIdRepository;
         this.getMealTypeByIdRepository = getMealTypeByIdRepository;
@@ -85,10 +89,11 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
                 recipeParameters.getFilters()
         );
 
-        List<MealPrep> generatedMealPrep = getMealPrepsFromIngredientsProvider.execute(mealPrepToGenerate);
+        List<MealPrep> generatedMealPreps = getMealPrepsFromIngredientsProvider.execute(mealPrepToGenerate);
+        List<MealPrep> savedMealPrep = createAllMealPrepsRepository.execute(generatedMealPreps);
 
-        log.info("Generated {} meal preps, returning first", generatedMealPrep.size());
-        return generatedMealPrep;
+        log.info("Generated {} meal preps, returning first", savedMealPrep.size());
+        return savedMealPrep;
     }
 
     private User validateAndGetUser() {
@@ -139,7 +144,7 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
 
     private RecipeConfiguration buildConfiguration() {
         return RecipeConfiguration.builder()
-                .size(MEAL_PREP_SIZE)
+                .size(MEAL_PREP_RECIPES_SIZE)
                 .build();
     }
 
