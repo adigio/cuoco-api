@@ -7,9 +7,9 @@ import com.cuoco.adapter.out.hibernate.repository.GetRecipesIdsByIngredientsHibe
 import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
 import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.DietaryNeed;
+import com.cuoco.application.usecase.model.Filters;
 import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.Filters;
 import com.cuoco.shared.model.ErrorDescription;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;

@@ -1,12 +1,11 @@
 package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
+import com.cuoco.application.port.in.CreateUserRecipeCommand;
 import com.cuoco.application.port.in.DeleteUserRecipeCommand;
 import com.cuoco.application.port.in.GetAllUserRecipesQuery;
-import com.cuoco.application.port.in.CreateUserRecipeCommand;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.shared.GlobalExceptionHandler;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

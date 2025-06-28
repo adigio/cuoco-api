@@ -1,6 +1,5 @@
 package com.cuoco.adapter.out.hibernate.model;
 
-import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.MealPrep;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;

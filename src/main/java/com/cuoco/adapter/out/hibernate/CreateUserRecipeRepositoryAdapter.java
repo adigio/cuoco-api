@@ -5,8 +5,6 @@ import com.cuoco.adapter.out.hibernate.model.UserHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.UserRecipesHibernateModel;
 import com.cuoco.adapter.out.hibernate.repository.CreateUserRecipeHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.CreateUserRecipeRepository;
-import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserRecipe;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;

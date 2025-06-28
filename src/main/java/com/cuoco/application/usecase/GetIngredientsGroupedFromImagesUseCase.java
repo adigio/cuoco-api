@@ -7,7 +7,6 @@ import com.cuoco.application.usecase.domainservice.FileDomainService;
 import com.cuoco.application.usecase.model.File;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.ParametricData;
-import com.cuoco.application.usecase.model.Unit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

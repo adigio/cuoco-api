@@ -11,25 +11,20 @@ import com.cuoco.adapter.out.rest.gemini.model.wrapper.PromptBodyGeminiRequestMo
 import com.cuoco.adapter.out.rest.gemini.utils.Constants;
 import com.cuoco.adapter.out.rest.gemini.utils.Utils;
 import com.cuoco.application.port.out.GetMealPrepsFromIngredientsRepository;
-import com.cuoco.application.usecase.model.Filters;
 import com.cuoco.application.usecase.model.MealPrep;
-import com.cuoco.application.usecase.model.MealPrepFilter;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.shared.FileReader;
 import com.cuoco.shared.model.ErrorDescription;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j

@@ -1,6 +1,5 @@
 package com.cuoco.adapter.out.hibernate;
 
-import com.cuoco.adapter.exception.UnprocessableException;
 import com.cuoco.adapter.out.hibernate.model.AllergyHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.CookLevelHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.DietHibernateModel;
@@ -22,7 +21,6 @@ import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.shared.model.ErrorDescription;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;

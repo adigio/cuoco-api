@@ -1,8 +1,8 @@
 package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.UserRecipesResponse;
-import com.cuoco.application.port.in.GetAllUserRecipesQuery;
 import com.cuoco.application.port.in.CreateUserRecipeCommand;
+import com.cuoco.application.port.in.GetAllUserRecipesQuery;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserRecipe;
