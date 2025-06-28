@@ -4,4 +4,4 @@ Para generar los meal preps con las instrucciones anteriores, respetar las sigui
 - Tipos de comida (por ejemplo: desayuno, cena, snack, etc.): {{MEAL_TYPES}}
 - Dieta especial (por ejemplo: vegana, sin gluten): {{DIET}}
 - Cantidad exacta de meal preps a generar: {{QUANTITY}}
-- ¿Apto para freezar?: {{FREEZE}} (sí o no; si es sí, sugerir pasos para almacenamiento y duración)
+

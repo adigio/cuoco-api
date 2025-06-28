@@ -16,10 +16,11 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RecipeImageResponse {
+public class StepResponse {
     private Long id;
+    private String title;
+    private Integer number;
+    private String description;
+    private String time;
     private String imageName;
-    private String imageType;
-    private Integer stepNumber;
-    private String stepDescription;
 } 

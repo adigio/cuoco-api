@@ -1,6 +1,6 @@
 package com.cuoco.adapter.out.hibernate.model;
 
-import com.cuoco.application.usecase.model.RecipeImage;
+import com.cuoco.application.usecase.model.Step;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,13 +32,10 @@ public class RecipeStepsImagesHibernateModel {
     private Integer stepNumber;
     private String stepDescription;
 
-    public RecipeImage toDomain() {
-        return RecipeImage.builder()
+    public Step toDomain() {
+        return Step.builder()
                 .id(id)
                 .imageName(imageName)
-                .imageType(imageType)
-                .stepNumber(stepNumber)
-                .stepDescription(stepDescription)
                 .build();
     }
 }

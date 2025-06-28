@@ -3,7 +3,7 @@ package com.cuoco.application.usecase;
 import com.cuoco.application.port.in.GenerateRecipeImagesCommand;
 import com.cuoco.application.port.out.GetRecipeStepsImagesRepository;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.RecipeImage;
+import com.cuoco.application.usecase.model.Step;
 import com.cuoco.factory.domain.RecipeFactory;
 import com.cuoco.factory.domain.RecipeImageFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +37,7 @@ class GenerateRecipeImagesUseCaseTest {
     @Test
     void execute_whenValidRecipe_thenReturnGeneratedImages() {
         Recipe recipe = RecipeFactory.create();
-        List<RecipeImage> expectedImages = List.of(
+        List<Step> expectedImages = List.of(
                 RecipeImageFactory.createMainRecipeImage(),
                 RecipeImageFactory.createStepRecipeImage()
         );
@@ -49,7 +49,7 @@ class GenerateRecipeImagesUseCaseTest {
         when(getRecipeStepsImagesRepository.execute(any(Recipe.class)))
                 .thenReturn(expectedImages);
 
-        List<RecipeImage> result = generateRecipeImagesUseCase.execute(command);
+        List<Step> result = generateRecipeImagesUseCase.execute(command);
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -66,7 +66,7 @@ class GenerateRecipeImagesUseCaseTest {
         when(getRecipeStepsImagesRepository.execute(any(Recipe.class)))
                 .thenReturn(null);
 
-        List<RecipeImage> result = generateRecipeImagesUseCase.execute(command);
+        List<Step> result = generateRecipeImagesUseCase.execute(command);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -83,7 +83,7 @@ class GenerateRecipeImagesUseCaseTest {
         when(getRecipeStepsImagesRepository.execute(any(Recipe.class)))
                 .thenThrow(new RuntimeException("Test exception"));
 
-        List<RecipeImage> result = generateRecipeImagesUseCase.execute(command);
+        List<Step> result = generateRecipeImagesUseCase.execute(command);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -100,7 +100,7 @@ class GenerateRecipeImagesUseCaseTest {
         when(getRecipeStepsImagesRepository.execute(any(Recipe.class)))
                 .thenReturn(List.of());
 
-        List<RecipeImage> result = generateRecipeImagesUseCase.execute(command);
+        List<Step> result = generateRecipeImagesUseCase.execute(command);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());

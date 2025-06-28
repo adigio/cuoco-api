@@ -5,7 +5,7 @@ import com.cuoco.adapter.in.controller.model.IngredientResponse;
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
 import com.cuoco.adapter.in.controller.model.RecipeConfiguration;
 import com.cuoco.adapter.in.controller.model.RecipeFilterRequest;
-import com.cuoco.adapter.in.controller.model.RecipeImageResponse;
+import com.cuoco.adapter.in.controller.model.StepResponse;
 import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.adapter.in.controller.model.UnitResponse;
@@ -18,7 +18,7 @@ import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.PreparationTime;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.RecipeImage;
+import com.cuoco.application.usecase.model.Step;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -134,13 +134,14 @@ public class RecipeControllerAdapter {
                 .build();
     }
 
-    private RecipeImageResponse buildRecipeImageResponse(RecipeImage recipeImage) {
-        return RecipeImageResponse.builder()
-                .id(recipeImage.getId())
-                .imageName(recipeImage.getImageName())
-                .imageType(recipeImage.getImageType())
-                .stepNumber(recipeImage.getStepNumber())
-                .stepDescription(recipeImage.getStepDescription())
+    private StepResponse buildStepsResponse(Step step) {
+        return StepResponse.builder()
+                .id(step.getId())
+                .title(step.getTitle())
+                .number(step.getNumber())
+                .description(step.getDescription())
+                .time(step.getTime())
+                .imageName(step.getImageName())
                 .build();
     }
 

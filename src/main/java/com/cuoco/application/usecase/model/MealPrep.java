@@ -8,19 +8,17 @@ import java.util.List;
 @Data
 @Builder
 public class MealPrep {
+
     private Long id;
-    private String name;
-    private String image;
-    private String subtitle;
-    private List<String> recipes;
-    private List<Instruction> instructions;
-    private PreparationTime preparationTime;
-    private CookLevel cookLevel;
-    private Diet diet;
-    private List<MealType> mealTypes;
-    private List<Allergy> allergies;
-    private List<DietaryNeed> dietaryNeeds;
+    private String title;
+    private User user;
+    private String estimatedCookingTime;
+    private Integer servings;
+    private Boolean freeze;
+    private List<Step> steps;
+
     private List<Ingredient> ingredients;
-    
-    private MealPrepFilter filters;
+    private List<Recipe> recipes;
+
+    private Filters filters;
 }

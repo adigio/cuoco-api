@@ -5,7 +5,7 @@ import com.cuoco.adapter.out.hibernate.model.RecipeStepsImagesHibernateModel;
 import com.cuoco.adapter.out.hibernate.repository.CreateRecipeImagesHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.CreateRecipeImagesRepository;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.RecipeImage;
+import com.cuoco.application.usecase.model.Step;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -22,7 +22,7 @@ public class CreateRecipeImagesDatabaseRepositoryAdapter implements CreateRecipe
     }
 
     @Override
-    public List<RecipeImage> execute(Recipe recipe) {
+    public List<Step> execute(Recipe recipe) {
         log.info("Executing recipe images creation in database for recipe with ID {} and with {} images", recipe.getId(), recipe.getImages().size());
 
         RecipeHibernateModel recipeHibernateModel = buildRecipeHibernateModel(recipe);
@@ -44,13 +44,10 @@ public class CreateRecipeImagesDatabaseRepositoryAdapter implements CreateRecipe
                 .build();
     }
 
-    private RecipeStepsImagesHibernateModel buildRecipeImagesHibernateModel(RecipeHibernateModel recipe, RecipeImage recipeImage) {
+    private RecipeStepsImagesHibernateModel buildRecipeImagesHibernateModel(RecipeHibernateModel recipe, Step step) {
         return RecipeStepsImagesHibernateModel.builder()
                 .recipe(recipe)
-                .imageType(recipeImage.getImageType())
-                .imageName(recipeImage.getImageName())
-                .stepNumber(recipeImage.getStepNumber())
-                .stepDescription(recipeImage.getStepDescription())
+                .imageName(step.getImageName())
                 .build();
     }
 }

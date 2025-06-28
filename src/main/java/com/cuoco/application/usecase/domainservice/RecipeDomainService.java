@@ -14,19 +14,16 @@ import com.cuoco.application.port.out.GetAllUnitsRepository;
 import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
 import com.cuoco.application.usecase.model.ParametricData;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.RecipeImage;
+import com.cuoco.application.usecase.model.Step;
 import com.cuoco.shared.utils.ImageConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-
-import static com.cuoco.shared.utils.ImageConstants.STEP_TYPE;
 
 @Slf4j
 @Component
@@ -122,14 +119,14 @@ public class RecipeDomainService {
     public Recipe generateImages(Recipe recipe) {
         log.info("Executing image creation for recipe with ID {}", recipe.getId());
 
-        List<RecipeImage> stepsImagesToCreate = splitInstructionsSteps(recipe.getInstructions());
+        List<Step> stepsImagesToCreate = splitInstructionsSteps(recipe.getInstructions());
         recipe.setImages(stepsImagesToCreate);
 
-        List<RecipeImage> recipeImagesToSave = getRecipeStepsImagesRepository.execute(recipe);
+        List<Step> recipeImagesToSave = getRecipeStepsImagesRepository.execute(recipe);
         recipe.setImages(recipeImagesToSave);
 
         if(!recipe.getImages().isEmpty()) {
-            List<RecipeImage> savedImages = createRecipeImagesRepository.execute(recipe);
+            List<Step> savedImages = createRecipeImagesRepository.execute(recipe);
             recipe.setImages(savedImages);
             log.info("Successfully generated {} images for recipe with ID {}", savedImages.size(), recipe.getId());
         } else {
@@ -139,7 +136,7 @@ public class RecipeDomainService {
         return recipe;
     }
 
-    private List<RecipeImage> splitInstructionsSteps(String instructions) {
+    private List<Step> splitInstructionsSteps(String instructions) {
         int maxStepsSize = Integer.parseInt(ImageConstants.MAX_STEPS_SIZE_INT.getValue());
 
         List<String> stepsInstructions = Pattern.compile(ImageConstants.INSTRUCTIONS_SPLIT_PATTERN.getValue())
@@ -156,11 +153,10 @@ public class RecipeDomainService {
 
     }
 
-    private RecipeImage buildRecipeImage(int currentStepNumber, String currentStepInstruction) {
-        return RecipeImage.builder()
-                .imageType(STEP_TYPE.getValue())
-                .stepNumber(currentStepNumber)
-                .stepDescription(currentStepInstruction)
+    private Step buildRecipeImage(int currentStepNumber, String currentStepInstruction) {
+        return Step.builder()
+                .number(currentStepNumber)
+                .description(currentStepInstruction)
                 .build();
     }
 
