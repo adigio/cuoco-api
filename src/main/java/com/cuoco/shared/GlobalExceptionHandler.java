@@ -1,6 +1,7 @@
 package com.cuoco.shared;
 
 
+import com.cuoco.adapter.exception.ConflictException;
 import com.cuoco.adapter.exception.NotAvailableException;
 import com.cuoco.adapter.exception.UnprocessableException;
 import com.cuoco.application.exception.BadRequestException;
@@ -48,10 +49,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(com.cuoco.adapter.exception.ForbiddenException.class)
-    public ResponseEntity<ApiErrorResponse> handle(com.cuoco.adapter.exception.ForbiddenException ex) {
-        log.info(HttpStatus.FORBIDDEN.getReasonPhrase());
-        return buildResponseError(HttpStatus.FORBIDDEN, ex);
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ApiErrorResponse> handle(ConflictException ex) {
+        log.warn(HttpStatus.CONFLICT.getReasonPhrase());
+        return buildResponseError(HttpStatus.CONFLICT, ex);
     }
 
     @ExceptionHandler(BadRequestException.class)
@@ -74,6 +75,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<ApiErrorResponse> handle(ForbiddenException ex) {
+        log.info(HttpStatus.FORBIDDEN.getReasonPhrase());
+        return buildResponseError(HttpStatus.FORBIDDEN, ex);
+    }
+
+    @ExceptionHandler(com.cuoco.adapter.exception.ForbiddenException.class)
+    public ResponseEntity<ApiErrorResponse> handle(com.cuoco.adapter.exception.ForbiddenException ex) {
         log.info(HttpStatus.FORBIDDEN.getReasonPhrase());
         return buildResponseError(HttpStatus.FORBIDDEN, ex);
     }

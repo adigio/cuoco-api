@@ -1,6 +1,6 @@
 package com.cuoco.adapter.out.hibernate;
 
-import com.cuoco.adapter.out.hibernate.repository.ExistUserRecipesHibernateRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.UserRecipeExistsByUserIdAndRecipeIdHibernateRepositoryAdapter;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserRecipe;
@@ -12,15 +12,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class SavedRecipeExistByUsernameRepositoryAdapterTest {
+public class UserRecipeExistsByUserIdAndRecipeIdRepositoryAdapterTest {
 
-    private ExistUserRecipesHibernateRepositoryAdapter existRepo;
-    private SavedRecipeExistByUsernameRepositoryAdapter adapter;
+    private UserRecipeExistsByUserIdAndRecipeIdHibernateRepositoryAdapter existRepo;
+    private UserRecipeExistsByUserIdAndRecipeIdRepositoryAdapter adapter;
 
     @BeforeEach
     public void setUp() {
-        existRepo = mock(ExistUserRecipesHibernateRepositoryAdapter.class);
-        adapter = new SavedRecipeExistByUsernameRepositoryAdapter(existRepo);
+        existRepo = mock(UserRecipeExistsByUserIdAndRecipeIdHibernateRepositoryAdapter.class);
+        adapter = new UserRecipeExistsByUserIdAndRecipeIdRepositoryAdapter(existRepo);
     }
 
     @Test

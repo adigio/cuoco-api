@@ -1,8 +1,8 @@
 package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.UserRecipesResponse;
-import com.cuoco.application.port.in.GetUserRecipeCommand;
-import com.cuoco.application.port.in.SaveUserRecipeCommand;
+import com.cuoco.application.port.in.GetAllUserRecipesQuery;
+import com.cuoco.application.port.in.CreateUserRecipeCommand;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserRecipe;
@@ -23,15 +23,15 @@ import static org.mockito.Mockito.when;
 
 public class UserRecipeControllerAdapterTest {
 
-    private SaveUserRecipeCommand saveUserRecipeCommand;
-    private GetUserRecipeCommand getUserRecipeCommand;
+    private CreateUserRecipeCommand createUserRecipeCommand;
+    private GetAllUserRecipesQuery getAllUserRecipesQuery;
     private UserRecipeControllerAdapter userRecipeControllerAdapter;
 
     @BeforeEach
     public void setUp() {
-        saveUserRecipeCommand = mock(SaveUserRecipeCommand.class);
-        getUserRecipeCommand =mock(GetUserRecipeCommand.class);
-        userRecipeControllerAdapter = new UserRecipeControllerAdapter(saveUserRecipeCommand,getUserRecipeCommand);
+        createUserRecipeCommand = mock(CreateUserRecipeCommand.class);
+        getAllUserRecipesQuery =mock(GetAllUserRecipesQuery.class);
+        userRecipeControllerAdapter = new UserRecipeControllerAdapter(createUserRecipeCommand, getAllUserRecipesQuery);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class UserRecipeControllerAdapterTest {
         User user = new User();
         user.setName("testUser");
         setAuthentication(user);
-        when(saveUserRecipeCommand.execute(any(SaveUserRecipeCommand.Command.class))).thenReturn(true);
+        when(createUserRecipeCommand.execute(any(CreateUserRecipeCommand.Command.class))).thenReturn(true);
 
         // Act
         ResponseEntity<?> response = userRecipeControllerAdapter.save(123L);
@@ -51,7 +51,7 @@ public class UserRecipeControllerAdapterTest {
     }
 
     @Test
-    void testGetFavourites_returnsListOfUserRecipesResponse() {
+    void testGetAll_returnsListOfUserRecipesResponse() {
         // Arrange
         UserRecipe userRecipe = new UserRecipe();
         userRecipe.setId(1L);
@@ -64,10 +64,10 @@ public class UserRecipeControllerAdapterTest {
         userRecipe.setFavorite(true);
         List<UserRecipe> recipes = new ArrayList<>();
         recipes.add(userRecipe);
-        when(getUserRecipeCommand.execute()).thenReturn(recipes);
+        when(getAllUserRecipesQuery.execute()).thenReturn(recipes);
 
         // Act
-        ResponseEntity<?> response = userRecipeControllerAdapter.getFavourites();
+        ResponseEntity<?> response = userRecipeControllerAdapter.getAll();
 
         // Assert
         assertEquals(200, response.getStatusCodeValue());
@@ -87,12 +87,12 @@ public class UserRecipeControllerAdapterTest {
     }
 
     @Test
-    void testGetFavourites_returnsEmptyListWhenNoFavorites() {
+    void testGetAll_returnsEmptyListWhenNoFavorites() {
         // Arrange
-        when(getUserRecipeCommand.execute()).thenReturn(List.of());
+        when(getAllUserRecipesQuery.execute()).thenReturn(List.of());
 
         // Act
-        ResponseEntity<?> response = userRecipeControllerAdapter.getFavourites();
+        ResponseEntity<?> response = userRecipeControllerAdapter.getAll();
 
         // Assert
         assertEquals(200, response.getStatusCodeValue());

@@ -31,14 +31,10 @@ public class UserRecipesHibernateModel {
     @JoinColumn(name = "recipe_id", referencedColumnName = "id")
     private RecipeHibernateModel recipe;
 
-    private Boolean favorite;
-
     public UserRecipe toDomain() {
         return UserRecipe.builder()
-                .id(id)
                 .user(user.toDomain())
                 .recipe(recipe.toDomain())
-                .favorite(favorite)
                 .build();
     }
 }

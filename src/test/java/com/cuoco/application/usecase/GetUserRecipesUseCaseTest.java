@@ -1,6 +1,6 @@
 package com.cuoco.application.usecase;
 
-import com.cuoco.application.port.out.GetUserRecipesRepository;
+import com.cuoco.application.port.out.GetAllUserRecipesRepository;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserRecipe;
@@ -20,13 +20,13 @@ import static org.mockito.Mockito.when;
 
 class GetUserRecipesUseCaseTest {
 
-    private GetUserRecipesRepository repository;
-    private GetUserRecipesUseCase useCase;
+    private GetAllUserRecipesRepository repository;
+    private GetAllUserRecipesUseCase useCase;
 
     @BeforeEach
     void setUp() {
-        repository = mock(GetUserRecipesRepository.class);
-        useCase = new GetUserRecipesUseCase(repository);
+        repository = mock(GetAllUserRecipesRepository.class);
+        useCase = new GetAllUserRecipesUseCase(repository);
     }
 
     @AfterEach
