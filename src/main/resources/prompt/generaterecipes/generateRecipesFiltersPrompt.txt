@@ -2,13 +2,9 @@ Para generar las recetas con las instrucciones antes dadas, utilizar OBLIGATORIA
 El ID pertenece a su correspondiente JSON de informacion parametrica que te pase:
 (Si el valor es vacio, array vacio o es null, ignorar la condicion)
 
--   PREPARATION_TIME: Tiempo de preparación que lleva la receta completa debe ser de: {{PREPARATION_TIME}}
+-   PREPARATION_TIME: OBLIGATORIAMENTE el tiempo de preparación que lleva la receta completa debe ser de ESPECIFICAMENTE o MAS de: {{PREPARATION_TIME}}
 -   COOK_LEVEL: Nivel de dificultad de la receta debe ser: {{COOK_LEVEL}}
 -   DIET: La dieta de la receta debe ser para la siguiente dieta: {{DIET}}
 -   MEAL_TYPES: Debe ser para estos tipos de receta (Como desayuno, almuerzo, etc.): {{MEAL_TYPES}}
 -   ALLERGIES: No debe contener ingredientes que pueda tener este tipo de alergias: {{ALLERGIES}}
 -   DIETARY_NEEDS: Debe estar considerada la siguiente necesidad alimentaria: {{DIETARY_NEEDS}}
-
-Las recetas no pueden ser ninguna de estas:
-
-{{NOT_INCLUDE}}

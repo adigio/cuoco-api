@@ -10,7 +10,7 @@ import java.util.List;
 public class RecipeConfiguration {
 
     private Integer size;
-    private List<Long> notInclude;
+    private List<Recipe> notInclude;
 
     private ParametricData parametricData;
 }

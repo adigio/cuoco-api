@@ -126,9 +126,13 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
         if(userPlan == PlanConstants.PRO.getValue()) {
             int size = command.getSize() != null ? command.getSize() : PRO_MAX_RECIPES;
 
+            List<Recipe> notIncludeRecipes = command.getNotInclude() != null
+                    ? command.getNotInclude().stream().map(id -> Recipe.builder().id(id).build()).toList()
+                    : List.of();
+
             return RecipeConfiguration.builder()
                     .size(size)
-                    .notInclude(command.getNotInclude())
+                    .notInclude(notIncludeRecipes)
                     .build();
         } else {
             return RecipeConfiguration.builder()

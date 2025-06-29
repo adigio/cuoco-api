@@ -1,4 +1,4 @@
-Generá {{MAX_RECIPES}} recetas argentinas en formato JSON, usando TODOS los ingredientes proporcionados a continuación, incluyendo sus cantidades:
+Generá {{MAX_RECIPES}} recetas argentinas en formato JSON, usando TODOS los ingredientes proporcionados a continuación, incluyendo sus cantidades y unidades de medida:
 
 {{INGREDIENTS}}
 
@@ -19,6 +19,11 @@ REGLAS OBLIGATORIAS:
    Ejemplo: Si el nombre es "Milanesa de carne con arroz", entonces:
    "image": "/api/images/recipes/milanesadecarneconarroz_main.jpg"
 10. Devolvé ÚNICAMENTE el array JSON. No incluyas texto explicativo, comentarios, encabezados ni marcas como ```json.
+
+NO crear ni incluir las recetas de la siguiente lista de nombres:
+(Si la receta esta en la lista, crear otra diferente. Si la lista es vacia o null, ignorar este paso)
+
+No incluir estas recetas: {{NOT_INCLUDE}}
 
 ESTRUCTURA DEL JSON (respetar exactamente):
 
