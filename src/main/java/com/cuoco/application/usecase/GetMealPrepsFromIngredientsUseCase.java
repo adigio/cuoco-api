@@ -38,8 +38,11 @@ import java.util.List;
 @Component
 public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngredientsCommand {
 
+    @Value("${shared.meal-preps.size}")
+    private int MEAL_PREP_SIZE;
+
     @Value("${shared.meal-preps.recipes-size}")
-    private int MEAL_PREP_RECIPES_SIZE;
+    private int RECIPES_SIZE_PER_MEAL_PREP;
 
     private final RecipeDomainService recipeDomainService;
     private final GetMealPrepsFromIngredientsRepository getMealPrepsFromIngredientsProvider;
@@ -143,8 +146,10 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
     }
 
     private RecipeConfiguration buildConfiguration() {
+        int SIZE = RECIPES_SIZE_PER_MEAL_PREP * MEAL_PREP_SIZE;
+
         return RecipeConfiguration.builder()
-                .size(MEAL_PREP_RECIPES_SIZE)
+                .size(SIZE)
                 .build();
     }
 
