@@ -22,4 +22,20 @@ public interface GetRecipesIdsByIngredientsHibernateRepositoryAdapter extends Jp
             @Param("ingredientNames") List<String> ingredientNames,
             @Param("ingredientCount") Integer ingredientCount
     );
+
+    @Query(value = """
+        SELECT r.id
+        FROM recipes r
+        JOIN recipe_ingredients ri ON ri.recipe_id = r.id
+        JOIN ingredients i ON i.id = ri.ingredient_id
+        WHERE LOWER(i.name) IN :ingredientNames
+            AND r.id NOT IN :notIncludeIds
+        GROUP BY r.id
+        HAVING COUNT(DISTINCT LOWER(i.name)) = :ingredientCount
+    """, nativeQuery = true)
+    List<Long> execute(
+            @Param("ingredientNames") List<String> ingredientNames,
+            @Param("notIncludeIds") List<Long> notIncludeIds,
+            @Param("ingredientCount") Integer ingredientCount
+    );
 }

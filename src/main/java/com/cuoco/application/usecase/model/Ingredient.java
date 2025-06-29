@@ -22,6 +22,6 @@ public class Ingredient {
     private Unit unit;
     private Boolean optional;
     private String source;
-    private boolean confirmed;
+    private Boolean confirmed;
 
 }

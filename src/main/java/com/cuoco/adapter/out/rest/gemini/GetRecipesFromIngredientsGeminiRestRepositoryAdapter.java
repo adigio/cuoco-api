@@ -63,15 +63,19 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
         try {
             log.info("Executing recipes generation from Gemini rest adapter with ingredients: {}", recipe.getIngredients());
 
-            String ingredientNames = recipe.getIngredients().stream().map(Ingredient::getName).collect(Collectors.joining(DELIMITER));
+            String ingredients = buildIngredients(recipe.getIngredients());
+            String recipesToNotInclude = buildRecipesToNotInclude(recipe.getConfiguration().getNotInclude());
 
             String basicPrompt = BASIC_PROMPT
-                    .replace(Constants.INGREDIENTS.getValue(), ingredientNames)
+                    .replace(Constants.INGREDIENTS.getValue(), ingredients)
                     .replace(Constants.MAX_RECIPES.getValue(), recipe.getConfiguration().getSize().toString())
-                    .concat(buildParametricPrompt(recipe.getConfiguration().getParametricData()));
+                    .replace(Constants.NOT_INCLUDE.getValue(), recipesToNotInclude);
+
+            String basicWithParametricPrompt = basicPrompt.concat(buildParametricPrompt(recipe.getConfiguration().getParametricData()));
 
             String filtersPrompt = buildFiltersPrompt(recipe.getFilters());
-            String finalPrompt = filtersPrompt == null ? basicPrompt : basicPrompt.concat(filtersPrompt);
+
+            String finalPrompt = filtersPrompt == null ? basicWithParametricPrompt : basicWithParametricPrompt.concat(filtersPrompt);
 
             PromptBodyGeminiRequestModel promptBody = buildPromptBody(finalPrompt);
 
@@ -96,10 +100,18 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
             log.info("Generated {} recipes from Gemini successfully", recipesResponse.size());
 
             return recipesResponse;
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
+            log.error("Failed to convert some properties to JSON. ", e);
+            throw new NotAvailableException(ErrorDescription.NOT_AVAILABLE.getValue());
+        }catch (Exception e) {
             log.error("Error getting recipes from ingredients in Gemini. ", e);
             throw new NotAvailableException(ErrorDescription.NOT_AVAILABLE.getValue());
         }
+    }
+
+    private String buildRecipesToNotInclude(List<Recipe> recipesToNotInclude) throws JsonProcessingException {
+        List<String> notInclude = recipesToNotInclude.stream().map(Recipe::getName).toList();
+        return objectMapper.writeValueAsString(notInclude);
     }
 
     private String buildParametricPrompt(ParametricData parametricData) throws JsonProcessingException {
@@ -110,8 +122,17 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
                 .replace(Constants.PARAMETRIC_DIETS.getValue(), objectMapper.writeValueAsString(parametricData.getDiets()))
                 .replace(Constants.PARAMETRIC_MEAL_TYPES.getValue(), objectMapper.writeValueAsString(parametricData.getMealTypes()))
                 .replace(Constants.PARAMETRIC_ALLERGIES.getValue(), objectMapper.writeValueAsString(parametricData.getAllergies()))
-                .replace(Constants.PARAMETRIC_DIETARY_NEEDS.getValue(), objectMapper.writeValueAsString(parametricData.getDietaryNeeds()))
-                .replace(Constants.NOT_INCLUDE.getValue(), "");
+                .replace(Constants.PARAMETRIC_DIETARY_NEEDS.getValue(), objectMapper.writeValueAsString(parametricData.getDietaryNeeds()));
+    }
+
+    private String buildIngredients(List<Ingredient> ingredients) throws JsonProcessingException {
+        ingredients.forEach(ingredient -> {
+            ingredient.setOptional(null);
+            ingredient.setSource(null);
+            ingredient.setConfirmed(null);
+        });
+
+        return objectMapper.writeValueAsString(ingredients);
     }
 
     private String buildFiltersPrompt(Filters filters) {

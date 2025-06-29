@@ -119,7 +119,7 @@ public class IngredientControllerAdapter {
                         .symbol(ingredient.getUnit().getSymbol())
                         .build()
                 )
-                .confirmed(ingredient.isConfirmed())
+                .confirmed(ingredient.getConfirmed())
                 .source(ingredient.getSource())
                 .build();
     }
