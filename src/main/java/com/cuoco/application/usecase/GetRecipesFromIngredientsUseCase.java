@@ -32,11 +32,11 @@ import java.util.List;
 @Component
 public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredientsCommand {
 
-    @Value("${shared.recipes.max-recipes.free}")
-    private int FREE_MAX_RECIPES;
+    @Value("${shared.recipes.size.free}")
+    private int FREE_USER_RECIPES_SIZE;
 
-    @Value("${shared.recipes.max-recipes.pro}")
-    private int PRO_MAX_RECIPES;
+    @Value("${shared.recipes.size.pro}")
+    private int PRO_USER_RECIPES_SIZE;
 
     private final RecipeDomainService recipeDomainService;
 
@@ -124,7 +124,7 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
 
     private RecipeConfiguration buildConfiguration(Command command, int userPlan) {
         if(userPlan == PlanConstants.PRO.getValue()) {
-            int size = command.getSize() != null ? command.getSize() : PRO_MAX_RECIPES;
+            int size = command.getSize() != null ? command.getSize() : PRO_USER_RECIPES_SIZE;
 
             List<Recipe> notIncludeRecipes = command.getNotInclude() != null
                     ? command.getNotInclude().stream().map(id -> Recipe.builder().id(id).build()).toList()
@@ -136,7 +136,7 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
                     .build();
         } else {
             return RecipeConfiguration.builder()
-                    .size(FREE_MAX_RECIPES)
+                    .size(FREE_USER_RECIPES_SIZE)
                     .build();
         }
     }
