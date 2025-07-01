@@ -25,6 +25,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	implementation 'com.google.cloud:google-cloud-vision:3.12.0'
 	implementation 'com.google.protobuf:protobuf-java:4.28.2'
@@ -32,6 +33,7 @@ dependencies {
 	implementation 'net.javacrumbs.hamcrest-logger:hamcrest-logger:0.0.1'
 	implementation 'com.github.lolgab:snunit-autowire_native0.4.0-M2_2.11:0.0.4'
 	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+
 
 	// Swagger documentation
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
