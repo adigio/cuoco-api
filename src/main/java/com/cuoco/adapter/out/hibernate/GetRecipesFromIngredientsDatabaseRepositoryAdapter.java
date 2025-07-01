@@ -57,7 +57,8 @@ public class GetRecipesFromIngredientsDatabaseRepositoryAdapter implements GetRe
             Integer ingredientCount = ingredientNames.size();
             Filters filters = recipe.getFilters();
 
-            List<Long> notIncludeIdsRaw = recipe.getConfiguration().getNotInclude()
+            List<Long> notIncludeIdsRaw = Optional.ofNullable(recipe.getConfiguration().getNotInclude())
+                    .orElse(List.of())
                     .stream()
                     .map(Recipe::getId)
                     .toList();
