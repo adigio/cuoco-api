@@ -72,12 +72,15 @@ public class GetRecipesFromIngredientsDatabaseRepositoryAdapter implements GetRe
 
             List<Integer> mealTypesIdsRaw = Optional.ofNullable(filters.getMealTypes()).orElse(List.of()).stream().map(MealType::getId).toList();
             boolean mealTypesIdsIsEmpty = mealTypesIdsRaw.isEmpty();
+            List<Integer> safeMealTypeIds = mealTypesIdsIsEmpty ? List.of(-1) : mealTypesIdsRaw;
 
             List<Integer> allergiesIdsRaw = Optional.ofNullable(filters.getAllergies()).orElse(List.of()).stream().map(Allergy::getId).toList();
             boolean allergiesIdsIsEmpty = allergiesIdsRaw.isEmpty();
+            List<Integer> safeAllergyIds = allergiesIdsIsEmpty ? List.of(-1) : allergiesIdsRaw;
 
             List<Integer> dietaryNeedsIdsRaw = Optional.ofNullable(filters.getDietaryNeeds()).orElse(List.of()).stream().map(DietaryNeed::getId).toList();
             boolean dietaryNeedsIdsIsEmpty = dietaryNeedsIdsRaw.isEmpty();
+            List<Integer> safeDietaryNeedIds = dietaryNeedsIdsIsEmpty ? List.of(-1) : dietaryNeedsIdsRaw;
 
             MapSqlParameterSource params = new MapSqlParameterSource()
                     .addValue(Constants.RESULT_SIZE.getValue(), recipe.getConfiguration().getSize())
@@ -87,11 +90,11 @@ public class GetRecipesFromIngredientsDatabaseRepositoryAdapter implements GetRe
                     .addValue(Constants.COOK_LEVEL_ID.getValue(), cookLevelId)
                     .addValue(Constants.DIET_ID.getValue(), dietId)
                     .addValue(Constants.MEAL_TYPES_IDS_IS_EMPTY.getValue(), mealTypesIdsIsEmpty)
-                    .addValue(Constants.MEAL_TYPES_IDS.getValue(), mealTypesIdsRaw)
+                    .addValue(Constants.MEAL_TYPES_IDS.getValue(), safeMealTypeIds)
                     .addValue(Constants.ALLERGY_IDS_IS_EMPTY.getValue(), allergiesIdsIsEmpty)
-                    .addValue(Constants.ALLERGY_IDS.getValue(), allergiesIdsRaw)
+                    .addValue(Constants.ALLERGY_IDS.getValue(), safeAllergyIds)
                     .addValue(Constants.DIETARY_NEEDS_IDS_IS_EMPTY.getValue(), dietaryNeedsIdsIsEmpty)
-                    .addValue(Constants.DIETARY_NEEDS_IDS.getValue(), dietaryNeedsIdsRaw)
+                    .addValue(Constants.DIETARY_NEEDS_IDS.getValue(), safeDietaryNeedIds)
                     .addValue(Constants.DIETARY_NEEDS_COUNT.getValue(), dietaryNeedsIdsRaw.size())
                     .addValue(Constants.NOT_INCLUDE_IDS_IS_EMPTY.getValue(), notIncludeIdsIsEmpty)
                     .addValue(Constants.NOT_INCLUDE_IDS.getValue(), safeNotIncludeIds);
