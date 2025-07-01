@@ -3,19 +3,17 @@ package com.cuoco.adapter.in.controller;
 import com.cuoco.adapter.in.controller.model.*;
 import com.cuoco.application.port.in.GetUserRecipeCalendarCommand;
 import com.cuoco.application.port.in.SaveUserRecipeCalendarCommand;
-import com.cuoco.application.port.in.SaveUserRecipeCommand;
-import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.UserRecipe;
 import com.cuoco.application.usecase.model.UserRecipeCalendar;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.List;
+import java.time.format.TextStyle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -43,7 +41,7 @@ public class UserRecipeCalendarControllerAdapter {
     @GetMapping("/")
     public ResponseEntity<?> getFavourites() {
         List<UserRecipeCalendar> calendarRecipes = getUserRecipeCalendarCommand.execute();
-        List<UserRecipeCalendarResponse> response = buildResponse(calendarRecipes);
+        Map<String, List<UserRecipeCalendarResponse>> response = buildResponseMapAndOrder(calendarRecipes);
         return ResponseEntity.ok(response);
     }
 
@@ -58,26 +56,29 @@ public class UserRecipeCalendarControllerAdapter {
         return new SaveUserRecipeCalendarCommand.Command(CalendarCommands);
     }
 
-    private List<UserRecipeCalendarResponse> buildResponse(List<UserRecipeCalendar> calendarRecipes) {
-        List<UserRecipeCalendar> filtrados = calendarRecipes.stream()
-                .filter(urc -> {
-                    LocalDate fecha = urc.getDate();
-                    LocalDate hoy = LocalDate.now();
-                    LocalDate dentroDe7Dias = hoy.plusDays(7);
-                    return (fecha != null && !fecha.isBefore(hoy) && !fecha.isAfter(dentroDe7Dias));
-                })
-                .collect(Collectors.toList());
+    private Map<String, List<UserRecipeCalendarResponse>> buildResponseMapAndOrder(List<UserRecipeCalendar> calendarRecipes) {
 
-        List<UserRecipeCalendarResponse> responses = filtrados.stream()
-                .map(urc -> UserRecipeCalendarResponse.builder()
-                        .idReceta(urc.getRecipe().getId())
-                        .title(urc.getRecipe().getName())
-                        .img(urc.getRecipe().getImage())
-                        .mealType(urc.getMealType().getId())
-                        .build()
-                )
-                .collect(Collectors.toList());
+        DayOfWeek today = LocalDate.now().getDayOfWeek();
+        Locale locale = Locale.getDefault();
 
-        return responses;
+        Map<DayOfWeek, List<UserRecipeCalendarResponse>> groupedByDayOfWeek = calendarRecipes.stream()
+                .collect(Collectors.groupingBy(
+                        urc -> urc.getDate().getDayOfWeek(),
+                        Collectors.mapping(urc -> UserRecipeCalendarResponse.builder()
+                                .recipeId(urc.getRecipe().getId())
+                                .title(urc.getRecipe().getName())
+                                .img(urc.getRecipe().getImage())
+                                .mealType(urc.getMealType().getId())
+                                .build(), Collectors.toList())
+                ));
+
+        return Arrays.stream(DayOfWeek.values())
+                .sorted(Comparator.comparingInt(d -> (d.getValue() - today.getValue() + 7) % 7))
+                .collect(Collectors.toMap(
+                        d -> d.getDisplayName(TextStyle.FULL, locale),
+                        d -> groupedByDayOfWeek.getOrDefault(d, List.of()),
+                        (a, b) -> b,
+                        LinkedHashMap::new
+                ));
     }
 }

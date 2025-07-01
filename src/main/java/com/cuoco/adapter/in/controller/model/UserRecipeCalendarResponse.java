@@ -13,24 +13,24 @@ import lombok.Data;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserRecipeCalendarResponse {
-    private Long idReceta;
+    private Long recipeId;
     private String title;
     private String img;
     private int mealType;
 
     public UserRecipeCalendarResponse(Long idReceta, String title, String img, int mealType) {
-        this.idReceta = idReceta;
+        this.recipeId = idReceta;
         this.title = title;
         this.img = img;
         this.mealType = mealType;
     }
 
     public Long getIdReceta() {
-        return idReceta;
+        return recipeId;
     }
 
     public void setIdReceta(Long idReceta) {
-        this.idReceta = idReceta;
+        this.recipeId = idReceta;
     }
 
     public String getTitle() {
