@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class Allergy {
+public class Allergy implements Parametric{
     private Integer id;
     private String description;
 }

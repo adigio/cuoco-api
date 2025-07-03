@@ -22,6 +22,13 @@ public class DietHibernateModel {
     private Integer id;
     private String description;
 
+    public static DietHibernateModel fromDomain(Diet diet) {
+        return DietHibernateModel.builder()
+                .id(diet.getId())
+                .description(diet.getDescription())
+                .build();
+    }
+
     public Diet toDomain() {
         return Diet
                 .builder()

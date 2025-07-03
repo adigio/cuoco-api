@@ -1,0 +1,86 @@
+Generá 1 (UNA) receta argentina en formato JSON, usando EXACTAMENTE el siguiente nombre:
+
+{{RECIPE_NAME}}
+
+REGLAS OBLIGATORIAS:
+
+1. Cada receta DEBE incluir TODOS los ingredientes dados como ingredientes PRINCIPALES. Se pueden agregar más, pero estos deben estar presentes y ser centrales en la preparación.
+2. No incluyas recetas que usen solo algunos de los ingredientes proporcionados.
+3. Las recetas deben ser lógicas y plausibles dentro de la cocina argentina.
+4. Usá español rioplatense: decí "papa" en lugar de "patata", "palta" en lugar de "aguacate", "choclo" en lugar de "maíz", etc.
+5. En el campo "steps", defini cada paso que lleva la receta para lograr la coccion completa del plato. En number poner el numero de orden del paso, titulo del paso y la descripcion completa de cada uno de los pasos.
+6. En el campo "quantity" de cada ingrediente, usá SIEMPRE números decimales (ej: 1.00, 250.00, 0.50). Nunca uses palabras como "pizca", "a gusto", etc.
+7. En "unit", usá EXACTAMENTE las unidades provistas en el JSON de units (id y symbol correctos).
+8. En "preparation_time", "cook_level", "diet", "meal_types", "allergies" y "dietary_needs", usá EXACTAMENTE los valores provistos en los JSON correspondientes. No inventes ni modifiques descripciones, ids o estructuras.
+   - Si una receta no pertenece a ninguna dieta, no incluyas el campo "diet".
+   - Si no tiene alergias o necesidades alimenticias, no incluyas esos campos.
+9. En el campo "image", usá exactamente esta forma:
+   "/api/images/recipes/" + nombre_de_la_receta_sin_espacios_ni_acentos_en_minusculas + "_main.jpg"
+   Ejemplo: Si el nombre es "Milanesa de carne con arroz", entonces:
+   "image": "/api/images/recipes/milanesadecarneconarroz_main.jpg"
+10. Devolvé ÚNICAMENTE el array JSON. No incluyas texto explicativo, comentarios, encabezados ni marcas como ```json.
+
+NO crear ni incluir las recetas de la siguiente lista de nombres:
+(Si la receta esta en la lista, crear otra diferente. Si la lista es vacia o null, ignorar este paso)
+
+ESTRUCTURA DEL JSON (respetar exactamente):
+
+[
+  {
+    "name": "Nombre de la receta",
+    "subtitle": "Descripción breve y atractiva",
+    "description": "Descripción detallada del plato y su sabor",
+    "steps": [
+        {
+            "number": 1,
+            "title": "Precalentar horno", //OBLIGATORIO
+            "description": "Calentar el horno a 200 grados" //OBLIGATORIO
+        },
+        {
+            "number": 2,
+            "title": "Mezclar los ingredientes",
+            "description": "Mezclar el ingrediente a y el b para luego revolver"
+        }
+    ],
+    "preparation_time": { "id": 1, "description": "20 min" },
+    "cook_level": {
+        "id": 1,
+        "description": "bajo"
+    },
+    "diet": {
+        "id": 1,
+        "description": "Vegetariano"
+    },
+    "meal_types": [
+        { "id": "2", "description": "Almuerzo" },
+        { "id": "4", "description": "Cena" }
+    ],
+    "allergies": [
+        { "id": "1", "description": "alergia1" },
+        { "id": "2", "description": "alergia2" }
+    ],
+    "dietary_needs": [
+        { "id": "1", "description": "dietary need 1" }
+    ],
+    "ingredients": [
+        {
+            "name": "ingrediente1",
+            "quantity": 200.00,
+            "unit": { "id": "1", "symbol": "gr" },
+            "optional": false
+        },
+        {
+            "name": "ingrediente2",
+            "quantity": 100.00,
+            "unit": { "id": "2", "symbol": "ml" },
+            "optional": false
+        },
+        {
+            "name": "ingrediente3",
+            "quantity": 1.50,
+            "unit": { "id": "3", "symbol": "cd" },
+            "optional": true
+        }
+    ]
+  }
+]

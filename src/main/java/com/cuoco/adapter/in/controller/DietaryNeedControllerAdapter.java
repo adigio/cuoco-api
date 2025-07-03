@@ -52,19 +52,12 @@ public class DietaryNeedControllerAdapter {
             )
     })
     public ResponseEntity<List<ParametricResponse>> getAll() {
-        log.info("GET all dietary needs");
+        log.info("Executing GET all dietary needs");
 
         List<DietaryNeed> dietaryNeeds = getAllDietaryNeedsQuery.execute();
-        List<ParametricResponse> response = dietaryNeeds.stream().map(this::buildParametricResponse).toList();
+        List<ParametricResponse> response = dietaryNeeds.stream().map(ParametricResponse::fromDomain).toList();
 
         log.info("All dietary needs are retrieved successfully");
         return ResponseEntity.ok(response);
-    }
-
-    private ParametricResponse buildParametricResponse(DietaryNeed dietaryNeed) {
-        return ParametricResponse.builder()
-                .id(dietaryNeed.getId())
-                .description(dietaryNeed.getDescription())
-                .build();
     }
 }

@@ -6,6 +6,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,12 +16,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity(name = "users")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class UserHibernateModel {
 
     @Id
@@ -34,6 +38,36 @@ public class UserHibernateModel {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_allergies",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "allergy_id")
+    )
+    private List<AllergyHibernateModel> allergies;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_dietary_needs",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "dietary_need_id")
+    )
+    private List<DietaryNeedHibernateModel> dietaryNeeds;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserRecipesHibernateModel> recipes;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_meal_preps",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "meal_prep_id")
+    )
+    private List<MealPrepHibernateModel> mealPreps;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserCalendarsHibernateModel> calendars;
 
     public User toDomain() {
         return User.builder()

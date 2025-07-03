@@ -175,46 +175,18 @@ public class AuthenticationControllerAdapter {
                 .name(user.getName())
                 .email(user.getEmail())
                 .token(token)
-                .plan(ParametricResponse.builder()
-                        .id(user.getPlan().getId())
-                        .description(user.getPlan().getDescription())
-                        .build())
-                .preferences(buildUserPreferencesResponse(user.getPreferences()))
+                .plan(ParametricResponse.fromDomain(user.getPlan()))
+                .preferences(UserPreferencesResponse.fromDomain(user.getPreferences()))
                 .dietaryNeeds(buildDietaryNeeds(user.getDietaryNeeds()))
                 .allergies(buildAllergies(user.getAllergies()))
                 .build();
     }
 
     private List<ParametricResponse> buildDietaryNeeds(List<DietaryNeed> dietaryNeeds) {
-        if(dietaryNeeds != null && !dietaryNeeds.isEmpty()) {
-            return dietaryNeeds.stream().map(dietaryNeed -> ParametricResponse.builder()
-                    .id(dietaryNeed.getId())
-                    .description(dietaryNeed.getDescription())
-                    .build()).toList();
-        } else return null;
-
+        return dietaryNeeds != null && !dietaryNeeds.isEmpty() ? dietaryNeeds.stream().map(ParametricResponse::fromDomain).toList() : null;
     }
 
     private List<ParametricResponse> buildAllergies(List<Allergy> allergies) {
-        if(allergies != null && !allergies.isEmpty()) {
-            return allergies.stream().map(allergy -> ParametricResponse.builder()
-                    .id(allergy.getId())
-                    .description(allergy.getDescription())
-                    .build()
-            ).toList();
-        } else return null;
-    }
-
-    private UserPreferencesResponse buildUserPreferencesResponse(UserPreferences preferences) {
-        return UserPreferencesResponse.builder()
-                .cookLevel(ParametricResponse.builder()
-                        .id(preferences.getCookLevel().getId())
-                        .description(preferences.getCookLevel().getDescription())
-                        .build())
-                .diet(ParametricResponse.builder()
-                        .id(preferences.getDiet().getId())
-                        .description(preferences.getDiet().getDescription())
-                        .build())
-                .build();
+        return allergies != null && !allergies.isEmpty() ? allergies.stream().map(ParametricResponse::fromDomain).toList() : null;
     }
 }

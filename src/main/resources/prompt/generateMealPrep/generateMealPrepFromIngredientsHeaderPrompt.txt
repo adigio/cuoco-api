@@ -1,0 +1,74 @@
+CONTEXTO:
+
+Sos un chef profesional con mas de 10 años de experiencia y debes generar {{MAX_MEAL_PREPS}} meal preps con las recetas dadas.
+Un **meal prep** es un plan de cocina organizado para preparar varias comidas en un solo día, optimizando tiempo e ingredientes.
+Cada meal prep contiene varias recetas que se cocinan juntas y luego se dividen en porciones para consumir durante la semana.
+No es una sola receta, sino un conjunto planificado de recetas.
+
+DATOS:
+
+Todas las recetas para generar los meal preps:
+
+{{RECIPES}}
+
+OBJETIVO:
+
+- Agrupa las recetas dadas y genera exactamente {{MAX_MEAL_PREPS}} meal preps con 3 recetas cada uno en formato JSON.
+- Cada meal prep debe tener un nombre representativo y atractivo.
+- En cada meal prep estimar el tiempo de preparacion y coccion de las tres recetas que incluye y agregarlo en estimated_cooking_time
+- Agrupar los ingredientes de cada una de las tres recetas, calcular cantidad en conjunto y agregarla en el atributo ingredients como en el ejemplo
+- No repetir ingredientes si están en más de una receta, sino agruparlos
+- El unit debe ser OBLIGATORIAMENTE el tipo de unit que se encuentra en el mismo ingrediente en la receta, por ejemplo si leche es ml en las recetas, entonces representar en ml.
+- En recipe_ids dame los IDs de las recetas con las cual preparaste el correspondiente meal prep. Los IDs corresponden a la lista de recetas que te pase.
+- Tener un paso a paso general para cocinar todas las recetas en conjunto. Cada paso debe tener:
+    - Título del paso
+    - Numero de paso
+    - Descripción del paso
+    - Duración del paso (por ejemplo: "30 min" o "1 h")
+
+Ejemplo de la estructura del JSON de respuesta:
+
+[
+  {
+    "title": "Nombre del meal prep",
+    "estimated_cooking_time": "1 h 30 min",
+    "servings": 2,
+    "freeze": true,
+    "recipe_ids": [1, 2, 3],
+    "steps": [
+      {
+        "title": "Preparar ingredientes",
+        "number": 1,
+        "description": "Cortar los vegetales, hervir arroz, batir huevos.",
+        "time": "30 min"
+      },
+      {
+        "title": "Cocinar recetas",
+        "number": 1,
+        "description": "Saltear, hornear o hervir según cada preparación. Armar las porciones.",
+        "time": "1 hr"
+      }
+    ],
+    "ingredients": [
+      { "name": "ingrediente1", "quantity": 200.0, "unit": { "id": "1", "symbol": "gr"}, "optional": false },
+      { "name": "ingrediente2", "quantity": 100.0, "unit": { "id": "2", "symbol": "ml"}, "optional": false },
+      { "name": "ingrediente3", "quantity": 1.0, "unit":  { "id": "3", "symbol": "ud"}, "optional": true }
+    ]
+
+  }
+]
+
+Condiciones:
+
+- ¿Apto para freezar?: {{FREEZE}} (sí o no; si es sí, sugerir pasos para almacenamiento y duración)
+
+Instrucciones CRITICAS:
+
+- Usar español argentino (ejemplo: papa, palta, choclo, etc.).
+- Los ingredientes proporcionados deben aparecer en la lista de ingredientes de las recetas dadas
+- El meal prep y sus steps deben ser lógicos combinando TODOS los ingredientes dados
+- Las instrucciones deben ir como texto plano, sin '\n' ni saltos de línea.
+- Solo usar números decimales en "quantity", sin texto.
+- Usar correctamente acentos y la letra ñ.
+- No incluir ningún texto adicional ni explicación.
+- Devuelve solo el array JSON sin ```json ni explicaciones ni texto adicional.

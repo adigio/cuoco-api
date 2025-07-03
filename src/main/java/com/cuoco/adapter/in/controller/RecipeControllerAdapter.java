@@ -3,17 +3,30 @@ package com.cuoco.adapter.in.controller;
 import com.cuoco.adapter.in.controller.model.IngredientRequest;
 import com.cuoco.adapter.in.controller.model.IngredientResponse;
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
+import com.cuoco.adapter.in.controller.model.QuickRecipeRequest;
+import com.cuoco.adapter.in.controller.model.RecipeConfiguration;
 import com.cuoco.adapter.in.controller.model.RecipeFilterRequest;
 import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
-import com.cuoco.adapter.in.controller.model.UnitResponse;
+import com.cuoco.adapter.in.controller.model.StepResponse;
+import com.cuoco.adapter.in.utils.Utils;
+import com.cuoco.application.port.in.FindOrCreateRecipeCommand;
+import com.cuoco.application.port.in.GetRecipeByIdQuery;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
-import com.cuoco.application.usecase.model.CookLevel;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.RecipeFilter;
+import com.cuoco.shared.GlobalExceptionHandler;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,18 +37,91 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/recipes")
+@Tag(name = "Recipes", description = "Obtains recipes from ingredients, filters and configuration")
 public class RecipeControllerAdapter {
 
     private final GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand;
+    private final GetRecipeByIdQuery getRecipeByIdQuery;
+    private final FindOrCreateRecipeCommand findOrCreateRecipeCommand;
 
-    public RecipeControllerAdapter(GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand) {
+    public RecipeControllerAdapter(
+            GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand,
+            GetRecipeByIdQuery getRecipeByIdQuery,
+            FindOrCreateRecipeCommand findOrCreateRecipeCommand
+    ) {
         this.getRecipesFromIngredientsCommand = getRecipesFromIngredientsCommand;
+        this.getRecipeByIdQuery = getRecipeByIdQuery;
+        this.findOrCreateRecipeCommand = findOrCreateRecipeCommand;
+    }
+
+    @GetMapping("/{id}")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Return the specific recipe with the provided ID",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = RecipeResponse.class))
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Recipe not found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Service unavailable",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            )
+    })
+    public ResponseEntity<RecipeResponse> getRecipe(@PathVariable(name = "id") Long recipeId) {
+        log.info("Executing GET for find recipe with ID {}", recipeId);
+
+        Recipe recipe = getRecipeByIdQuery.execute(recipeId);
+
+        RecipeResponse recipeResponse = buildResponse(recipe);
+
+        log.info("Successfully obtained recipe with ID {}", recipeResponse.getId());
+        return ResponseEntity.ok(recipeResponse);
     }
 
     @PostMapping()
-    public ResponseEntity<List<RecipeResponse>> generate(@RequestBody RecipeRequest recipeRequest) {
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Return a list of recipes with the provided ingredients and filters",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = RecipeResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Recipe not found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Service unavailable",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            )
+    })
+    public ResponseEntity<List<RecipeResponse>> generate(@RequestBody @Valid RecipeRequest recipeRequest) {
 
-        log.info("Executing GET recipes from ingredients with body {}", recipeRequest);
+        log.info("Executing POST for get or creation of recipes by ingredients with body {}", recipeRequest);
 
         List<Recipe> recipes = getRecipesFromIngredientsCommand.execute(buildGenerateRecipeCommand(recipeRequest));
 
@@ -45,32 +131,53 @@ public class RecipeControllerAdapter {
         return ResponseEntity.ok(recipesResponse);
     }
 
+    @GetMapping("/quick")
+    public ResponseEntity<RecipeResponse> quickRecipe(@Valid @RequestBody QuickRecipeRequest request) {
+        log.info("Executing find or generate recipe with name: {}", request.getName());
+
+        Recipe recipe = findOrCreateRecipeCommand.execute(buildQuickRecipeCommand(request));
+
+        RecipeResponse response = buildResponse(recipe);
+
+        log.info("Successfully found or generated recipe: {}", recipe.getName());
+        return ResponseEntity.ok(response);
+    }
+
     private GetRecipesFromIngredientsCommand.Command buildGenerateRecipeCommand(RecipeRequest recipeRequest) {
+
+        boolean filtersEnabled = true;
+
+        if(recipeRequest.getFilters() == null) {
+            filtersEnabled = false;
+            recipeRequest.setFilters(new RecipeFilterRequest());
+        }
+
+        if(recipeRequest.getConfiguration() == null) recipeRequest.setConfiguration(new RecipeConfiguration());
+
         return GetRecipesFromIngredientsCommand.Command.builder()
-                .filters(recipeRequest.getFilters() != null ? buildFilter(recipeRequest.getFilters()) : null)
+                .filtersEnabled(filtersEnabled)
                 .ingredients(recipeRequest.getIngredients().stream().map(this::buildIngredient).toList())
+                .preparationTimeId(recipeRequest.getFilters().getPreparationTimeId())
+                .servings(recipeRequest.getFilters().getServings())
+                .cookLevelId(recipeRequest.getFilters().getCookLevelId())
+                .dietId(recipeRequest.getFilters().getDietId())
+                .typeIds(recipeRequest.getFilters().getTypeIds())
+                .allergiesIds(recipeRequest.getFilters().getAllergiesIds())
+                .dietaryNeedsIds(recipeRequest.getFilters().getDietaryNeedsIds())
+                .size(recipeRequest.getConfiguration().getSize())
+                .notInclude(recipeRequest.getConfiguration().getNotInclude())
                 .build();
     }
 
-    private RecipeFilter buildFilter(RecipeFilterRequest filter) {
-        return RecipeFilter.builder()
-                .time(filter.getTime())
-                .difficulty(
-                        CookLevel.builder()
-                                .description(filter.getDifficulty())
-                                .build()
-                )
-                .types(filter.getTypes())
-                .diet(filter.getDiet())
-                .quantity(filter.getQuantity())
+    private FindOrCreateRecipeCommand.Command buildQuickRecipeCommand(QuickRecipeRequest request) {
+        return FindOrCreateRecipeCommand.Command.builder()
+                .recipeName(request.getName())
                 .build();
     }
 
     private Ingredient buildIngredient(IngredientRequest ingredientRequest) {
         return Ingredient.builder()
                 .name(ingredientRequest.getName())
-                .source(ingredientRequest.getSource())
-                .confirmed(ingredientRequest.isConfirmed())
                 .build();
     }
 
@@ -78,33 +185,17 @@ public class RecipeControllerAdapter {
         return RecipeResponse.builder()
                 .id(recipe.getId())
                 .name(recipe.getName())
-                .image(recipe.getImage())
                 .subtitle(recipe.getSubtitle())
                 .description(recipe.getDescription())
-                .preparationTime(recipe.getPreparationTime())
-                .instructions(recipe.getInstructions())
-                .ingredients(
-                        recipe.getIngredients().stream().map(this::buildIngredientResponse).toList()
-                )
-                .cookLevel(
-                        ParametricResponse.builder()
-                                .id(recipe.getCookLevel().getId())
-                                .description(recipe.getCookLevel().getDescription())
-                                .build()
-                )
-                .build();
-    }
-
-    private IngredientResponse buildIngredientResponse(Ingredient ingredient) {
-        return IngredientResponse.builder()
-                .name(ingredient.getName())
-                .quantity(ingredient.getQuantity())
-                .unit(UnitResponse.builder()
-                        .id(ingredient.getUnit().getId())
-                        .description(ingredient.getUnit().getDescription())
-                        .symbol(ingredient.getUnit().getSymbol())
-                        .build()
-                )
+                .steps(recipe.getSteps().stream().map(StepResponse::fromDomain).toList())
+                .image(recipe.getImage())
+                .preparationTime(ParametricResponse.fromDomain(recipe.getPreparationTime()))
+                .cookLevel(ParametricResponse.fromDomain(recipe.getCookLevel()))
+                .diet(Utils.mapNull(recipe.getDiet()))
+                .mealTypes(recipe.getMealTypes().stream().map(ParametricResponse::fromDomain).toList())
+                .allergies(Utils.mapNullOrEmpty(recipe.getAllergies()))
+                .dietaryNeeds(Utils.mapNullOrEmpty(recipe.getDietaryNeeds()))
+                .ingredients(recipe.getIngredients().stream().map(IngredientResponse::fromDomain).toList())
                 .build();
     }
 }

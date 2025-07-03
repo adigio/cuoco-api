@@ -1,0 +1,8 @@
+Para generar las imágenes de recetas con las instrucciones antes dadas, utilizar las siguientes condiciones de estilo:
+(Si el valor no esta o es null, ignorar la condicion)
+
+- Nivel de dificultad visual: {{COOK_LEVEL}} (simple=ingredientes básicos, intermedio=presentación cuidada, avanzado=presentación gourmet)
+- Tipos de comida: {{FOOD_TYPES}} (adaptar el estilo visual según el tipo de cocina)
+- Dieta: {{DIET}} (mostrar ingredientes apropiados para la dieta específica)
+- Porciones: {{QUANTITY}} (ajustar la cantidad visual de comida en el plato)
+- Tiempo de cocción: {{COOK_TIME}} (reflejar el nivel de cocción apropiado) 

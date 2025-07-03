@@ -22,7 +22,7 @@ public class IngredientResponseGeminiModel {
 
     private String name;
     private Double quantity;
-    private String unit;
+    private Unit unit;
     private Boolean optional;
 
     public Ingredient toDomain() {
@@ -30,7 +30,9 @@ public class IngredientResponseGeminiModel {
                 .name(name)
                 .quantity(quantity)
                 .unit(Unit.builder()
-                        .symbol(unit)
+                        .id(unit.getId())
+                        .description(unit.getDescription())
+                        .symbol(unit.getSymbol())
                         .build()
                 )
                 .optional(optional)

@@ -52,18 +52,11 @@ public class AllergyControllerAdapter {
             )
     })
     public ResponseEntity<List<ParametricResponse>> getAll() {
-        log.info("GET all allergies");
+        log.info("Executing GET all allergies");
         List<Allergy> allergies = getAllAllergiesQuery.execute();
-        List<ParametricResponse> response = allergies.stream().map(this::buildParametricResponse).toList();
+        List<ParametricResponse> response = allergies.stream().map(ParametricResponse::fromDomain).toList();
 
         log.info("All allergies are retrieved successfully");
         return ResponseEntity.ok(response);
-    }
-
-    private ParametricResponse buildParametricResponse(Allergy allergy) {
-        return ParametricResponse.builder()
-                .id(allergy.getId())
-                .description(allergy.getDescription())
-                .build();
     }
 }

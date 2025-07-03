@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class DietaryNeed {
+public class DietaryNeed implements Parametric {
     private Integer id;
     private String description;
 }

@@ -52,19 +52,12 @@ public class CookLevelControllerAdapter {
             )
     })
     public ResponseEntity<List<ParametricResponse>> getAll() {
-        log.info("GET all cook levels");
+        log.info("Executing GET all cook levels");
 
         List<CookLevel> cookLevels = getAllCookLevelsQuery.execute();
-        List<ParametricResponse> response = cookLevels.stream().map(this::buildParametricResponse).toList();
+        List<ParametricResponse> response = cookLevels.stream().map(ParametricResponse::fromDomain).toList();
 
         log.info("All cook levels are retrieved successfully");
         return ResponseEntity.ok(response);
-    }
-
-    private ParametricResponse buildParametricResponse(CookLevel cookLevel) {
-        return ParametricResponse.builder()
-                .id(cookLevel.getId())
-                .description(cookLevel.getDescription())
-                .build();
     }
 }

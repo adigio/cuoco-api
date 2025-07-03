@@ -1,18 +1,27 @@
 package com.cuoco.adapter.out.hibernate.utils;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum Constants {
 
+    RESULT_SIZE("RESULT_SIZE"),
     INGREDIENT_NAMES("INGREDIENT_NAMES"),
     INGREDIENT_COUNT("INGREDIENT_COUNT"),
+    PREPARATION_TIME_ID("PREPARATION_TIME_ID"),
     COOK_LEVEL_ID("COOK_LEVEL_ID"),
-    MAX_PREPARATION_TIME("MAX_PREPARATION_TIME"),
-    MAX_RECIPES("MAX_RECIPES");
+    DIET_ID("DIET_ID"),
+    ALLERGY_IDS("ALLERGY_IDS"),
+    ALLERGY_IDS_IS_EMPTY("ALLERGY_IDS_IS_EMPTY"),
+    DIETARY_NEEDS_IDS("DIETARY_NEEDS_IDS"),
+    DIETARY_NEEDS_IDS_IS_EMPTY("DIETARY_NEEDS_IDS_IS_EMPTY"),
+    DIETARY_NEEDS_COUNT("DIETARY_NEEDS_COUNT"),
+    NOT_INCLUDE_IDS("NOT_INCLUDE_IDS"),
+    NOT_INCLUDE_IDS_IS_EMPTY("NOT_INCLUDE_IDS_IS_EMPTY"),
+    MEAL_TYPES_IDS_IS_EMPTY("MEAL_TYPES_IDS_IS_EMPTY"),
+    MEAL_TYPES_IDS("MEAL_TYPES_IDS");
 
     private final String value;
-
-    Constants(String value) { this.value = value; }
-
-    public String getValue() {
-        return value;
-    }
 }

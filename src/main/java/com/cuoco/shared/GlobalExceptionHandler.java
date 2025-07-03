@@ -1,6 +1,7 @@
 package com.cuoco.shared;
 
 
+import com.cuoco.adapter.exception.ConflictException;
 import com.cuoco.adapter.exception.NotAvailableException;
 import com.cuoco.adapter.exception.UnprocessableException;
 import com.cuoco.application.exception.BadRequestException;
@@ -15,8 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -26,10 +26,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
-    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
@@ -48,10 +47,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(com.cuoco.adapter.exception.ForbiddenException.class)
-    public ResponseEntity<ApiErrorResponse> handle(com.cuoco.adapter.exception.ForbiddenException ex) {
-        log.info(HttpStatus.FORBIDDEN.getReasonPhrase());
-        return buildResponseError(HttpStatus.FORBIDDEN, ex);
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ApiErrorResponse> handle(ConflictException ex) {
+        log.warn(HttpStatus.CONFLICT.getReasonPhrase());
+        return buildResponseError(HttpStatus.CONFLICT, ex);
     }
 
     @ExceptionHandler(BadRequestException.class)
@@ -74,6 +73,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<ApiErrorResponse> handle(ForbiddenException ex) {
+        log.info(HttpStatus.FORBIDDEN.getReasonPhrase());
+        return buildResponseError(HttpStatus.FORBIDDEN, ex);
+    }
+
+    @ExceptionHandler(com.cuoco.adapter.exception.ForbiddenException.class)
+    public ResponseEntity<ApiErrorResponse> handle(com.cuoco.adapter.exception.ForbiddenException ex) {
         log.info(HttpStatus.FORBIDDEN.getReasonPhrase());
         return buildResponseError(HttpStatus.FORBIDDEN, ex);
     }

@@ -23,10 +23,16 @@ gemini:
   api:
     url: ${GEMINI_API_URL}
     key: ${GEMINI_API_KEY}
+  image:
+    url: ${GEMINI_IMAGE_URL}
   temperature: ${GEMINI_TEMPERATURE}
 shared:
-  plan:
-    free:
-      max-recipes: ${FREE_MAX_RECIPES}
-    premium:
-      max-recipes: ${PREMIUM_MAX_RECIPES}
+  recipes:
+    size:
+      free: ${FREE_USER_RECIPES_SIZE:3}
+      pro: ${PRO_USER_RECIPES_DEFAULT_SIZE:5}
+    images:
+      base-path: ${RECIPE_IMAGES_BASE_PATH}
+  meal-preps:
+    size: ${MEAL_PREP_DEFAULT_SIZE:1}
+    recipes-size: ${RECIPES_SIZE_PER_MEAL_PREP:3}

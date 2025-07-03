@@ -32,9 +32,20 @@ public class IngredientHibernateModel {
     @JoinColumn(name = "unit_id", referencedColumnName = "id")
     private UnitHibernateModel unit;
 
-    public Ingredient toDomain() {
+    public static IngredientHibernateModel fromDomain(Ingredient ingredient) {
+        return IngredientHibernateModel.builder()
+                .id(ingredient.getId())
+                .name(ingredient.getName())
+                .unit(UnitHibernateModel.fromDomain(ingredient.getUnit()))
+                .build();
+    }
+
+    public Ingredient toDomain(Double quantity, Boolean optional) {
         return Ingredient.builder()
+                .id(id)
                 .name(name)
+                .quantity(quantity)
+                .optional(optional)
                 .unit(unit.toDomain())
                 .build();
     }

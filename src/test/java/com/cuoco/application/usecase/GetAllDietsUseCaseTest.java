@@ -15,12 +15,12 @@ public class GetAllDietsUseCaseTest {
 
     private GetAllDietsRepository getAllDietsRepository;
 
-    private GetAllAllDietsUseCase useCase;
+    private GetAllDietsUseCase useCase;
 
     @BeforeEach
     void setup() {
         getAllDietsRepository = mock(GetAllDietsRepository.class);
-        useCase = new GetAllAllDietsUseCase(getAllDietsRepository);
+        useCase = new GetAllDietsUseCase(getAllDietsRepository);
     }
 
     @Test

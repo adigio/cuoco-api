@@ -1,5 +1,6 @@
 package com.cuoco.adapter.in.controller.model;
 
+import com.cuoco.application.usecase.model.Parametric;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -15,4 +16,11 @@ import lombok.Data;
 public class ParametricResponse {
     private Integer id;
     private String description;
+
+    public static ParametricResponse fromDomain(Parametric domain) {
+        return ParametricResponse.builder()
+                .id(domain.getId())
+                .description(domain.getDescription())
+                .build();
+    }
 }

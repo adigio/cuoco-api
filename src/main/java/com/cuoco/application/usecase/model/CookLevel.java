@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class CookLevel {
+public class CookLevel implements Parametric {
     private Integer id;
     private String description;
 }
