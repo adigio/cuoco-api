@@ -6,12 +6,21 @@ import com.cuoco.adapter.in.controller.model.DayResponse;
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
 import com.cuoco.adapter.in.controller.model.RecipeCalendarRequest;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
+import com.cuoco.adapter.in.controller.model.UnitResponse;
 import com.cuoco.adapter.in.controller.model.UserRecipeCalendarRequest;
 import com.cuoco.application.port.in.CreateUserRecipeCalendarCommand;
 import com.cuoco.application.port.in.GetUserCalendarQuery;
 import com.cuoco.application.usecase.model.Calendar;
 import com.cuoco.application.usecase.model.CalendarRecipe;
 import com.cuoco.application.usecase.model.Recipe;
+import com.cuoco.shared.GlobalExceptionHandler;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,6 +36,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/users/calendar")
+@Tag(name = "User calendar", description = "Manipulates user planning calendar operations")
 public class UserCalendarControllerAdapter {
 
     private final CreateUserRecipeCalendarCommand createUserRecipeCalendarCommand;
@@ -38,6 +48,21 @@ public class UserCalendarControllerAdapter {
     }
 
     @PostMapping()
+    @Operation(summary = "Creates the user calendar")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Return NO CONTENT when the calendar was successfully created for the current user"
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Service unavailable",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            )
+    })
     public ResponseEntity<?> save(@RequestBody @Valid List<UserRecipeCalendarRequest> requests) {
         log.info("Executing POST for user recipe calendar creation");
 
@@ -48,6 +73,25 @@ public class UserCalendarControllerAdapter {
     }
 
     @GetMapping()
+    @Operation(summary = "GET the user calendar")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Return the calendar for the current user",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = CalendarResponse.class))
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Service unavailable",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            )
+    })
     public ResponseEntity<List<CalendarResponse>> get() {
         log.info("Executing GET calendar from authenticated user");
 

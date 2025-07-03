@@ -16,6 +16,7 @@ import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.shared.GlobalExceptionHandler;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,7 +38,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/recipes")
-@Tag(name = "Recipes", description = "Obtains recipes from ingredients, filters and configuration")
+@Tag(name = "Recipes", description = "Obtains recipes with ingredients, filters and configuration")
 public class RecipeControllerAdapter {
 
     private final GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand;
@@ -55,6 +56,7 @@ public class RecipeControllerAdapter {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get some specific recipe")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -92,7 +94,8 @@ public class RecipeControllerAdapter {
         return ResponseEntity.ok(recipeResponse);
     }
 
-    @PostMapping()
+    @PostMapping
+    @Operation(summary = "Find or create a recipe with the provided ingredients, filters and configuration")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -132,6 +135,25 @@ public class RecipeControllerAdapter {
     }
 
     @GetMapping("/quick")
+    @Operation(summary = "Find or create a recipe from a specific provided name")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Return a recipe from the provided name",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = RecipeResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Service unavailable",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            )
+    })
     public ResponseEntity<RecipeResponse> quickRecipe(@Valid @RequestBody QuickRecipeRequest request) {
         log.info("Executing find or generate recipe with name: {}", request.getName());
 

@@ -9,7 +9,14 @@ import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserPreferences;
+import com.cuoco.shared.GlobalExceptionHandler;
 import com.cuoco.shared.utils.JwtUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -22,6 +29,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/users")
+@Tag(name = "User", description = "Manipulate user data")
 public class UserControllerAdapter {
 
     private final UpdateUserProfileCommand updateUserProfileCommand;
@@ -31,6 +39,21 @@ public class UserControllerAdapter {
     }
 
     @PatchMapping()
+    @Operation(summary = "Update the current user")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Return the updated user data"
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Service unavailable",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            )
+    })
     public ResponseEntity<UserResponse> updateProfile(@RequestBody UpdateUserRequest request) {
         log.info("Executing PATCH for user update");
 
