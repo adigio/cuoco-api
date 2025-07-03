@@ -16,12 +16,12 @@ class UserExistsByEmailDatabaseRepositoryAdapterTest {
     @Mock
     private UserExistsByEmailHibernateRepositoryAdapter hibernateRepository;
 
-    private UserExistsByEmailDatabaseRepositoryAdapter adapter;
+    private ExistsUserByEmailDatabaseRepositoryAdapter adapter;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        adapter = new UserExistsByEmailDatabaseRepositoryAdapter(hibernateRepository);
+        adapter = new ExistsUserByEmailDatabaseRepositoryAdapter(hibernateRepository);
     }
 
     @Test

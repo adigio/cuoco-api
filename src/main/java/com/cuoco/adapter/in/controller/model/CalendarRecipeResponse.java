@@ -12,8 +12,9 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SaveCalendarRequest {
-    private int dayId;
-    private Long recipeId;
-    private int mealtypeId;
+public class CalendarRecipeResponse {
+
+    private RecipeResponse recipe;
+    private ParametricResponse mealType;
+
 }

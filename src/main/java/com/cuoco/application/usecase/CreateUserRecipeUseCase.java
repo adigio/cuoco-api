@@ -5,7 +5,7 @@ import com.cuoco.adapter.exception.ConflictException;
 import com.cuoco.application.port.in.CreateUserRecipeCommand;
 import com.cuoco.application.port.out.CreateUserRecipeRepository;
 import com.cuoco.application.port.out.GetRecipeByIdRepository;
-import com.cuoco.application.port.out.UserRecipeExistsByUserIdAndRecipeIdRepository;
+import com.cuoco.application.port.out.ExistsUserRecipeByUserIdAndRecipeIdRepository;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserRecipe;
@@ -19,16 +19,16 @@ import org.springframework.stereotype.Component;
 public class CreateUserRecipeUseCase implements CreateUserRecipeCommand {
 
     private final CreateUserRecipeRepository createUserRecipeRepository;
-    private final UserRecipeExistsByUserIdAndRecipeIdRepository userRecipeExistsByUserIdAndRecipeIdRepository;
+    private final ExistsUserRecipeByUserIdAndRecipeIdRepository existsUserRecipeByUserIdAndRecipeIdRepository;
     private final GetRecipeByIdRepository getRecipeByIdRepository;
 
     public CreateUserRecipeUseCase(
             CreateUserRecipeRepository createUserRecipeRepository,
-            UserRecipeExistsByUserIdAndRecipeIdRepository userRecipeExistsByUserIdAndRecipeIdRepository,
+            ExistsUserRecipeByUserIdAndRecipeIdRepository existsUserRecipeByUserIdAndRecipeIdRepository,
             GetRecipeByIdRepository getRecipeByIdRepository
     ) {
         this.createUserRecipeRepository = createUserRecipeRepository;
-        this.userRecipeExistsByUserIdAndRecipeIdRepository = userRecipeExistsByUserIdAndRecipeIdRepository;
+        this.existsUserRecipeByUserIdAndRecipeIdRepository = existsUserRecipeByUserIdAndRecipeIdRepository;
         this.getRecipeByIdRepository = getRecipeByIdRepository;
     }
 
@@ -42,7 +42,7 @@ public class CreateUserRecipeUseCase implements CreateUserRecipeCommand {
 
         UserRecipe userRecipe = buildUserRecipe(user, recipe);
 
-        if(userRecipeExistsByUserIdAndRecipeIdRepository.execute(userRecipe)){
+        if(existsUserRecipeByUserIdAndRecipeIdRepository.execute(userRecipe)){
             log.info("Recipe already saved by user {} ", userRecipe.getUser().getName());
             throw new ConflictException(ErrorDescription.DUPLICATED.getValue());
         }

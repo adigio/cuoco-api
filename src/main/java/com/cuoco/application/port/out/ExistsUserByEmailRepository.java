@@ -1,5 +1,5 @@
 package com.cuoco.application.port.out;
 
-public interface UserExistsByEmailRepository {
+public interface ExistsUserByEmailRepository {
     Boolean execute(String email);
 }

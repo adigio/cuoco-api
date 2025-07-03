@@ -1,16 +1,16 @@
 package com.cuoco.adapter.out.hibernate;
 
 import com.cuoco.adapter.out.hibernate.repository.UserRecipeExistsByUserIdAndRecipeIdHibernateRepositoryAdapter;
-import com.cuoco.application.port.out.UserRecipeExistsByUserIdAndRecipeIdRepository;
+import com.cuoco.application.port.out.ExistsUserRecipeByUserIdAndRecipeIdRepository;
 import com.cuoco.application.usecase.model.UserRecipe;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class UserRecipeExistsByUserIdAndRecipeIdDatabaseRepositoryAdapter implements UserRecipeExistsByUserIdAndRecipeIdRepository {
+public class ExistsUserRecipeByUserIdAndRecipeIdDatabaseRepositoryAdapter implements ExistsUserRecipeByUserIdAndRecipeIdRepository {
 
     private final UserRecipeExistsByUserIdAndRecipeIdHibernateRepositoryAdapter userRecipeExistsByUserIdAndRecipeIdHibernateRepositoryAdapter;
 
-    public UserRecipeExistsByUserIdAndRecipeIdDatabaseRepositoryAdapter(
+    public ExistsUserRecipeByUserIdAndRecipeIdDatabaseRepositoryAdapter(
             UserRecipeExistsByUserIdAndRecipeIdHibernateRepositoryAdapter userRecipeExistsByUserIdAndRecipeIdHibernateRepositoryAdapter
     ) {
         this.userRecipeExistsByUserIdAndRecipeIdHibernateRepositoryAdapter = userRecipeExistsByUserIdAndRecipeIdHibernateRepositoryAdapter;

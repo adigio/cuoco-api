@@ -66,6 +66,9 @@ public class UserHibernateModel {
     )
     private List<MealPrepHibernateModel> mealPreps;
 
+    @OneToMany(mappedBy = "user")
+    private List<UserCalendarsHibernateModel> calendars;
+
     public User toDomain() {
         return User.builder()
                 .id(id)

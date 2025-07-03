@@ -114,23 +114,3 @@ CREATE TABLE `user_recipes`
     CONSTRAINT `FK_user_recipes_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
     CONSTRAINT `FK_user_recipes_recipe_id` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`)
 );
-
-CREATE TABLE user_recipes_calendar (
-                                       id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                                       recipe_id BIGINT NOT NULL,
-                                       meal_type_id INT NOT NULL,
-                                       user_id BIGINT NOT NULL,
-                                       planned_date DATE NOT NULL,
-
-                                       CONSTRAINT fk_recipe
-                                           FOREIGN KEY (recipe_id) REFERENCES recipes(id)
-                                               ON DELETE CASCADE,
-
-                                       CONSTRAINT fk_mealtype
-                                           FOREIGN KEY (meal_type_id) REFERENCES meal_types(id)
-                                               ON DELETE CASCADE,
-
-                                       CONSTRAINT fk_user
-                                           FOREIGN KEY (user_id) REFERENCES users(id)
-                                               ON DELETE CASCADE
-);

@@ -3,7 +3,7 @@ package com.cuoco.application.usecase;
 import com.cuoco.application.port.in.CreateUserRecipeCommand.Command;
 import com.cuoco.application.port.out.CreateUserRecipeRepository;
 import com.cuoco.application.port.out.GetRecipeByIdRepository;
-import com.cuoco.application.port.out.UserRecipeExistsByUserIdAndRecipeIdRepository;
+import com.cuoco.application.port.out.ExistsUserRecipeByUserIdAndRecipeIdRepository;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserRecipe;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 public class UserRecipeUseCaseTest {
 
     private CreateUserRecipeRepository createUserRecipeRepository;
-    private UserRecipeExistsByUserIdAndRecipeIdRepository userRecipeExistsByUserIdAndRecipeIdRepository;
+    private ExistsUserRecipeByUserIdAndRecipeIdRepository existsUserRecipeByUserIdAndRecipeIdRepository;
     private GetRecipeByIdRepository getRecipeByIdRepository;
 
     private CreateUserRecipeUseCase useCase;
@@ -30,10 +30,10 @@ public class UserRecipeUseCaseTest {
     @BeforeEach
     public void setUp() {
         createUserRecipeRepository = mock(CreateUserRecipeRepository.class);
-        userRecipeExistsByUserIdAndRecipeIdRepository = mock(UserRecipeExistsByUserIdAndRecipeIdRepository.class);
+        existsUserRecipeByUserIdAndRecipeIdRepository = mock(ExistsUserRecipeByUserIdAndRecipeIdRepository.class);
         getRecipeByIdRepository = mock(GetRecipeByIdRepository.class);
 
-        useCase = new CreateUserRecipeUseCase(createUserRecipeRepository, userRecipeExistsByUserIdAndRecipeIdRepository, getRecipeByIdRepository);
+        useCase = new CreateUserRecipeUseCase(createUserRecipeRepository, existsUserRecipeByUserIdAndRecipeIdRepository, getRecipeByIdRepository);
     }
 
     @Test
@@ -46,7 +46,7 @@ public class UserRecipeUseCaseTest {
 
         Recipe recipe = new Recipe(); // rellenar si tiene más campos
         when(getRecipeByIdRepository.execute(recipeId)).thenReturn(recipe);
-        when(userRecipeExistsByUserIdAndRecipeIdRepository.execute(any(UserRecipe.class))).thenReturn(true);
+        when(existsUserRecipeByUserIdAndRecipeIdRepository.execute(any(UserRecipe.class))).thenReturn(true);
 
         // Act
         Boolean result = useCase.execute(command);
@@ -66,7 +66,7 @@ public class UserRecipeUseCaseTest {
 
         Recipe recipe = new Recipe(); // rellenar si tiene más campos
         when(getRecipeByIdRepository.execute(recipeId)).thenReturn(recipe);
-        when(userRecipeExistsByUserIdAndRecipeIdRepository.execute(any(UserRecipe.class))).thenReturn(false);
+        when(existsUserRecipeByUserIdAndRecipeIdRepository.execute(any(UserRecipe.class))).thenReturn(false);
 
         // Act
         Boolean result = useCase.execute(command);
@@ -86,7 +86,7 @@ public class UserRecipeUseCaseTest {
 
         Recipe recipe = new Recipe(); // rellenar si tiene más campos
         when(getRecipeByIdRepository.execute(recipeId)).thenReturn(recipe);
-        when(userRecipeExistsByUserIdAndRecipeIdRepository.execute(any(UserRecipe.class))).thenReturn(false);
+        when(existsUserRecipeByUserIdAndRecipeIdRepository.execute(any(UserRecipe.class))).thenReturn(false);
         doThrow(new RuntimeException("Error")).when(createUserRecipeRepository).execute(any(UserRecipe.class));
 
         // Act
