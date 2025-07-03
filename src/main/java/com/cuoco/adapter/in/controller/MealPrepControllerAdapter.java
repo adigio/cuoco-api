@@ -4,6 +4,7 @@ import com.cuoco.adapter.in.controller.model.IngredientRequest;
 import com.cuoco.adapter.in.controller.model.IngredientResponse;
 import com.cuoco.adapter.in.controller.model.MealPrepRequest;
 import com.cuoco.adapter.in.controller.model.MealPrepResponse;
+import com.cuoco.adapter.in.controller.model.ParametricResponse;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.adapter.in.controller.model.StepResponse;
 import com.cuoco.adapter.in.controller.model.UnitResponse;
@@ -12,6 +13,13 @@ import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.MealPrep;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.Step;
+import com.cuoco.shared.GlobalExceptionHandler;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +43,25 @@ public class MealPrepControllerAdapter {
     }
 
     @PostMapping
+    @Operation(summary = "Create meal preps")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Return all the created meal types",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = MealPrepResponse.class))
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Service unavailable",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            )
+    })
     public ResponseEntity<List<MealPrepResponse>> generate(@RequestBody MealPrepRequest mealPrepRequest){
 
         log.info("Executing GET mealPrep from ingredients with body {}", mealPrepRequest);

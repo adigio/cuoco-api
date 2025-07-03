@@ -85,21 +85,15 @@ public class CreateUserUseCase implements CreateUserCommand {
     }
 
     private Plan getPlan(Integer planId) {
-        Plan plan = getPlanByIdRepository.execute(planId);
-        if(plan == null) throw new BadRequestException(ErrorDescription.PLAN_NOT_EXISTS.getValue());
-        return plan;
+        return getPlanByIdRepository.execute(planId);
     }
 
     private Diet getDiet(Integer dietId) {
-        Diet diet = getDietByIdRepository.execute(dietId);
-        if(diet == null) throw new BadRequestException(ErrorDescription.DIET_NOT_EXISTS.getValue());
-        return diet;
+        return getDietByIdRepository.execute(dietId);
     }
 
     private CookLevel getCookLevel(Integer cookLevelId) {
-        CookLevel cookLevel = getCookLevelByIdRepository.execute(cookLevelId);
-        if(cookLevel == null) throw new BadRequestException(ErrorDescription.COOK_LEVEL_NOT_EXISTS.getValue());
-        return cookLevel;
+        return getCookLevelByIdRepository.execute(cookLevelId);
     }
 
     private List<DietaryNeed> getDietaryNeeds(Command command) {

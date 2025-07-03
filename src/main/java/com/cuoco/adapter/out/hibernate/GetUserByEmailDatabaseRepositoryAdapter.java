@@ -4,8 +4,8 @@ import com.cuoco.adapter.exception.ForbiddenException;
 import com.cuoco.adapter.exception.UnprocessableException;
 import com.cuoco.adapter.out.hibernate.model.UserHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.UserPreferencesHibernateModel;
-import com.cuoco.adapter.out.hibernate.repository.FindUserByEmailHibernateRepositoryAdapter;
-import com.cuoco.adapter.out.hibernate.repository.FindUserPreferencesByIdHibernateRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.GetUserByEmailHibernateRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.GetUserPreferencesByUserIdHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.GetUserByEmailRepository;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.shared.model.ErrorDescription;
@@ -16,25 +16,25 @@ import java.util.Optional;
 @Repository
 public class GetUserByEmailDatabaseRepositoryAdapter implements GetUserByEmailRepository {
 
-    private final FindUserByEmailHibernateRepositoryAdapter findUserByEmailHibernateRepositoryAdapter;
-    private final FindUserPreferencesByIdHibernateRepositoryAdapter findUserPreferencesByIdHibernateRepositoryAdapter;
+    private final GetUserByEmailHibernateRepositoryAdapter getUserByEmailHibernateRepositoryAdapter;
+    private final GetUserPreferencesByUserIdHibernateRepositoryAdapter getUserPreferencesByUserIdHibernateRepositoryAdapter;
 
     public GetUserByEmailDatabaseRepositoryAdapter(
-            FindUserByEmailHibernateRepositoryAdapter findUserByEmailHibernateRepositoryAdapter,
-            FindUserPreferencesByIdHibernateRepositoryAdapter findUserPreferencesByIdHibernateRepositoryAdapter
+            GetUserByEmailHibernateRepositoryAdapter getUserByEmailHibernateRepositoryAdapter,
+            GetUserPreferencesByUserIdHibernateRepositoryAdapter getUserPreferencesByUserIdHibernateRepositoryAdapter
     ) {
-        this.findUserByEmailHibernateRepositoryAdapter = findUserByEmailHibernateRepositoryAdapter;
-        this.findUserPreferencesByIdHibernateRepositoryAdapter = findUserPreferencesByIdHibernateRepositoryAdapter;
+        this.getUserByEmailHibernateRepositoryAdapter = getUserByEmailHibernateRepositoryAdapter;
+        this.getUserPreferencesByUserIdHibernateRepositoryAdapter = getUserPreferencesByUserIdHibernateRepositoryAdapter;
     }
 
     @Override
     public User execute(String email) {
 
-        Optional<UserHibernateModel> userResult = findUserByEmailHibernateRepositoryAdapter.findByEmail(email);
+        Optional<UserHibernateModel> userResult = getUserByEmailHibernateRepositoryAdapter.findByEmail(email);
 
         if (userResult.isPresent()) {
 
-            Optional<UserPreferencesHibernateModel> userPreferencesResult = findUserPreferencesByIdHibernateRepositoryAdapter.findById(userResult.get().getId());
+            Optional<UserPreferencesHibernateModel> userPreferencesResult = getUserPreferencesByUserIdHibernateRepositoryAdapter.getByUserId(userResult.get().getId());
 
             if(userPreferencesResult.isPresent()) {
 

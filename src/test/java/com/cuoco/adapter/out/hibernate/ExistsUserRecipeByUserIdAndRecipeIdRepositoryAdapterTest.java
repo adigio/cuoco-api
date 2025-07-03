@@ -1,6 +1,6 @@
 package com.cuoco.adapter.out.hibernate;
 
-import com.cuoco.adapter.out.hibernate.repository.UserRecipeExistsByUserIdAndRecipeIdHibernateRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.ExistsUserRecipeByUserIdAndRecipeIdHibernateRepositoryAdapter;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserRecipe;
@@ -14,12 +14,12 @@ import static org.mockito.Mockito.when;
 
 public class ExistsUserRecipeByUserIdAndRecipeIdRepositoryAdapterTest {
 
-    private UserRecipeExistsByUserIdAndRecipeIdHibernateRepositoryAdapter existRepo;
+    private ExistsUserRecipeByUserIdAndRecipeIdHibernateRepositoryAdapter existRepo;
     private UserRecipeExistsByUserIdAndRecipeIdRepositoryAdapter adapter;
 
     @BeforeEach
     public void setUp() {
-        existRepo = mock(UserRecipeExistsByUserIdAndRecipeIdHibernateRepositoryAdapter.class);
+        existRepo = mock(ExistsUserRecipeByUserIdAndRecipeIdHibernateRepositoryAdapter.class);
         adapter = new UserRecipeExistsByUserIdAndRecipeIdRepositoryAdapter(existRepo);
     }
 

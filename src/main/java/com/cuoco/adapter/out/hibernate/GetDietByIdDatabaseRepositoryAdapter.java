@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public class GetDietByIdDatabaseRepositoryAdapter implements GetDietByIdRepository {
 
-    private GetDietByIdHibernateRepositoryAdapter getDietByIdHibernateRepositoryAdapter;
+    private final GetDietByIdHibernateRepositoryAdapter getDietByIdHibernateRepositoryAdapter;
 
     public GetDietByIdDatabaseRepositoryAdapter(GetDietByIdHibernateRepositoryAdapter getDietByIdHibernateRepositoryAdapter) {
         this.getDietByIdHibernateRepositoryAdapter = getDietByIdHibernateRepositoryAdapter;

@@ -2,12 +2,20 @@ package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.ImageIngredientsResponse;
 import com.cuoco.adapter.in.controller.model.IngredientResponse;
+import com.cuoco.adapter.in.controller.model.MealPrepResponse;
 import com.cuoco.adapter.in.controller.model.TextRequest;
 import com.cuoco.adapter.in.controller.model.UnitResponse;
 import com.cuoco.application.port.in.GetIngredientsFromAudioCommand;
 import com.cuoco.application.port.in.GetIngredientsFromTextCommand;
 import com.cuoco.application.port.in.GetIngredientsGroupedFromImagesCommand;
 import com.cuoco.application.usecase.model.Ingredient;
+import com.cuoco.shared.GlobalExceptionHandler;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +53,25 @@ public class IngredientControllerAdapter {
     }
 
     @PostMapping("/audio")
+    @Operation(summary = "Obtains all the ingredients by audio")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Return all the founded ingredients in the provided audio",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ImageIngredientsResponse.class))
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Service unavailable",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            )
+    })
     public ResponseEntity<List<IngredientResponse>> analyzeVoice(
             @RequestParam("audio") @NotNull MultipartFile audioFile,
             @RequestParam(value = "language", defaultValue = "es-ES") String language
@@ -59,6 +86,25 @@ public class IngredientControllerAdapter {
     }
 
     @PostMapping("/image")
+    @Operation(summary = "Obtains all the ingredients by image")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Return all the founded ingredients in the provided image",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = ImageIngredientsResponse.class))
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Service unavailable",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            )
+    })
     public ResponseEntity<List<ImageIngredientsResponse>> getIngredients(@RequestParam("image") @NotNull List<MultipartFile> images) {
         log.info("Executing POST for image file processing to get ingredients, with {} images", images.size());
 

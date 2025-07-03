@@ -6,6 +6,7 @@ import com.cuoco.application.port.in.DeleteUserRecipeCommand;
 import com.cuoco.application.port.in.GetAllUserRecipesQuery;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.shared.GlobalExceptionHandler;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -46,6 +47,7 @@ public class UserRecipeControllerAdapter {
     }
 
     @PostMapping("/{id}")
+    @Operation(summary = "Creates new user favorite recipes")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201",
@@ -86,6 +88,7 @@ public class UserRecipeControllerAdapter {
     }
 
     @GetMapping
+    @Operation(summary = "Get all the favorite recipes for the current user")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -128,6 +131,7 @@ public class UserRecipeControllerAdapter {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Deletes one favorite recipe from the current user")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "204",
