@@ -1,15 +1,21 @@
 package com.cuoco.adapter.in.controller;
 
-import com.cuoco.adapter.in.controller.model.UserRecipesResponse;
-import com.cuoco.application.port.in.GetUserRecipeCommand;
-import com.cuoco.application.port.in.SaveUserRecipeCommand;
-import com.cuoco.application.usecase.model.User;
-import com.cuoco.application.usecase.model.UserRecipe;
+import com.cuoco.adapter.in.controller.model.RecipeResponse;
+import com.cuoco.application.port.in.CreateUserRecipeCommand;
+import com.cuoco.application.port.in.DeleteUserRecipeCommand;
+import com.cuoco.application.port.in.GetAllUserRecipesQuery;
+import com.cuoco.application.usecase.model.Recipe;
+import com.cuoco.shared.GlobalExceptionHandler;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,69 +31,139 @@ public class UserRecipeControllerAdapter {
 
     static final Logger log = LoggerFactory.getLogger(UserRecipeControllerAdapter.class);
 
-    private SaveUserRecipeCommand saveUserRecipeCommand;
+    private final CreateUserRecipeCommand createUserRecipeCommand;
+    private final GetAllUserRecipesQuery getAllUserRecipesQuery;
+    private final DeleteUserRecipeCommand deleteUserRecipeCommand;
 
-    private GetUserRecipeCommand getUserRecipeCommand;
-
-    public UserRecipeControllerAdapter(SaveUserRecipeCommand saveUserRecipeCommand, GetUserRecipeCommand getUserRecipeCommand) {
-        this.saveUserRecipeCommand = saveUserRecipeCommand;
-        this.getUserRecipeCommand = getUserRecipeCommand;
+    public UserRecipeControllerAdapter(
+            CreateUserRecipeCommand createUserRecipeCommand,
+            GetAllUserRecipesQuery getAllUserRecipesQuery,
+            DeleteUserRecipeCommand deleteUserRecipeCommand
+    ) {
+        this.createUserRecipeCommand = createUserRecipeCommand;
+        this.getAllUserRecipesQuery = getAllUserRecipesQuery;
+        this.deleteUserRecipeCommand = deleteUserRecipeCommand;
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<?> save(@PathVariable Long id) {
-        try {
-            log.info("Executing save recipe");
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "The recipe was successfully associated to the user"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Recipe not found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "Recipe is already associated to the user",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Service unavailable",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            )
+    })
+    public ResponseEntity<?> save(@PathVariable(name = "id") Long recipeId) {
+        log.info("Executing POST for associate recipe to user");
 
+        createUserRecipeCommand.execute(buildCreateCommand(recipeId));
 
-            Boolean saved = saveUserRecipeCommand.execute(buildRequestToCommand(id));
-
-            if(!saved){
-                log.info("Error to save a recipe");
-                throw new Exception();
-            }
-
-            log.info("Recipe is a favourite");
-            return ResponseEntity.ok(saved);
-
-
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error trying to save the recipe: " + e.getMessage());
-        }
+        log.info("Successfully associated recipe to user");
+        return ResponseEntity.status(HttpStatus.CREATED.value()).build();
     }
 
     @GetMapping
-    public ResponseEntity<?> getFavourites() {
-        List<UserRecipe> recipes = getUserRecipeCommand.execute();
-        List<UserRecipesResponse> response = recipes.stream().map(this::buildResponseFromRecipes).toList();
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Retrieve all the recipes associated to the authenticated user"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Recipe not found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "Recipe is already associated to the user",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Service unavailable",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            )
+    })
+    public ResponseEntity<List<RecipeResponse>> getAll() {
+        log.info("Executing GET for get all user recipes");
+
+        List<Recipe> recipes = getAllUserRecipesQuery.execute();
+
+        List<RecipeResponse> response = recipes.stream().map(this::buildRecipeResponse).toList();
+
+        log.info("Successfully retrieved all user recipes");
         return ResponseEntity.ok(response);
     }
 
-    private UserRecipesResponse buildResponseFromRecipes(UserRecipe userRecipe) {
-        return UserRecipesResponse.builder()
-                .id(userRecipe.getId())
-                .user(userRecipe.getUser())
-                .recipe(userRecipe.getRecipe())
-                .favorite(userRecipe.isFavorite())
-                .build();
+    @DeleteMapping("/{id}")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "The recipe was successfully deleted from the user. If the recipe doesn't exists, it doesn't make any changes."
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Service unavailable",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            )
+    })
+    public ResponseEntity<?> delete(@PathVariable(name = "id") Long recipeId) {
+        log.info("Executing DELETE for remove recipe to user");
+
+        deleteUserRecipeCommand.execute(buildDeleteCommand(recipeId));
+        return ResponseEntity.noContent().build();
     }
 
+    private CreateUserRecipeCommand.Command buildCreateCommand(Long recipeId) {
+        return CreateUserRecipeCommand.Command.builder().recipeId(recipeId).build();
+    }
 
-    private SaveUserRecipeCommand.Command buildRequestToCommand(Long id) throws Exception {
+    private DeleteUserRecipeCommand.Command buildDeleteCommand(Long recipeId) {
+        return DeleteUserRecipeCommand.Command.builder().recipeId(recipeId).build();
+    }
 
-        User user=null;
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(principal instanceof User){
-            user = (User) principal;
-            log.info("User: {}", user.getName());
-        }
-
-        if(user==null) {
-            throw new Exception("User not found. Please log in to save a recipe.");
-        }
-        return new SaveUserRecipeCommand.Command(
-                user,
-                id
-        );
+    private RecipeResponse buildRecipeResponse(Recipe recipe) {
+        return RecipeResponse.builder()
+                .id(recipe.getId())
+                .name(recipe.getName())
+                .subtitle(recipe.getSubtitle())
+                .description(recipe.getDescription())
+                .image(recipe.getImage())
+                .build();
     }
 }

@@ -4,7 +4,7 @@ import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.application.port.in.GenerateRecipeImagesCommand;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.RecipeImage;
+import com.cuoco.application.usecase.model.Step;
 import com.cuoco.factory.domain.RecipeFactory;
 import com.cuoco.factory.domain.RecipeImageFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,7 +48,7 @@ public class RecipeControllerAdapterTest {
     void GIVEN_valid_ingredients_request_WHEN_generate_THEN_return_recipes_response_with_images() throws Exception {
         Recipe recipe = RecipeFactory.create();
         RecipeRequest request = RecipeFactory.getRecipeRequest();
-        List<RecipeImage> generatedImages = List.of(
+        List<Step> generatedImages = List.of(
                 RecipeImageFactory.createMainRecipeImage(),
                 RecipeImageFactory.createStepRecipeImage()
         );

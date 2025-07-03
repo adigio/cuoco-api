@@ -9,17 +9,15 @@ import com.cuoco.adapter.out.hibernate.model.MealTypeHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.PreparationTimeHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.RecipeHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.RecipeIngredientsHibernateModel;
-import com.cuoco.adapter.out.hibernate.model.UnitHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.RecipeStepsHibernateModel;
 import com.cuoco.adapter.out.hibernate.repository.CreateAllRecipesHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.CreateIngredientHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.FindRecipeByNameHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.GetIngredientByNameHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.CreateAllRecipesRepository;
-import com.cuoco.application.usecase.model.Allergy;
-import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.Ingredient;
-import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.Recipe;
+import com.cuoco.application.usecase.model.Step;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Repository;
@@ -77,26 +75,19 @@ public class CreateAllRecipesDatabaseRepositoryAdapter implements CreateAllRecip
                 .subtitle(recipe.getSubtitle())
                 .description(recipe.getDescription())
                 .imageUrl(recipe.getImage())
-                .instructions(recipe.getInstructions())
-                .preparationTime(PreparationTimeHibernateModel.builder()
-                        .id(recipe.getPreparationTime().getId())
-                        .description(recipe.getPreparationTime().getDescription())
-                        .build())
-                .cookLevel(CookLevelHibernateModel.builder()
-                        .id(recipe.getCookLevel().getId())
-                        .description(recipe.getCookLevel().getDescription())
-                        .build()
-                )
-                .diet(recipe.getDiet() != null ?
-                        DietHibernateModel.builder()
-                                .id(recipe.getDiet().getId())
-                                .description(recipe.getDiet().getDescription()).build()
-                        : null
-                )
-                .mealTypes(recipe.getMealTypes().stream().map(this::buildMealTypeHibernateModel).toList())
-                .allergies(recipe.getAllergies().stream().map(this::buildAllergiesHibernateModel).toList())
-                .dietaryNeeds(recipe.getDietaryNeeds().stream().map(this::buildDietaryNeedsHibernateModel).toList())
+                .preparationTime(PreparationTimeHibernateModel.fromDomain(recipe.getPreparationTime()))
+                .cookLevel(CookLevelHibernateModel.fromDomain(recipe.getCookLevel()))
+                .diet(recipe.getDiet() != null ? DietHibernateModel.fromDomain(recipe.getDiet()) : null)
+                .mealTypes(recipe.getMealTypes().stream().map(MealTypeHibernateModel::fromDomain).toList())
+                .allergies(recipe.getAllergies().stream().map(AllergyHibernateModel::fromDomain).toList())
+                .dietaryNeeds(recipe.getDietaryNeeds().stream().map(DietaryNeedHibernateModel::fromDomain).toList())
                 .build();
+
+        List<RecipeStepsHibernateModel> stepsHibernateModel = recipe.getSteps().stream()
+                .map(step -> buildRecipeStepHibernateModel(recipeHibernate, step))
+                .toList();
+
+        recipeHibernate.setSteps(stepsHibernateModel);
 
         List<RecipeIngredientsHibernateModel> recipeIngredientsToSave = recipe.getIngredients().stream()
                 .map(ingredient -> buildRecipeIngredientHibernateModel(recipeHibernate, ingredient))
@@ -107,49 +98,30 @@ public class CreateAllRecipesDatabaseRepositoryAdapter implements CreateAllRecip
         return recipeHibernate;
     }
 
+    private RecipeStepsHibernateModel buildRecipeStepHibernateModel(RecipeHibernateModel savedRecipe, Step step) {
+        return RecipeStepsHibernateModel.builder()
+                .recipe(savedRecipe)
+                .number(step.getNumber())
+                .title(step.getTitle())
+                .description(step.getDescription())
+                .imageName(step.getImageName())
+                .build();
+    }
+
     @NotNull
     private RecipeIngredientsHibernateModel buildRecipeIngredientHibernateModel(RecipeHibernateModel savedRecipe, Ingredient ingredient) {
+
         Optional<IngredientHibernateModel> oSavedIngredient = getIngredientByNameHibernateRepositoryAdapter.findByName(ingredient.getName());
-        IngredientHibernateModel savedIngredient = oSavedIngredient.orElseGet(() -> createIngredientHibernateRepositoryAdapter.save(buildIngredientHibernateModel(ingredient)));
+
+        IngredientHibernateModel savedIngredient = oSavedIngredient.orElseGet(() ->
+                createIngredientHibernateRepositoryAdapter.save(IngredientHibernateModel.fromDomain(ingredient))
+        );
 
         return RecipeIngredientsHibernateModel.builder()
                 .recipe(savedRecipe)
                 .ingredient(savedIngredient)
                 .quantity(ingredient.getQuantity())
                 .optional(ingredient.getOptional())
-                .build();
-    }
-
-    private IngredientHibernateModel buildIngredientHibernateModel(Ingredient ingredient) {
-        return IngredientHibernateModel.builder()
-                .name(ingredient.getName())
-                .unit(UnitHibernateModel.builder()
-                        .id(ingredient.getUnit().getId())
-                        .description(ingredient.getUnit().getDescription())
-                        .symbol(ingredient.getUnit().getSymbol())
-                        .build()
-                )
-                .build();
-    }
-
-    private DietaryNeedHibernateModel buildDietaryNeedsHibernateModel(DietaryNeed dietaryNeed) {
-        return DietaryNeedHibernateModel.builder()
-                .id(dietaryNeed.getId())
-                .description(dietaryNeed.getDescription())
-                .build();
-    }
-
-    private AllergyHibernateModel buildAllergiesHibernateModel(Allergy allergy) {
-        return AllergyHibernateModel.builder()
-                .id(allergy.getId())
-                .description(allergy.getDescription())
-                .build();
-    }
-
-    private MealTypeHibernateModel buildMealTypeHibernateModel(MealType mealType) {
-        return MealTypeHibernateModel.builder()
-                .id(mealType.getId())
-                .description(mealType.getDescription())
                 .build();
     }
 }

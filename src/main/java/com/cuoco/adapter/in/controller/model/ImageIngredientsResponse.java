@@ -14,7 +14,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ImageIngredientsResponse {
+public class    ImageIngredientsResponse {
     private String filename;
     private List<IngredientResponse> ingredients;
 }

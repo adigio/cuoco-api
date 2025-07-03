@@ -2,10 +2,6 @@ package com.cuoco.adapter.out.rest.gemini;
 
 import com.cuoco.adapter.exception.NotAvailableException;
 import com.cuoco.adapter.exception.UnprocessableException;
-import com.cuoco.adapter.out.hibernate.GetAllAllergiesDatabaseRepositoryAdapter;
-import com.cuoco.adapter.out.hibernate.GetAllCookLevelsDatabaseRepositoryAdapter;
-import com.cuoco.adapter.out.hibernate.GetAllDietaryNeedsDatabaseRepositoryAdapter;
-import com.cuoco.adapter.out.hibernate.GetAllDietsDatabaseRepositoryAdapter;
 import com.cuoco.adapter.out.rest.gemini.model.RecipeResponseGeminiModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.ContentGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.GeminiResponseModel;
@@ -14,17 +10,11 @@ import com.cuoco.adapter.out.rest.gemini.model.wrapper.PartGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PromptBodyGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.utils.Constants;
 import com.cuoco.adapter.out.rest.gemini.utils.Utils;
-import com.cuoco.application.port.out.GetAllAllergiesRepository;
-import com.cuoco.application.port.out.GetAllCookLevelsRepository;
-import com.cuoco.application.port.out.GetAllDietaryNeedsRepository;
-import com.cuoco.application.port.out.GetAllDietsRepository;
-import com.cuoco.application.port.out.GetAllergiesByIdRepository;
 import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
+import com.cuoco.application.usecase.model.Filters;
 import com.cuoco.application.usecase.model.Ingredient;
-import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.ParametricData;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.RecipeFilter;
 import com.cuoco.shared.FileReader;
 import com.cuoco.shared.model.ErrorDescription;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -73,15 +63,19 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
         try {
             log.info("Executing recipes generation from Gemini rest adapter with ingredients: {}", recipe.getIngredients());
 
-            String ingredientNames = recipe.getIngredients().stream().map(Ingredient::getName).collect(Collectors.joining(DELIMITER));
+            String ingredients = buildIngredients(recipe.getIngredients());
+            String recipesToNotInclude = buildRecipesToNotInclude(recipe.getConfiguration().getNotInclude());
 
             String basicPrompt = BASIC_PROMPT
-                    .replace(Constants.INGREDIENTS.getValue(), ingredientNames)
+                    .replace(Constants.INGREDIENTS.getValue(), ingredients)
                     .replace(Constants.MAX_RECIPES.getValue(), recipe.getConfiguration().getSize().toString())
-                    .concat(buildParametricPrompt(recipe.getConfiguration().getParametricData()));
+                    .replace(Constants.NOT_INCLUDE.getValue(), recipesToNotInclude);
+
+            String basicWithParametricPrompt = basicPrompt.concat(buildParametricPrompt(recipe.getConfiguration().getParametricData()));
 
             String filtersPrompt = buildFiltersPrompt(recipe.getFilters());
-            String finalPrompt = filtersPrompt == null ? basicPrompt : basicPrompt.concat(filtersPrompt);
+
+            String finalPrompt = filtersPrompt == null ? basicWithParametricPrompt : basicWithParametricPrompt.concat(filtersPrompt);
 
             PromptBodyGeminiRequestModel promptBody = buildPromptBody(finalPrompt);
 
@@ -106,10 +100,18 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
             log.info("Generated {} recipes from Gemini successfully", recipesResponse.size());
 
             return recipesResponse;
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
+            log.error("Failed to convert some properties to JSON. ", e);
+            throw new NotAvailableException(ErrorDescription.NOT_AVAILABLE.getValue());
+        }catch (Exception e) {
             log.error("Error getting recipes from ingredients in Gemini. ", e);
             throw new NotAvailableException(ErrorDescription.NOT_AVAILABLE.getValue());
         }
+    }
+
+    private String buildRecipesToNotInclude(List<Recipe> recipesToNotInclude) throws JsonProcessingException {
+        List<String> notInclude = recipesToNotInclude.stream().map(Recipe::getName).toList();
+        return objectMapper.writeValueAsString(notInclude);
     }
 
     private String buildParametricPrompt(ParametricData parametricData) throws JsonProcessingException {
@@ -123,7 +125,17 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
                 .replace(Constants.PARAMETRIC_DIETARY_NEEDS.getValue(), objectMapper.writeValueAsString(parametricData.getDietaryNeeds()));
     }
 
-    private String buildFiltersPrompt(RecipeFilter filters) {
+    private String buildIngredients(List<Ingredient> ingredients) throws JsonProcessingException {
+        ingredients.forEach(ingredient -> {
+            ingredient.setOptional(null);
+            ingredient.setSource(null);
+            ingredient.setConfirmed(null);
+        });
+
+        return objectMapper.writeValueAsString(ingredients);
+    }
+
+    private String buildFiltersPrompt(Filters filters) {
 
         if(filters.getEnable()) {
 
@@ -150,8 +162,8 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
                 cookLevelId = filters.getCookLevel().getId().toString();
             }
 
-            if(filters.getTypes() != null && !filters.getTypes().isEmpty()) {
-                mealTypesIds = filters.getTypes().stream().map(mt -> mt.getId().toString()).collect(Collectors.joining(DELIMITER));
+            if(filters.getMealTypes() != null && !filters.getMealTypes().isEmpty()) {
+                mealTypesIds = filters.getMealTypes().stream().map(mt -> mt.getId().toString()).collect(Collectors.joining(DELIMITER));
             }
 
             if(filters.getAllergies() != null && !filters.getAllergies().isEmpty()) {

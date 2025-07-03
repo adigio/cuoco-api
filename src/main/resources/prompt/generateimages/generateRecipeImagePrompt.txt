@@ -1,15 +1,28 @@
-Creá una foto realista de '{[RECIPE_NAME}}' con ingredientes: {{MAIN_INGREDIENTS}}.
+Generá una imagen fotorealista del siguiente plato terminado:
 
-Foto casera con celular, iluminación natural, mesa de madera, apariencia auténtica y apetitosa.
+Nombre de la receta: {{RECIPE_NAME}}
+Ingredientes principales (solo como guía para la generación): {{MAIN_INGREDIENTS}}
 
-ESTRICTAMENTE PROHIBIDO: 
-- Texto de cualquier tipo (letras, números, palabras, frases)
-- Carteles, etiquetas, stickers, letreros
-- Instrucciones escritas, recetas impresas
-- Nombres de platos, títulos, descripciones
-- Cualquier escritura visible en la imagen
+CARACTERISTICAS DE LA IMAGEN:
 
-SOLO mostrar: La comida terminada, plato servido, presentación final.
-Colores vibrantes y atractivos, texturas realistas, buena iluminación, presentación colorida.
+- Estilo: comida casera argentina.
+- Imagen tomada con celular.
+- Iluminación natural (ej. luz de ventana).
+- Fondo simple: mesa de madera, ambiente cálido.
+- Presentación final del plato, servida y lista para comer.
+- Apariencia realista, casera, apetecible.
+- Texturas y colores vibrantes, sin filtros artificiales.
 
-Estilo: Comida casera argentina, fotografía limpia de alimentos, IMAGEN 100% SIN TEXTO. 
+INSTRUCCIONES ESTRICTAS – NO mostrar:
+
+- Ingredientes sueltos o en preparación.
+- Texto de cualquier tipo (letras, números, frases).
+- Etiquetas, carteles, stickers o nombres visibles.
+- Recetarios, papel, instrucciones impresas.
+- Utensilios sucios o manos humanas.
+
+DEBE MOSTRARSE:
+
+- Solo la presentación final del plato servido, tal como se ve al terminar de cocinar.
+- Debe parecer una foto realista y casera del plato terminado.
+- La receta debe ser representada fielmente usando el nombre y los ingredientes como guía interna (pero sin mostrarlos sueltos en la imagen).

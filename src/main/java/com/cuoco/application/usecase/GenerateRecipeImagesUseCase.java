@@ -3,7 +3,7 @@ package com.cuoco.application.usecase;
 import com.cuoco.application.port.in.GenerateRecipeImagesCommand;
 import com.cuoco.application.port.out.GetRecipeStepsImagesRepository;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.RecipeImage;
+import com.cuoco.application.usecase.model.Step;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +20,12 @@ public class GenerateRecipeImagesUseCase implements GenerateRecipeImagesCommand 
     }
 
     @Override
-    public List<RecipeImage> execute(Command command) {
+    public List<Step> execute(Command command) {
         Recipe recipe = command.getRecipe();
         log.info("Executing recipe images generation for recipe: {}", recipe.getName());
         
         try {
-            List<RecipeImage> generatedImages = getRecipeStepsImagesRepository.execute(recipe);
+            List<Step> generatedImages = getRecipeStepsImagesRepository.execute(recipe);
             
             if (generatedImages == null) {
                 generatedImages = List.of();

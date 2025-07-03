@@ -22,6 +22,13 @@ public class DietaryNeedHibernateModel {
     private Integer id;
     private String description;
 
+    public static DietaryNeedHibernateModel fromDomain(DietaryNeed dietaryNeed) {
+        return DietaryNeedHibernateModel.builder()
+                .id(dietaryNeed.getId())
+                .description(dietaryNeed.getDescription())
+                .build();
+    }
+
     public DietaryNeed toDomain() {
         return DietaryNeed.builder()
                 .id(id)

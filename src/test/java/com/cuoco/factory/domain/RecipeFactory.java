@@ -3,9 +3,9 @@ package com.cuoco.factory.domain;
 import com.cuoco.adapter.in.controller.model.IngredientRequest;
 import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.application.usecase.model.CookLevel;
+import com.cuoco.application.usecase.model.Filters;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.RecipeFilter;
 import com.cuoco.application.usecase.model.Unit;
 
 import java.util.List;
@@ -49,9 +49,8 @@ public class RecipeFactory {
                                 .unit(Unit.builder().id(1).description("Kilogramo").symbol("kg").build())
                                 .build()
                 ))
-                .filters(RecipeFilter.builder()
+                .filters(Filters.builder()
                         .enable(false)
-                        .maxRecipes(3)
                         .build())
                 .build();
     }
@@ -75,8 +74,6 @@ public class RecipeFactory {
                 .ingredients(recipe.getIngredients().stream().map(ingredient ->
                         IngredientRequest.builder()
                                 .name(ingredient.getName())
-                                .source(ingredient.getSource())
-                                .confirmed(ingredient.isConfirmed())
                                 .build())
                         .toList())
                 .build();
@@ -85,10 +82,8 @@ public class RecipeFactory {
     public static Recipe createWithFilters() {
         Recipe recipe = create();
 
-        RecipeFilter filters = RecipeFilter.builder()
+        Filters filters = Filters.builder()
                 .enable(true)
-                .diet("diet")
-                .types(List.of("desayuno", "cena"))
                 .time("30 min")
                 .quantity(2)
                 .difficulty(CookLevel.builder().id(1).description("bajo").build())

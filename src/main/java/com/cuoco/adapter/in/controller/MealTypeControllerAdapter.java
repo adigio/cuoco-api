@@ -2,7 +2,6 @@ package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
 import com.cuoco.application.port.in.GetAllMealTypesQuery;
-import com.cuoco.application.usecase.model.Diet;
 import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.shared.GlobalExceptionHandler;
 import io.swagger.v3.oas.annotations.Operation;
@@ -55,17 +54,9 @@ public class MealTypeControllerAdapter {
     public ResponseEntity<List<ParametricResponse>> getAll() {
         log.info("Executing GET all meal types");
         List<MealType> mealTypes = getAllMealTypesQuery.execute();
-        List<ParametricResponse> response = mealTypes.stream().map(this::buildParametricResponse).toList();
+        List<ParametricResponse> response = mealTypes.stream().map(ParametricResponse::fromDomain).toList();
 
         log.info("All meal types are retrieved successfully");
         return ResponseEntity.ok(response);
     }
-
-    private ParametricResponse buildParametricResponse(MealType mealTypes) {
-        return ParametricResponse.builder()
-                .id(mealTypes.getId())
-                .description(mealTypes.getDescription())
-                .build();
-    }
-
 }

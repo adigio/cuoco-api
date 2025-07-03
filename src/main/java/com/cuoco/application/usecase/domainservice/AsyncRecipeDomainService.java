@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 public class AsyncRecipeDomainService {
@@ -17,9 +19,12 @@ public class AsyncRecipeDomainService {
     }
 
     @Async
-    public void generateMainImage(Recipe recipe) {
-        log.info("Executing async main image creation for new recipe with ID {}", recipe.getId());
+    public void generateMainImages(List<Recipe> recipes) {
 
-        generateRecipeMainImageRepository.execute(recipe);
+        recipes.forEach(recipe -> {
+            log.info("Executing async main image creation for new recipe with ID {}", recipe.getId());
+
+            generateRecipeMainImageRepository.execute(recipe);
+        });
     }
 }

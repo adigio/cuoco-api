@@ -16,7 +16,7 @@ public class Recipe {
     private String name;
     private String subtitle;
     private String description;
-    private String instructions;
+    private List<Step> steps;
     private String image;
     private PreparationTime preparationTime;
     private CookLevel cookLevel;
@@ -26,8 +26,8 @@ public class Recipe {
     private List<DietaryNeed> dietaryNeeds;
     private List<Ingredient> ingredients;
 
-    private List<RecipeImage> images;
+    private List<Step> images;
 
-    private RecipeFilter filters;
+    private Filters filters;
     private RecipeConfiguration configuration;
 }

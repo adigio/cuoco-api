@@ -19,7 +19,7 @@ public class RecipeResponse {
     private String name;
     private String subtitle;
     private String description;
-    private String instructions;
+    private List<StepResponse> steps;
     private String image;
     private ParametricResponse preparationTime;
     private ParametricResponse cookLevel;
@@ -28,6 +28,4 @@ public class RecipeResponse {
     private List<ParametricResponse> allergies;
     private List<ParametricResponse> dietaryNeeds;
     private List<IngredientResponse> ingredients;
-
-    private List<RecipeImageResponse> steps;
 }

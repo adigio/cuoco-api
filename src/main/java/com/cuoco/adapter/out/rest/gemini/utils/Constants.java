@@ -4,9 +4,11 @@ public enum Constants {
 
     // Recipe creation placeholders
     INGREDIENTS("INGREDIENTS"),
+    RECIPES("RECIPES"),
     MAX_RECIPES("MAX_RECIPES"),
     MAX_STEP_IMAGES("MAX_STEP_IMAGES"),
     MAX_MEAL_PREPS("MAX_MEAL_PREPS"),
+    NOT_INCLUDE("NOT_INCLUDE"),
 
     // Image creation placeholders
     MAIN_INGREDIENTS("MAIN_INGREDIENTS"),

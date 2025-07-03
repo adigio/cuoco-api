@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
-public class Plan {
+public class Plan implements Parametric {
     private Integer id;
     private String description;
 }

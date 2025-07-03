@@ -54,16 +54,9 @@ public class DietControllerAdapter {
     public ResponseEntity<List<ParametricResponse>> getAll() {
         log.info("Executing GET all diets");
         List<Diet> diets = getAllDietsQuery.execute();
-        List<ParametricResponse> response = diets.stream().map(this::buildParametricResponse).toList();
+        List<ParametricResponse> response = diets.stream().map(ParametricResponse::fromDomain).toList();
 
         log.info("All diets are retrieved successfully");
         return ResponseEntity.ok(response);
-    }
-
-    private ParametricResponse buildParametricResponse(Diet diet) {
-        return ParametricResponse.builder()
-                .id(diet.getId())
-                .description(diet.getDescription())
-                .build();
     }
 }

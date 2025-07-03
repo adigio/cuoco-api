@@ -13,11 +13,11 @@ import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.CookLevel;
 import com.cuoco.application.usecase.model.Diet;
 import com.cuoco.application.usecase.model.DietaryNeed;
+import com.cuoco.application.usecase.model.Filters;
 import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.PreparationTime;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.RecipeConfiguration;
-import com.cuoco.application.usecase.model.RecipeFilter;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.shared.model.ErrorDescription;
 import com.cuoco.shared.utils.PlanConstants;
@@ -32,11 +32,11 @@ import java.util.List;
 @Component
 public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredientsCommand {
 
-    @Value("${shared.recipes.max-recipes.free}")
-    private int FREE_MAX_RECIPES;
+    @Value("${shared.recipes.size.free}")
+    private int FREE_USER_RECIPES_SIZE;
 
-    @Value("${shared.recipes.max-recipes.pro}")
-    private int PRO_MAX_RECIPES;
+    @Value("${shared.recipes.size.pro}")
+    private int PRO_USER_RECIPES_SIZE;
 
     private final RecipeDomainService recipeDomainService;
 
@@ -95,10 +95,10 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
                 .build();
     }
 
-    private RecipeFilter buildFilters(Command command, int userPlan) {
+    private Filters buildFilters(Command command, int userPlan) {
 
         if(userPlan == PlanConstants.FREE.getValue() || !command.getFiltersEnabled()) {
-            return RecipeFilter.builder()
+            return Filters.builder()
                     .enable(false)
                     .build();
         }
@@ -110,12 +110,12 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
         List<DietaryNeed> dietaryNeeds = command.getDietaryNeedsIds() != null ? getDietaryNeedsByIdRepository.execute(command.getDietaryNeedsIds()) : null;
         List<Allergy> allergies = command.getAllergiesIds() != null ? getAllergiesByIdRepository.execute(command.getAllergiesIds()) : null;
 
-        return RecipeFilter.builder()
+        return Filters.builder()
                 .enable(true)
                 .servings(command.getServings())
                 .preparationTime(preparationTime)
                 .cookLevel(cookLevel)
-                .types(types)
+                .mealTypes(types)
                 .diet(diet)
                 .allergies(allergies)
                 .dietaryNeeds(dietaryNeeds)
@@ -124,15 +124,19 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
 
     private RecipeConfiguration buildConfiguration(Command command, int userPlan) {
         if(userPlan == PlanConstants.PRO.getValue()) {
-            int size = command.getSize() != null ? command.getSize() : PRO_MAX_RECIPES;
+            int size = command.getSize() != null ? command.getSize() : PRO_USER_RECIPES_SIZE;
+
+            List<Recipe> notIncludeRecipes = command.getNotInclude() != null
+                    ? command.getNotInclude().stream().map(id -> Recipe.builder().id(id).build()).toList()
+                    : List.of();
 
             return RecipeConfiguration.builder()
                     .size(size)
-                    .notInclude(command.getNotInclude())
+                    .notInclude(notIncludeRecipes)
                     .build();
         } else {
             return RecipeConfiguration.builder()
-                    .size(FREE_MAX_RECIPES)
+                    .size(FREE_USER_RECIPES_SIZE)
                     .build();
         }
     }

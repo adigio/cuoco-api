@@ -1,9 +1,9 @@
 package com.cuoco.application.usecase;
 
-import com.cuoco.application.port.in.SaveUserRecipeCommand.Command;
-import com.cuoco.application.port.out.FavRecipeRepository;
+import com.cuoco.application.port.in.CreateUserRecipeCommand.Command;
+import com.cuoco.application.port.out.CreateUserRecipeRepository;
 import com.cuoco.application.port.out.GetRecipeByIdRepository;
-import com.cuoco.application.port.out.SavedRecipeExistByUsernameRepository;
+import com.cuoco.application.port.out.ExistsUserRecipeByUserIdAndRecipeIdRepository;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserRecipe;
@@ -21,19 +21,19 @@ import static org.mockito.Mockito.when;
 
 public class UserRecipeUseCaseTest {
 
-    private FavRecipeRepository favRecipeRepository;
-    private SavedRecipeExistByUsernameRepository savedRecipeExistByUsernameRepository;
+    private CreateUserRecipeRepository createUserRecipeRepository;
+    private ExistsUserRecipeByUserIdAndRecipeIdRepository existsUserRecipeByUserIdAndRecipeIdRepository;
     private GetRecipeByIdRepository getRecipeByIdRepository;
 
-    private SaveUserRecipeUseCase useCase;
+    private CreateUserRecipeUseCase useCase;
 
     @BeforeEach
     public void setUp() {
-        favRecipeRepository = mock(FavRecipeRepository.class);
-        savedRecipeExistByUsernameRepository = mock(SavedRecipeExistByUsernameRepository.class);
+        createUserRecipeRepository = mock(CreateUserRecipeRepository.class);
+        existsUserRecipeByUserIdAndRecipeIdRepository = mock(ExistsUserRecipeByUserIdAndRecipeIdRepository.class);
         getRecipeByIdRepository = mock(GetRecipeByIdRepository.class);
 
-        useCase = new SaveUserRecipeUseCase(favRecipeRepository, savedRecipeExistByUsernameRepository, getRecipeByIdRepository);
+        useCase = new CreateUserRecipeUseCase(createUserRecipeRepository, existsUserRecipeByUserIdAndRecipeIdRepository, getRecipeByIdRepository);
     }
 
     @Test
@@ -46,14 +46,14 @@ public class UserRecipeUseCaseTest {
 
         Recipe recipe = new Recipe(); // rellenar si tiene más campos
         when(getRecipeByIdRepository.execute(recipeId)).thenReturn(recipe);
-        when(savedRecipeExistByUsernameRepository.execute(any(UserRecipe.class))).thenReturn(true);
+        when(existsUserRecipeByUserIdAndRecipeIdRepository.execute(any(UserRecipe.class))).thenReturn(true);
 
         // Act
         Boolean result = useCase.execute(command);
 
         // Assert
         assertTrue(result);
-        verify(favRecipeRepository, never()).execute(any());
+        verify(createUserRecipeRepository, never()).execute(any());
     }
 
     @Test
@@ -66,14 +66,14 @@ public class UserRecipeUseCaseTest {
 
         Recipe recipe = new Recipe(); // rellenar si tiene más campos
         when(getRecipeByIdRepository.execute(recipeId)).thenReturn(recipe);
-        when(savedRecipeExistByUsernameRepository.execute(any(UserRecipe.class))).thenReturn(false);
+        when(existsUserRecipeByUserIdAndRecipeIdRepository.execute(any(UserRecipe.class))).thenReturn(false);
 
         // Act
         Boolean result = useCase.execute(command);
 
         // Assert
         assertTrue(result);
-        verify(favRecipeRepository).execute(any(UserRecipe.class));
+        verify(createUserRecipeRepository).execute(any(UserRecipe.class));
     }
 
     @Test
@@ -86,8 +86,8 @@ public class UserRecipeUseCaseTest {
 
         Recipe recipe = new Recipe(); // rellenar si tiene más campos
         when(getRecipeByIdRepository.execute(recipeId)).thenReturn(recipe);
-        when(savedRecipeExistByUsernameRepository.execute(any(UserRecipe.class))).thenReturn(false);
-        doThrow(new RuntimeException("Error")).when(favRecipeRepository).execute(any(UserRecipe.class));
+        when(existsUserRecipeByUserIdAndRecipeIdRepository.execute(any(UserRecipe.class))).thenReturn(false);
+        doThrow(new RuntimeException("Error")).when(createUserRecipeRepository).execute(any(UserRecipe.class));
 
         // Act
         Boolean result = useCase.execute(command);

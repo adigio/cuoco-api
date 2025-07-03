@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,6 +54,20 @@ public class UserHibernateModel {
             inverseJoinColumns = @JoinColumn(name = "dietary_need_id")
     )
     private List<DietaryNeedHibernateModel> dietaryNeeds;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserRecipesHibernateModel> recipes;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_meal_preps",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "meal_prep_id")
+    )
+    private List<MealPrepHibernateModel> mealPreps;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserCalendarsHibernateModel> calendars;
 
     public User toDomain() {
         return User.builder()

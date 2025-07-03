@@ -23,6 +23,14 @@ public class UnitHibernateModel {
     private String description;
     private String symbol;
 
+    public static UnitHibernateModel fromDomain(Unit unit) {
+        return UnitHibernateModel.builder()
+                .id(unit.getId())
+                .description(unit.getDescription())
+                .symbol(unit.getSymbol())
+                .build();
+    }
+
     public Unit toDomain() {
         return Unit.builder()
                 .id(id)

@@ -54,16 +54,9 @@ public class PreparationTimeControllerAdapter {
     public ResponseEntity<List<ParametricResponse>> getAllPreparationTimes() {
         log.info("Executing GET all preparation times");
         List<PreparationTime> preparationTimes = getAllPreparationTimesQuery.execute();
-        List<ParametricResponse> response = preparationTimes.stream().map(this::buildParametricResponse).toList();
+        List<ParametricResponse> response = preparationTimes.stream().map(ParametricResponse::fromDomain).toList();
 
         log.info("All preparation times are retrieved successfully");
         return ResponseEntity.ok(response);
-    }
-
-    private ParametricResponse buildParametricResponse(PreparationTime preparationTime) {
-        return ParametricResponse.builder()
-                .id(preparationTime.getId())
-                .description(preparationTime.getDescription())
-                .build();
     }
 }

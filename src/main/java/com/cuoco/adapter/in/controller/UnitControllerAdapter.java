@@ -54,17 +54,9 @@ public class UnitControllerAdapter {
     public ResponseEntity<List<UnitResponse>> getAll() {
         log.info("Executing GET all measure units");
         List<Unit> units = getAllUnitsQuery.execute();
-        List<UnitResponse> response = units.stream().map(this::buildUnitResponse).toList();
+        List<UnitResponse> response = units.stream().map(UnitResponse::fromDomain).toList();
 
         log.info("All units are retrieved successfully");
         return ResponseEntity.ok(response);
-    }
-
-    private UnitResponse buildUnitResponse(Unit unit) {
-        return UnitResponse.builder()
-                .id(unit.getId())
-                .description(unit.getDescription())
-                .symbol(unit.getSymbol())
-                .build();
     }
 }

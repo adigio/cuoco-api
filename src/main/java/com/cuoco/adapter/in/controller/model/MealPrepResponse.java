@@ -16,15 +16,12 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MealPrepResponse {
     private Long id;
-    private String name;
-    private String subtitle;
-    private List<String> recipes;
-    private List<InstructionResponse> instructions;
-    private ParametricResponse preparationTime;
-    private ParametricResponse cookLevel;
-    private ParametricResponse diet;
-    private List<ParametricResponse> mealTypes;
-    private List<ParametricResponse> allergies;
-    private List<ParametricResponse> dietaryNeeds;
+    private String title;
+    private String estimatedCookingTime;
+    private Integer servings;
+    private Boolean freeze;
+    private List<StepResponse> steps;
+    private List<RecipeResponse> recipes;
     private List<IngredientResponse> ingredients;
+
 }

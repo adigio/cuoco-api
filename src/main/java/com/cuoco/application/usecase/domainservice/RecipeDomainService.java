@@ -2,31 +2,26 @@ package com.cuoco.application.usecase.domainservice;
 
 import com.cuoco.application.port.out.CreateAllRecipesRepository;
 import com.cuoco.application.port.out.CreateRecipeImagesRepository;
-import com.cuoco.application.port.out.GetRecipeStepsImagesRepository;
-import com.cuoco.application.port.out.GenerateRecipeMainImageRepository;
 import com.cuoco.application.port.out.GetAllAllergiesRepository;
 import com.cuoco.application.port.out.GetAllCookLevelsRepository;
 import com.cuoco.application.port.out.GetAllDietaryNeedsRepository;
 import com.cuoco.application.port.out.GetAllDietsRepository;
 import com.cuoco.application.port.out.GetAllMealTypesRepository;
 import com.cuoco.application.port.out.GetAllPreparationTimesRepository;
+import com.cuoco.application.port.out.GetAllRecipesByIdsRepository;
 import com.cuoco.application.port.out.GetAllUnitsRepository;
+import com.cuoco.application.port.out.GetRecipeStepsImagesRepository;
 import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
 import com.cuoco.application.usecase.model.ParametricData;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.RecipeImage;
-import com.cuoco.shared.utils.ImageConstants;
+import com.cuoco.application.usecase.model.Step;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
-
-import static com.cuoco.shared.utils.ImageConstants.STEP_TYPE;
 
 @Slf4j
 @Component
@@ -34,6 +29,7 @@ public class RecipeDomainService {
 
     private final GetRecipesFromIngredientsRepository getRecipesFromIngredientsRepository;
     private final GetRecipesFromIngredientsRepository getRecipesFromIngredientsProvider;
+    private final GetAllRecipesByIdsRepository getAllRecipesByIdsRepository;
     private final CreateAllRecipesRepository createAllRecipesRepository;
     private final CreateRecipeImagesRepository createRecipeImagesRepository;
 
@@ -51,9 +47,9 @@ public class RecipeDomainService {
     public RecipeDomainService(
             @Qualifier("repository") GetRecipesFromIngredientsRepository getRecipesFromIngredientsRepository,
             @Qualifier("provider") GetRecipesFromIngredientsRepository getRecipesFromIngredientsProvider,
+            GetAllRecipesByIdsRepository getAllRecipesByIdsRepository,
             CreateAllRecipesRepository createAllRecipesRepository,
             CreateRecipeImagesRepository createRecipeImagesRepository,
-            GenerateRecipeMainImageRepository generateRecipeMainImageRepository,
             GetRecipeStepsImagesRepository getRecipeStepsImagesRepository,
             AsyncRecipeDomainService asyncRecipeDomainService,
             GetAllUnitsRepository getAllUnitsRepository,
@@ -66,10 +62,11 @@ public class RecipeDomainService {
     ) {
         this.getRecipesFromIngredientsRepository = getRecipesFromIngredientsRepository;
         this.getRecipesFromIngredientsProvider = getRecipesFromIngredientsProvider;
+        this.getAllRecipesByIdsRepository = getAllRecipesByIdsRepository;
         this.createAllRecipesRepository = createAllRecipesRepository;
-        this.createRecipeImagesRepository =  createRecipeImagesRepository;
-        this.asyncRecipeDomainService = asyncRecipeDomainService;
+        this.createRecipeImagesRepository = createRecipeImagesRepository;
         this.getRecipeStepsImagesRepository = getRecipeStepsImagesRepository;
+        this.asyncRecipeDomainService = asyncRecipeDomainService;
         this.getAllUnitsRepository = getAllUnitsRepository;
         this.getAllPreparationTimesRepository = getAllPreparationTimesRepository;
         this.getAllCookLevelsRepository = getAllCookLevelsRepository;
@@ -89,7 +86,7 @@ public class RecipeDomainService {
 
             recipeToFind.getConfiguration().setParametricData(buildParametricData());
 
-            return generateRecipes(recipeToFind, targetSize);
+            return generateRecipes(recipeToFind, List.of(), targetSize);
         }
 
         if(foundedRecipes.size() < targetSize) {
@@ -99,7 +96,7 @@ public class RecipeDomainService {
 
             recipeToFind.getConfiguration().setParametricData(buildParametricData());
 
-            List<Recipe> newRecipes = generateRecipes(recipeToFind, remaining);
+            List<Recipe> newRecipes = generateRecipes(recipeToFind, foundedRecipes, remaining);
 
             return Stream.concat(foundedRecipes.stream(), newRecipes.stream())
                     .limit(targetSize)
@@ -110,12 +107,17 @@ public class RecipeDomainService {
         return foundedRecipes.stream().limit(targetSize).toList();
     }
 
-    private List<Recipe> generateRecipes(Recipe recipeParameters, int size) {
+    private List<Recipe> generateRecipes(Recipe recipeParameters, List<Recipe> foundedRecipes, int size) {
+
+        List<Recipe> recipesToNotInclude = buildRecipesToNotInclude(recipeParameters.getConfiguration().getNotInclude(), foundedRecipes);
+
+        recipeParameters.getConfiguration().setNotInclude(recipesToNotInclude);
+
         List<Recipe> recipesToSave = getRecipesFromIngredientsProvider.execute(recipeParameters);
 
         List<Recipe> savedRecipes = createAllRecipesRepository.execute(recipesToSave);
 
-        savedRecipes.forEach(asyncRecipeDomainService::generateMainImage);
+        asyncRecipeDomainService.generateMainImages(savedRecipes);
 
         return savedRecipes.stream().limit(size).toList();
     }
@@ -123,14 +125,12 @@ public class RecipeDomainService {
     public Recipe generateImages(Recipe recipe) {
         log.info("Executing image creation for recipe with ID {}", recipe.getId());
 
-        List<RecipeImage> stepsImagesToCreate = splitInstructionsSteps(recipe.getInstructions());
-        recipe.setImages(stepsImagesToCreate);
+        List<Step> recipeImagesToSave = getRecipeStepsImagesRepository.execute(recipe);
 
-        List<RecipeImage> recipeImagesToSave = getRecipeStepsImagesRepository.execute(recipe);
         recipe.setImages(recipeImagesToSave);
 
         if(!recipe.getImages().isEmpty()) {
-            List<RecipeImage> savedImages = createRecipeImagesRepository.execute(recipe);
+            List<Step> savedImages = createRecipeImagesRepository.execute(recipe);
             recipe.setImages(savedImages);
             log.info("Successfully generated {} images for recipe with ID {}", savedImages.size(), recipe.getId());
         } else {
@@ -140,29 +140,19 @@ public class RecipeDomainService {
         return recipe;
     }
 
-    private List<RecipeImage> splitInstructionsSteps(String instructions) {
-        int maxStepsSize = Integer.parseInt(ImageConstants.MAX_STEPS_SIZE_INT.getValue());
+    private List<Recipe> buildRecipesToNotInclude(List<Recipe> requiredNotInclude, List<Recipe> foundedRecipes) {
+        List<Recipe> recipesToNotInclude = new ArrayList<>(foundedRecipes);
 
-        List<String> stepsInstructions = Pattern.compile(ImageConstants.INSTRUCTIONS_SPLIT_PATTERN.getValue())
-                .splitAsStream(instructions)
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .limit(maxStepsSize)
-                .toList();
+        if (requiredNotInclude != null && !requiredNotInclude.isEmpty()) {
+            List<Long> ids = requiredNotInclude.stream()
+                    .map(Recipe::getId)
+                    .toList();
 
-        AtomicInteger stepCounter = new AtomicInteger(1);
-        return stepsInstructions.stream()
-                .map(stepInstruction -> buildRecipeImage(stepCounter.getAndIncrement(), stepInstruction))
-                .toList();
+            List<Recipe> fetched = getAllRecipesByIdsRepository.execute(ids);
+            recipesToNotInclude.addAll(fetched);
+        }
 
-    }
-
-    private RecipeImage buildRecipeImage(int currentStepNumber, String currentStepInstruction) {
-        return RecipeImage.builder()
-                .imageType(STEP_TYPE.getValue())
-                .stepNumber(currentStepNumber)
-                .stepDescription(currentStepInstruction)
-                .build();
+        return recipesToNotInclude;
     }
 
     private ParametricData buildParametricData() {
