@@ -1,6 +1,6 @@
 package com.cuoco.adapter.out.hibernate;
 
-import com.cuoco.adapter.out.hibernate.repository.UserRecipeExistsByUserIdAndRecipeIdHibernateRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.ExistsUserRecipeByUserIdAndRecipeIdHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.ExistsUserRecipeByUserIdAndRecipeIdRepository;
 import com.cuoco.application.usecase.model.UserRecipe;
 import org.springframework.stereotype.Repository;
@@ -8,17 +8,17 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ExistsUserRecipeByUserIdAndRecipeIdDatabaseRepositoryAdapter implements ExistsUserRecipeByUserIdAndRecipeIdRepository {
 
-    private final UserRecipeExistsByUserIdAndRecipeIdHibernateRepositoryAdapter userRecipeExistsByUserIdAndRecipeIdHibernateRepositoryAdapter;
+    private final ExistsUserRecipeByUserIdAndRecipeIdHibernateRepositoryAdapter existsUserRecipeByUserIdAndRecipeIdHibernateRepositoryAdapter;
 
     public ExistsUserRecipeByUserIdAndRecipeIdDatabaseRepositoryAdapter(
-            UserRecipeExistsByUserIdAndRecipeIdHibernateRepositoryAdapter userRecipeExistsByUserIdAndRecipeIdHibernateRepositoryAdapter
+            ExistsUserRecipeByUserIdAndRecipeIdHibernateRepositoryAdapter existsUserRecipeByUserIdAndRecipeIdHibernateRepositoryAdapter
     ) {
-        this.userRecipeExistsByUserIdAndRecipeIdHibernateRepositoryAdapter = userRecipeExistsByUserIdAndRecipeIdHibernateRepositoryAdapter;
+        this.existsUserRecipeByUserIdAndRecipeIdHibernateRepositoryAdapter = existsUserRecipeByUserIdAndRecipeIdHibernateRepositoryAdapter;
     }
 
     @Override
     public boolean execute(UserRecipe userRecipe) {
-        return userRecipeExistsByUserIdAndRecipeIdHibernateRepositoryAdapter.existsByUserIdAndRecipeId(userRecipe.getUser().getId(), userRecipe.getRecipe().getId());
+        return existsUserRecipeByUserIdAndRecipeIdHibernateRepositoryAdapter.existsByUserIdAndRecipeId(userRecipe.getUser().getId(), userRecipe.getRecipe().getId());
     }
 
 }

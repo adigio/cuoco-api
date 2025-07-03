@@ -7,6 +7,7 @@ import com.cuoco.application.port.out.GetCookLevelByIdRepository;
 import com.cuoco.application.port.out.GetDietByIdRepository;
 import com.cuoco.application.port.out.GetDietaryNeedsByIdRepository;
 import com.cuoco.application.port.out.GetPlanByIdRepository;
+import com.cuoco.application.port.out.GetUserByIdRepository;
 import com.cuoco.application.port.out.UpdateUserRepository;
 import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.CookLevel;
@@ -18,6 +19,7 @@ import com.cuoco.application.usecase.model.UserPreferences;
 import com.cuoco.shared.model.ErrorDescription;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -27,6 +29,7 @@ import java.util.List;
 @Component
 public class UpdateUserProfileUseCase implements UpdateUserProfileCommand {
 
+    private final GetUserByIdRepository getUserByIdRepository;
     private final UpdateUserRepository updateUserRepository;
     private final GetPlanByIdRepository getPlanByIdRepository;
     private final GetDietByIdRepository getDietByIdRepository;
@@ -35,6 +38,7 @@ public class UpdateUserProfileUseCase implements UpdateUserProfileCommand {
     private final GetAllergiesByIdRepository getAllergiesByIdRepository;
 
     public UpdateUserProfileUseCase(
+            GetUserByIdRepository getUserByIdRepository,
             UpdateUserRepository updateUserRepository,
             GetPlanByIdRepository getPlanByIdRepository,
             GetDietByIdRepository getDietByIdRepository,
@@ -42,6 +46,7 @@ public class UpdateUserProfileUseCase implements UpdateUserProfileCommand {
             GetDietaryNeedsByIdRepository getDietaryNeedsByIdRepository,
             GetAllergiesByIdRepository getAllergiesByIdRepository
     ) {
+        this.getUserByIdRepository = getUserByIdRepository;
         this.updateUserRepository = updateUserRepository;
         this.getPlanByIdRepository = getPlanByIdRepository;
         this.getDietByIdRepository = getDietByIdRepository;
@@ -53,106 +58,91 @@ public class UpdateUserProfileUseCase implements UpdateUserProfileCommand {
     @Override
     @Transactional
     public User execute(Command command) {
-        log.info("Executing update user profile use case for email {}", command.getUserEmail());
+        User user = getUser();
+        log.info("Executing update user use case with ID {}", user.getId());
 
-        List<DietaryNeed> dietaryNeeds = getDietaryNeeds(command);
-        List<Allergy> allergies = getAllergies(command);
-        Plan plan = getPlan(command.getPlanId());
-        UserPreferences preferences = buildUserPreferences(command);
+        User existingUser = getUserByIdRepository.execute(user.getId());
 
-        User userToUpdate = buildUser(command, preferences, plan, dietaryNeeds, allergies);
+        User userToUpdate = buildUpdateUser(existingUser, command);
         User updatedUser = updateUserRepository.execute(userToUpdate);
 
-        log.info("User profile updated successfully for email {}", command.getUserEmail());
+        log.info("User with ID {} updated successfully", user.getId());
         return updatedUser;
     }
 
-    private Plan getPlan(Integer planId) {
-        if (planId == null) return null;
-        
-        Plan plan = getPlanByIdRepository.execute(planId);
-        if (plan == null) {
-            throw new BadRequestException(ErrorDescription.PLAN_NOT_EXISTS.getValue());
-        }
-        return plan;
+    private User getUser() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
-    private UserPreferences buildUserPreferences(Command command) {
-        if (command.getCookLevelId() == null && command.getDietId() == null) {
-            return null;
-        }
 
-        CookLevel cookLevel = getCookLevel(command.getCookLevelId());
-        Diet diet = getDiet(command.getDietId());
+    private User buildUpdateUser(User existingUser, Command command) {
 
-        return UserPreferences.builder()
-                .cookLevel(cookLevel)
-                .diet(diet)
+        String updatedName = command.getName() != null ? command.getName() : existingUser.getName();
+        Plan updatedPlan = command.getPlanId() != null ? getPlanByIdRepository.execute(command.getPlanId()) : existingUser.getPlan();
+
+        return User.builder()
+                .id(existingUser.getId())
+                .name(updatedName)
+                .email(existingUser.getEmail())
+                .password(existingUser.getPassword())
+                .plan(updatedPlan)
+                .preferences(buildUserPreferences(existingUser.getPreferences(), command))
+                .dietaryNeeds(getUpdatedDietaryNeeds(command, existingUser.getDietaryNeeds()))
+                .allergies(getUpdatedAllergies(command, existingUser.getAllergies()))
                 .build();
     }
 
-    private CookLevel getCookLevel(Integer cookLevelId) {
-        if (cookLevelId == null) return null;
-        
-        CookLevel cookLevel = getCookLevelByIdRepository.execute(cookLevelId);
-        if (cookLevel == null) {
-            throw new BadRequestException(ErrorDescription.COOK_LEVEL_NOT_EXISTS.getValue());
-        }
-        return cookLevel;
+    private UserPreferences buildUserPreferences(UserPreferences existingUserPreferences, Command command) {
+        Diet updatedDiet = command.getDietId() != null
+                ? getDietByIdRepository.execute(command.getDietId())
+                : existingUserPreferences.getDiet();
+
+        CookLevel updatedCookLevel = command.getCookLevelId() != null
+                ? getCookLevelByIdRepository.execute(command.getCookLevelId())
+                : existingUserPreferences.getCookLevel();
+
+        return UserPreferences.builder()
+                .id(existingUserPreferences.getId())
+                .cookLevel(updatedCookLevel)
+                .diet(updatedDiet)
+                .build();
     }
 
-    private Diet getDiet(Integer dietId) {
-        if (dietId == null) return null;
-        
-        Diet diet = getDietByIdRepository.execute(dietId);
-        if (diet == null) {
-            throw new BadRequestException(ErrorDescription.DIET_NOT_EXISTS.getValue());
-        }
-        return diet;
-    }
+    private List<DietaryNeed> getUpdatedDietaryNeeds(Command command, List<DietaryNeed> existingDietaryNeeds) {
+        List<Integer> ids = command.getDietaryNeeds();
 
-    private List<DietaryNeed> getDietaryNeeds(Command command) {
-        if (command.getDietaryNeeds() == null || command.getDietaryNeeds().isEmpty()) {
+        if (ids == null) {
+            return existingDietaryNeeds;
+        }
+
+        if (ids.isEmpty()) {
             return Collections.emptyList();
         }
 
-        List<DietaryNeed> existingNeeds = getDietaryNeedsByIdRepository.execute(command.getDietaryNeeds());
-        
-        if (existingNeeds.size() != command.getDietaryNeeds().size()) {
+        List<DietaryNeed> existing = getDietaryNeedsByIdRepository.execute(ids);
+        if (existing.size() != ids.size()) {
             throw new BadRequestException(ErrorDescription.DIETARY_NEEDS_NOT_EXISTS.getValue());
         }
 
-        return existingNeeds;
+        return existing;
     }
 
-    private List<Allergy> getAllergies(Command command) {
-        if (command.getAllergies() == null || command.getAllergies().isEmpty()) {
+    private List<Allergy> getUpdatedAllergies(Command command, List<Allergy> existingAllergies) {
+        List<Integer> ids = command.getAllergies();
+
+        if (ids == null) {
+            return existingAllergies;
+        }
+
+        if (ids.isEmpty()) {
             return Collections.emptyList();
         }
 
-        List<Allergy> existingAllergies = getAllergiesByIdRepository.execute(command.getAllergies());
-        
-        if (existingAllergies.size() != command.getAllergies().size()) {
+        List<Allergy> existing = getAllergiesByIdRepository.execute(ids);
+        if (existing.size() != ids.size()) {
             throw new BadRequestException(ErrorDescription.ALLERGIES_NOT_EXISTS.getValue());
         }
 
-        return existingAllergies;
-    }
-
-    private User buildUser(
-            Command command,
-            UserPreferences preferences,
-            Plan plan,
-            List<DietaryNeed> dietaryNeeds,
-            List<Allergy> allergies
-    ) {
-        return User.builder()
-                .email(command.getUserEmail())
-                .name(command.getName())
-                .plan(plan)
-                .preferences(preferences)
-                .dietaryNeeds(dietaryNeeds)
-                .allergies(allergies)
-                .build();
+        return existing;
     }
 }

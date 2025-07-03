@@ -1,6 +1,6 @@
 package com.cuoco.adapter.in.controller;
 
-import com.cuoco.adapter.in.controller.model.UpdateUserProfileRequest;
+import com.cuoco.adapter.in.controller.model.UpdateUserRequest;
 import com.cuoco.application.port.in.UpdateUserProfileCommand;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.factory.domain.UserFactory;
@@ -17,12 +17,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class UserProfileControllerAdapterTest {
+class UserControllerAdapterTest {
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
     private UpdateUserProfileCommand updateUserProfileCommand;
-    private UserProfileControllerAdapter controller;
+    private UserControllerAdapter controller;
     private JwtUtil jwtUtil;
 
     @BeforeEach
@@ -31,7 +31,7 @@ class UserProfileControllerAdapterTest {
         jwtUtil = mock(JwtUtil.class);
         objectMapper = new ObjectMapper();
 
-        controller = new UserProfileControllerAdapter(updateUserProfileCommand, jwtUtil);
+        controller = new UserControllerAdapter(updateUserProfileCommand, jwtUtil);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 
@@ -39,7 +39,7 @@ class UserProfileControllerAdapterTest {
     @Test
     void GIVEN_valid_profile_data_WHEN_updateProfile_THEN_return_updated_user_response() throws Exception {
         // Arrange
-        UpdateUserProfileRequest request = UpdateUserProfileRequest.builder()
+        UpdateUserRequest request = UpdateUserRequest.builder()
                 .name("Juan Pérez")
                 .planId(2)
                 .build();
@@ -61,7 +61,7 @@ class UserProfileControllerAdapterTest {
 
     @Test
     void GIVEN_invalid_profile_data_WHEN_updateProfile_THEN_return_bad_request() throws Exception {
-        UpdateUserProfileRequest request = UpdateUserProfileRequest.builder()
+        UpdateUserRequest request = UpdateUserRequest.builder()
                 .name("")
                 .build();
 

@@ -14,7 +14,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UpdateUserProfileRequest {
+public class UpdateUserRequest {
 
     private String name;
     private Integer planId;
@@ -22,4 +22,5 @@ public class UpdateUserProfileRequest {
     private Integer dietId;
     private List<Integer> dietaryNeeds;
     private List<Integer> allergies;
+
 }

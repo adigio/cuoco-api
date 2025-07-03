@@ -1,6 +1,6 @@
 package com.cuoco.adapter.out.hibernate;
 
-import com.cuoco.adapter.out.hibernate.repository.UserExistsByEmailHibernateRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.ExistsUserByEmailHibernateRepositoryAdapter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 class UserExistsByEmailDatabaseRepositoryAdapterTest {
 
     @Mock
-    private UserExistsByEmailHibernateRepositoryAdapter hibernateRepository;
+    private ExistsUserByEmailHibernateRepositoryAdapter hibernateRepository;
 
     private ExistsUserByEmailDatabaseRepositoryAdapter adapter;
 

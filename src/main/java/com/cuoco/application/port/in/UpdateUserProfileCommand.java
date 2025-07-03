@@ -15,7 +15,6 @@ public interface UpdateUserProfileCommand {
     @Builder
     @AllArgsConstructor
     class Command {
-        private final String userEmail;
         private final String name;
         private final Integer planId;
         private final Integer cookLevelId;

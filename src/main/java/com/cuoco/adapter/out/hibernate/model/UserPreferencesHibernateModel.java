@@ -38,6 +38,7 @@ public class UserPreferencesHibernateModel {
 
     public UserPreferences toDomain() {
         return UserPreferences.builder()
+                .id(id)
                 .cookLevel(cookLevel.toDomain())
                 .diet(diet.toDomain())
                 .build();

@@ -22,6 +22,13 @@ public class PlanHibernateModel {
     private Integer id;
     private String description;
 
+    public static PlanHibernateModel fromDomain(Plan plan) {
+        return PlanHibernateModel.builder()
+                .id(plan.getId())
+                .description(plan.getDescription())
+                .build();
+    }
+
     public Plan toDomain() {
         return Plan.builder()
                 .id(id)
