@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 
-public interface FindOrGenerateRecipeCommand {
+public interface FindOrCreateRecipeCommand {
 
     Recipe execute(Command command);
 

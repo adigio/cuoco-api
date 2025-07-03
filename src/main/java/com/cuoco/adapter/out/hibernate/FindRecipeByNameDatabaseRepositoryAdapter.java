@@ -22,18 +22,17 @@ public class FindRecipeByNameDatabaseRepositoryAdapter implements FindRecipeByNa
     }
 
     @Override
-    public Optional<Recipe> execute(String recipeName) {
-        log.info("Searching for recipe by name: {}", recipeName);
+    public Recipe execute(String recipeName) {
+        log.info("Searching recipe in database by name: {}", recipeName);
 
-        Optional<RecipeHibernateModel> recipeModel = createRecipeHibernateRepositoryAdapter
-                .findByNameIgnoreCase(recipeName.trim());
+        Optional<RecipeHibernateModel> recipeModel = createRecipeHibernateRepositoryAdapter.findByNameIgnoreCase(recipeName.trim());
 
         if (recipeModel.isPresent()) {
             log.info("Recipe found in database: {}", recipeModel.get().getName());
-            return Optional.of(recipeModel.get().toDomain());
+            return recipeModel.get().toDomain();
         }
 
-        log.info("Recipe not found in database: {}", recipeName);
-        return Optional.empty();
+        log.info("Cannot find recipe in database with name: {}", recipeName);
+        return null;
     }
 } 

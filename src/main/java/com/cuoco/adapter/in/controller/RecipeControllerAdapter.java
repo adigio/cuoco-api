@@ -3,24 +3,18 @@ package com.cuoco.adapter.in.controller;
 import com.cuoco.adapter.in.controller.model.IngredientRequest;
 import com.cuoco.adapter.in.controller.model.IngredientResponse;
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
+import com.cuoco.adapter.in.controller.model.QuickRecipeRequest;
 import com.cuoco.adapter.in.controller.model.RecipeConfiguration;
 import com.cuoco.adapter.in.controller.model.RecipeFilterRequest;
 import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.adapter.in.controller.model.StepResponse;
-import com.cuoco.adapter.in.controller.model.UnitResponse;
 import com.cuoco.adapter.in.utils.Utils;
+import com.cuoco.application.port.in.FindOrCreateRecipeCommand;
 import com.cuoco.application.port.in.GetRecipeByIdQuery;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
-import com.cuoco.application.usecase.model.Allergy;
-import com.cuoco.application.usecase.model.CookLevel;
-import com.cuoco.application.usecase.model.Diet;
-import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.Ingredient;
-import com.cuoco.application.usecase.model.MealType;
-import com.cuoco.application.usecase.model.PreparationTime;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.Step;
 import com.cuoco.shared.GlobalExceptionHandler;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,9 +32,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -50,13 +42,16 @@ public class RecipeControllerAdapter {
 
     private final GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand;
     private final GetRecipeByIdQuery getRecipeByIdQuery;
+    private final FindOrCreateRecipeCommand findOrCreateRecipeCommand;
 
     public RecipeControllerAdapter(
             GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand,
-            GetRecipeByIdQuery getRecipeByIdQuery
+            GetRecipeByIdQuery getRecipeByIdQuery,
+            FindOrCreateRecipeCommand findOrCreateRecipeCommand
     ) {
         this.getRecipesFromIngredientsCommand = getRecipesFromIngredientsCommand;
         this.getRecipeByIdQuery = getRecipeByIdQuery;
+        this.findOrCreateRecipeCommand = findOrCreateRecipeCommand;
     }
 
     @GetMapping("/{id}")
@@ -136,6 +131,18 @@ public class RecipeControllerAdapter {
         return ResponseEntity.ok(recipesResponse);
     }
 
+    @GetMapping("/quick")
+    public ResponseEntity<RecipeResponse> quickRecipe(@Valid @RequestBody QuickRecipeRequest request) {
+        log.info("Executing find or generate recipe with name: {}", request.getName());
+
+        Recipe recipe = findOrCreateRecipeCommand.execute(buildQuickRecipeCommand(request));
+
+        RecipeResponse response = buildResponse(recipe);
+
+        log.info("Successfully found or generated recipe: {}", recipe.getName());
+        return ResponseEntity.ok(response);
+    }
+
     private GetRecipesFromIngredientsCommand.Command buildGenerateRecipeCommand(RecipeRequest recipeRequest) {
 
         boolean filtersEnabled = true;
@@ -159,6 +166,12 @@ public class RecipeControllerAdapter {
                 .dietaryNeedsIds(recipeRequest.getFilters().getDietaryNeedsIds())
                 .size(recipeRequest.getConfiguration().getSize())
                 .notInclude(recipeRequest.getConfiguration().getNotInclude())
+                .build();
+    }
+
+    private FindOrCreateRecipeCommand.Command buildQuickRecipeCommand(QuickRecipeRequest request) {
+        return FindOrCreateRecipeCommand.Command.builder()
+                .recipeName(request.getName())
                 .build();
     }
 

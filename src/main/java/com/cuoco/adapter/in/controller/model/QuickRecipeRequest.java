@@ -16,5 +16,5 @@ import lombok.Data;
 public class QuickRecipeRequest {
     
     @NotBlank(message = "Recipe name is required")
-    private String recipeName;
+    private String name;
 } 

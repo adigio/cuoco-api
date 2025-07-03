@@ -140,6 +140,18 @@ public class RecipeDomainService {
         return recipe;
     }
 
+    public ParametricData buildParametricData() {
+        return ParametricData.builder()
+                .units(getAllUnitsRepository.execute())
+                .preparationTimes(getAllPreparationTimesRepository.execute())
+                .cookLevels(getAllCookLevelsRepository.execute())
+                .diets(getAllDietsRepository.execute())
+                .mealTypes(getAllMealTypesRepository.execute())
+                .allergies(getAllAllergiesRepository.execute())
+                .dietaryNeeds(getAllDietaryNeedsRepository.execute())
+                .build();
+    }
+
     private List<Recipe> buildRecipesToNotInclude(List<Recipe> requiredNotInclude, List<Recipe> foundedRecipes) {
         List<Recipe> recipesToNotInclude = new ArrayList<>(foundedRecipes);
 
@@ -153,17 +165,5 @@ public class RecipeDomainService {
         }
 
         return recipesToNotInclude;
-    }
-
-    private ParametricData buildParametricData() {
-        return ParametricData.builder()
-                .units(getAllUnitsRepository.execute())
-                .preparationTimes(getAllPreparationTimesRepository.execute())
-                .cookLevels(getAllCookLevelsRepository.execute())
-                .diets(getAllDietsRepository.execute())
-                .mealTypes(getAllMealTypesRepository.execute())
-                .allergies(getAllAllergiesRepository.execute())
-                .dietaryNeeds(getAllDietaryNeedsRepository.execute())
-                .build();
     }
 }

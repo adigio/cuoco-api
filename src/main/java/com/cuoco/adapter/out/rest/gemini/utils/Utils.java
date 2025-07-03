@@ -4,11 +4,15 @@ import com.cuoco.adapter.exception.UnprocessableException;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.CandidateGeminiResponseModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.ContentGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.GeminiResponseModel;
+import com.cuoco.adapter.out.rest.gemini.model.wrapper.GenerationConfigurationGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.PartGeminiRequestModel;
+import com.cuoco.adapter.out.rest.gemini.model.wrapper.PromptBodyGeminiRequestModel;
 import com.cuoco.shared.model.ErrorDescription;
 import com.cuoco.shared.utils.Constants;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class Utils {
 
@@ -48,6 +52,17 @@ public class Utils {
         }
 
         return recipeResponseText;
+    }
+
+    public static PromptBodyGeminiRequestModel buildPromptBody(String prompt, Double temperature) {
+        return PromptBodyGeminiRequestModel.builder()
+                .contents(List.of(ContentGeminiRequestModel.builder().parts(buildPartsRequest(prompt)).build()))
+                .generationConfig(GenerationConfigurationGeminiRequestModel.builder().temperature(temperature).build())
+                .build();
+    }
+
+    private static List<PartGeminiRequestModel> buildPartsRequest(String prompt) {
+        return List.of(PartGeminiRequestModel.builder().text(prompt).build());
     }
 
 }
