@@ -77,10 +77,13 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
 
             String finalPrompt = filtersPrompt == null ? basicWithParametricPrompt : basicWithParametricPrompt.concat(filtersPrompt);
 
-            PromptBodyGeminiRequestModel promptBody = buildPromptBody(finalPrompt);
-
             String geminiUrl = url + "?key=" + apiKey;
-            GeminiResponseModel response = restTemplate.postForObject(geminiUrl, promptBody, GeminiResponseModel.class);
+
+            GeminiResponseModel response = restTemplate.postForObject(
+                    geminiUrl,
+                    Utils.buildPromptBody(finalPrompt, temperature),
+                    GeminiResponseModel.class
+            );
 
             if(response == null) {
                 throw new UnprocessableException(ErrorDescription.NOT_AVAILABLE.getValue());
@@ -186,14 +189,4 @@ public class GetRecipesFromIngredientsGeminiRestRepositoryAdapter implements Get
         return null;
     }
 
-    private PromptBodyGeminiRequestModel buildPromptBody(String prompt) {
-        return PromptBodyGeminiRequestModel.builder()
-                .contents(List.of(ContentGeminiRequestModel.builder().parts(buildPartsRequest(prompt)).build()))
-                .generationConfig(GenerationConfigurationGeminiRequestModel.builder().temperature(temperature).build())
-                .build();
-    }
-
-    private List<PartGeminiRequestModel> buildPartsRequest(String prompt) {
-        return List.of(PartGeminiRequestModel.builder().text(prompt).build());
-    }
 }

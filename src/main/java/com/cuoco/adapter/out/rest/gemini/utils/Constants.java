@@ -3,6 +3,7 @@ package com.cuoco.adapter.out.rest.gemini.utils;
 public enum Constants {
 
     // Recipe creation placeholders
+    RECIPE_NAME("RECIPE_NAME"),
     INGREDIENTS("INGREDIENTS"),
     RECIPES("RECIPES"),
     MAX_RECIPES("MAX_RECIPES"),
@@ -14,7 +15,6 @@ public enum Constants {
     MAIN_INGREDIENTS("MAIN_INGREDIENTS"),
     STEP_NUMBER("STEP_NUMBER"),
     STEP_INSTRUCTION("STEP_INSTRUCTION"),
-    RECIPE_NAME("RECIPE_NAME"),
 
     // Data for Gemini to create recipes
     PARAMETRIC_UNITS("PARAMETRIC_UNITS"),
