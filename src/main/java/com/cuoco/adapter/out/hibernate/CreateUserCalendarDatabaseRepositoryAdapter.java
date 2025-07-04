@@ -20,11 +20,11 @@ import java.util.List;
 
 @Slf4j
 @Repository
-public class CreateUserCalendarRepositoryAdapter implements CreateUserCalendarRepository {
+public class CreateUserCalendarDatabaseRepositoryAdapter implements CreateUserCalendarRepository {
 
     private final CreateAllUserRecipeCalendarsHibernateRepositoryAdapter createAllUserRecipeCalendarsHibernateRepositoryAdapter;
 
-    public CreateUserCalendarRepositoryAdapter(CreateAllUserRecipeCalendarsHibernateRepositoryAdapter createAllUserRecipeCalendarsHibernateRepositoryAdapter) {
+    public CreateUserCalendarDatabaseRepositoryAdapter(CreateAllUserRecipeCalendarsHibernateRepositoryAdapter createAllUserRecipeCalendarsHibernateRepositoryAdapter) {
         this.createAllUserRecipeCalendarsHibernateRepositoryAdapter = createAllUserRecipeCalendarsHibernateRepositoryAdapter;
     }
 

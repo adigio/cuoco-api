@@ -10,11 +10,11 @@ import org.springframework.stereotype.Repository;
 
 @Slf4j
 @Repository
-public class ExistsUserRecipeCalendarRepositoryAdapter implements ExistsUserRecipeCalendarRepository {
+public class ExistsUserRecipeCalendarDatabaseRepositoryAdapter implements ExistsUserRecipeCalendarRepository {
 
     ExistsUserRecipeCalendarHibernateRepositoryAdapter existsUserRecipeCalendarHibernateRepositoryAdapter;
 
-    public ExistsUserRecipeCalendarRepositoryAdapter(
+    public ExistsUserRecipeCalendarDatabaseRepositoryAdapter(
             ExistsUserRecipeCalendarHibernateRepositoryAdapter existsUserRecipeCalendarHibernateRepositoryAdapter
     ) {
         this.existsUserRecipeCalendarHibernateRepositoryAdapter = existsUserRecipeCalendarHibernateRepositoryAdapter;
