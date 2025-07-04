@@ -64,7 +64,7 @@ public class RecipeControllerAdapter {
                     description = "Return the specific recipe with the provided ID",
                     content = @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = RecipeResponse.class))
+                            schema = @Schema(implementation = RecipeResponse.class)
                     )
             ),
             @ApiResponse(

@@ -3,7 +3,7 @@ package com.cuoco.application.port.in;
 import lombok.Builder;
 import lombok.Data;
 
-public interface DeleteUserRecipeCommand {
+public interface DeleteUserMealPrepCommand {
     void execute(Command command);
 
     @Data

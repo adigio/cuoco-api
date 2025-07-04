@@ -19,11 +19,11 @@ public class DeleteUserRepositoryUseCase implements DeleteUserRecipeCommand {
 
     @Override
     public void execute(Command command) {
-        log.info("Executing delete recipe from user command with recipe id {}", command.getRecipeId());
+        log.info("Executing delete recipe from user with recipe id {}", command.getId());
 
         User user = getUser();
 
-        deleteUserRecipeRepository.execute(user.getId(), command.getRecipeId());
+        deleteUserRecipeRepository.execute(user.getId(), command.getId());
     }
 
     private User getUser() {

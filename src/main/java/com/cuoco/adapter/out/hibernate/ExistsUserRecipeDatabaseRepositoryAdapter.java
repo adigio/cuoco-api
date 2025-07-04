@@ -6,11 +6,11 @@ import com.cuoco.application.usecase.model.UserRecipe;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ExistsUserRecipeByUserIdAndRecipeIdDatabaseRepositoryAdapter implements ExistsUserRecipeByUserIdAndRecipeIdRepository {
+public class ExistsUserRecipeDatabaseRepositoryAdapter implements ExistsUserRecipeByUserIdAndRecipeIdRepository {
 
     private final ExistsUserRecipeByUserIdAndRecipeIdHibernateRepositoryAdapter existsUserRecipeByUserIdAndRecipeIdHibernateRepositoryAdapter;
 
-    public ExistsUserRecipeByUserIdAndRecipeIdDatabaseRepositoryAdapter(
+    public ExistsUserRecipeDatabaseRepositoryAdapter(
             ExistsUserRecipeByUserIdAndRecipeIdHibernateRepositoryAdapter existsUserRecipeByUserIdAndRecipeIdHibernateRepositoryAdapter
     ) {
         this.existsUserRecipeByUserIdAndRecipeIdHibernateRepositoryAdapter = existsUserRecipeByUserIdAndRecipeIdHibernateRepositoryAdapter;
