@@ -2,6 +2,7 @@ package com.cuoco.adapter.out.hibernate;
 
 import com.cuoco.adapter.out.hibernate.model.RecipeHibernateModel;
 import com.cuoco.adapter.out.hibernate.repository.CreateRecipeHibernateRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.FindRecipeByNameHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.FindRecipeByNameRepository;
 import com.cuoco.application.usecase.model.Recipe;
 import lombok.extern.slf4j.Slf4j;
@@ -13,19 +14,17 @@ import java.util.Optional;
 @Repository
 public class FindRecipeByNameDatabaseRepositoryAdapter implements FindRecipeByNameRepository {
 
-    private final CreateRecipeHibernateRepositoryAdapter createRecipeHibernateRepositoryAdapter;
+    private final FindRecipeByNameHibernateRepositoryAdapter findRecipeByNameHibernateRepositoryAdapter;
 
-    public FindRecipeByNameDatabaseRepositoryAdapter(
-            CreateRecipeHibernateRepositoryAdapter createRecipeHibernateRepositoryAdapter
-    ) {
-        this.createRecipeHibernateRepositoryAdapter = createRecipeHibernateRepositoryAdapter;
+    public FindRecipeByNameDatabaseRepositoryAdapter(FindRecipeByNameHibernateRepositoryAdapter findRecipeByNameHibernateRepositoryAdapter) {
+        this.findRecipeByNameHibernateRepositoryAdapter = findRecipeByNameHibernateRepositoryAdapter;
     }
 
     @Override
     public Recipe execute(String recipeName) {
         log.info("Searching recipe in database by name: {}", recipeName);
 
-        Optional<RecipeHibernateModel> recipeModel = createRecipeHibernateRepositoryAdapter.findByNameIgnoreCase(recipeName.trim());
+        Optional<RecipeHibernateModel> recipeModel = findRecipeByNameHibernateRepositoryAdapter.findByNameIgnoreCase(recipeName.trim());
 
         if (recipeModel.isPresent()) {
             log.info("Recipe found in database: {}", recipeModel.get().getName());

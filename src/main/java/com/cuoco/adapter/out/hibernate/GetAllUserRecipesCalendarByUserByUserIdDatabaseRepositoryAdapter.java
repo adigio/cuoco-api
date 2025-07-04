@@ -11,11 +11,11 @@ import java.util.List;
 
 @Slf4j
 @Repository
-public class GetAllUserRecipesCalendarByUserByUserIdRepositoryAdapter implements GetUserCalendarByUserIdRepository {
+public class GetAllUserRecipesCalendarByUserByUserIdDatabaseRepositoryAdapter implements GetUserCalendarByUserIdRepository {
 
     private final GetAllUserCalendarsByUserIdHibernateRepositoryAdapter getAllUserCalendarsByUserIdHibernateRepositoryAdapter;
 
-    public GetAllUserRecipesCalendarByUserByUserIdRepositoryAdapter(
+    public GetAllUserRecipesCalendarByUserByUserIdDatabaseRepositoryAdapter(
             GetAllUserCalendarsByUserIdHibernateRepositoryAdapter getAllUserCalendarsByUserIdHibernateRepositoryAdapter
     ) {
         this.getAllUserCalendarsByUserIdHibernateRepositoryAdapter = getAllUserCalendarsByUserIdHibernateRepositoryAdapter;

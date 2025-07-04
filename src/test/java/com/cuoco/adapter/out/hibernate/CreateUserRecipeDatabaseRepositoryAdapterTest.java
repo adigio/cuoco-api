@@ -13,15 +13,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class CreateUserRecipeRepositoryAdapterTest {
+public class CreateUserRecipeDatabaseRepositoryAdapterTest {
 
     private CreateUserRecipeHibernateRepositoryAdapter saveAdapter;
-    private CreateUserRecipeRepositoryAdapter repository;
+    private CreateUserRecipeDatabaseRepositoryAdapter repository;
 
     @BeforeEach
     public void setUp() {
         saveAdapter = mock(CreateUserRecipeHibernateRepositoryAdapter.class);
-        repository = new CreateUserRecipeRepositoryAdapter(saveAdapter);
+        repository = new CreateUserRecipeDatabaseRepositoryAdapter(saveAdapter);
     }
 
     @Test

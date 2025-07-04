@@ -11,11 +11,11 @@ import org.springframework.stereotype.Repository;
 
 @Slf4j
 @Repository
-public class CreateUserRecipeRepositoryAdapter implements CreateUserRecipeRepository {
+public class CreateUserRecipeDatabaseRepositoryAdapter implements CreateUserRecipeRepository {
 
     private final CreateUserRecipeHibernateRepositoryAdapter createUserRecipeHibernateRepositoryAdapter;
 
-    public CreateUserRecipeRepositoryAdapter(CreateUserRecipeHibernateRepositoryAdapter createUserRecipeHibernateRepositoryAdapter) {
+    public CreateUserRecipeDatabaseRepositoryAdapter(CreateUserRecipeHibernateRepositoryAdapter createUserRecipeHibernateRepositoryAdapter) {
         this.createUserRecipeHibernateRepositoryAdapter = createUserRecipeHibernateRepositoryAdapter;
     }
 

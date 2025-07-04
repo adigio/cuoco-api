@@ -11,6 +11,7 @@ import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.adapter.in.controller.model.StepResponse;
 import com.cuoco.adapter.in.utils.Utils;
 import com.cuoco.application.port.in.FindOrCreateRecipeCommand;
+import com.cuoco.application.port.in.FindRecipesCommand;
 import com.cuoco.application.port.in.GetRecipeByIdQuery;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
 import com.cuoco.application.usecase.model.Ingredient;
@@ -45,15 +46,18 @@ public class RecipeControllerAdapter {
     private final GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand;
     private final GetRecipeByIdQuery getRecipeByIdQuery;
     private final FindOrCreateRecipeCommand findOrCreateRecipeCommand;
+    private final FindRecipesCommand findRecipesCommand;
 
     public RecipeControllerAdapter(
             GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand,
             GetRecipeByIdQuery getRecipeByIdQuery,
-            FindOrCreateRecipeCommand findOrCreateRecipeCommand
+            FindOrCreateRecipeCommand findOrCreateRecipeCommand,
+            FindRecipesCommand findRecipesCommand
     ) {
         this.getRecipesFromIngredientsCommand = getRecipesFromIngredientsCommand;
         this.getRecipeByIdQuery = getRecipeByIdQuery;
         this.findOrCreateRecipeCommand = findOrCreateRecipeCommand;
+        this.findRecipesCommand = findRecipesCommand;
     }
 
     @GetMapping("/{id}")
@@ -166,6 +170,37 @@ public class RecipeControllerAdapter {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/random")
+    @Operation(summary = "Find random recipes with a provided size")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Return a recipe from the provided filter",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = RecipeResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Service unavailable",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            )
+    })
+    public ResponseEntity<List<RecipeResponse>> getRecipes(@RequestParam Integer size) {
+        log.info("Executing find recipes with size: {}", size);
+
+        List<Recipe> recipes = findRecipesCommand.execute(buildFindRecipesCommand(size));
+
+        List<RecipeResponse> recipesResponse = recipes.stream().map(this::buildResponse).toList();
+
+        log.info("Successfully found recipes");
+        return ResponseEntity.ok(recipesResponse);
+    }
+
     private GetRecipesFromIngredientsCommand.Command buildGenerateRecipeCommand(RecipeRequest recipeRequest) {
 
         boolean filtersEnabled = true;
@@ -195,6 +230,13 @@ public class RecipeControllerAdapter {
     private FindOrCreateRecipeCommand.Command buildQuickRecipeCommand(String name) {
         return FindOrCreateRecipeCommand.Command.builder()
                 .recipeName(name)
+                .build();
+    }
+
+    private FindRecipesCommand.Command buildFindRecipesCommand(Integer size) {
+        return FindRecipesCommand.Command.builder()
+                .size(size)
+                .random(true)
                 .build();
     }
 
