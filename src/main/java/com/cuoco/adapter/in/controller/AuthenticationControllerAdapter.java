@@ -14,8 +14,8 @@ import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.AuthenticatedUser;
 import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.User;
-import com.cuoco.application.usecase.model.UserPreferences;
 import com.cuoco.shared.GlobalExceptionHandler;
+import com.cuoco.shared.utils.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -42,16 +42,19 @@ public class AuthenticationControllerAdapter {
     private final SignInUserCommand signInUserCommand;
     private final CreateUserCommand createUserCommand;
     private final EmailService emailService;
+    private final JwtUtil jwtUtil;
 
 
     public AuthenticationControllerAdapter(
             SignInUserCommand signInUserCommand,
             CreateUserCommand createUserCommand,
-            EmailService emailService
+            EmailService emailService,
+            JwtUtil jwtUtil
     ) {
         this.signInUserCommand = signInUserCommand;
         this.createUserCommand = createUserCommand;
         this.emailService = emailService;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/login")
@@ -200,4 +203,9 @@ public class AuthenticationControllerAdapter {
     private List<ParametricResponse> buildAllergies(List<Allergy> allergies) {
         return allergies != null && !allergies.isEmpty() ? allergies.stream().map(ParametricResponse::fromDomain).toList() : null;
     }
+
+    private String generateConfirmationToken(User user) {
+        return jwtUtil.generateToken(user);
+    }
+
 }
