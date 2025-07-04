@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface GetAllUserRecipesHibernateRepositoryAdapter extends JpaRepository<UserRecipesHibernateModel, Long> {
+public interface GetAllUserRecipesByUserIdHibernateRepositoryAdapter extends JpaRepository<UserRecipesHibernateModel, Long> {
     List<UserRecipesHibernateModel> findByUserId(Long userId);
 }

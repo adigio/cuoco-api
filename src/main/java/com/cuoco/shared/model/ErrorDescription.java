@@ -2,7 +2,8 @@ package com.cuoco.shared.model;
 
 public enum ErrorDescription {
 
-    RECIPE_NOT_EXISTS("La receta ingresada no existe"),
+    RECIPE_NOT_EXISTS("El ID de la receta ingresada no existe"),
+    MEAL_PREP_NOT_EXISTS("El ID del meal prep ingresado no existe"),
     ALLERGIES_NOT_EXISTS("Uno o mas valores de allergies no existen"),
     DIETARY_NEEDS_NOT_EXISTS("Uno o mas valores de dietary-needs no existen"),
     PREFERENCES_NOT_EXISTS("Las preferencias ingresadas no existen"),

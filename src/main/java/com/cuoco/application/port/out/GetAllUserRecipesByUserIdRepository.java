@@ -4,6 +4,6 @@ import com.cuoco.application.usecase.model.UserRecipe;
 
 import java.util.List;
 
-public interface GetAllUserRecipesRepository {
+public interface GetAllUserRecipesByUserIdRepository {
     List<UserRecipe> execute(Long userId);
 }

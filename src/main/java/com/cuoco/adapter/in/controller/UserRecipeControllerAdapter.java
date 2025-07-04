@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -25,12 +26,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/users/recipes")
 @Tag(name = "User favourites recipes", description = "Manipulate favourites recipes saved from the user")
 public class UserRecipeControllerAdapter {
-
-    static final Logger log = LoggerFactory.getLogger(UserRecipeControllerAdapter.class);
 
     private final CreateUserRecipeCommand createUserRecipeCommand;
     private final GetAllUserRecipesQuery getAllUserRecipesQuery;
@@ -158,7 +158,7 @@ public class UserRecipeControllerAdapter {
     }
 
     private DeleteUserRecipeCommand.Command buildDeleteCommand(Long recipeId) {
-        return DeleteUserRecipeCommand.Command.builder().recipeId(recipeId).build();
+        return DeleteUserRecipeCommand.Command.builder().id(recipeId).build();
     }
 
     private RecipeResponse buildRecipeResponse(Recipe recipe) {
