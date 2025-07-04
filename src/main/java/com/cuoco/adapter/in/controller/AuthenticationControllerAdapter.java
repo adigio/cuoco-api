@@ -7,6 +7,7 @@ import com.cuoco.adapter.in.controller.model.ParametricResponse;
 import com.cuoco.adapter.in.controller.model.UserPreferencesResponse;
 import com.cuoco.adapter.in.controller.model.UserRequest;
 import com.cuoco.adapter.in.controller.model.UserResponse;
+import com.cuoco.adapter.out.mail.EmailService;
 import com.cuoco.application.port.in.CreateUserCommand;
 import com.cuoco.application.port.in.SignInUserCommand;
 import com.cuoco.application.usecase.model.Allergy;
@@ -40,13 +41,17 @@ public class AuthenticationControllerAdapter {
 
     private final SignInUserCommand signInUserCommand;
     private final CreateUserCommand createUserCommand;
+    private final EmailService emailService;
+
 
     public AuthenticationControllerAdapter(
             SignInUserCommand signInUserCommand,
-            CreateUserCommand createUserCommand
+            CreateUserCommand createUserCommand,
+            EmailService emailService
     ) {
         this.signInUserCommand = signInUserCommand;
         this.createUserCommand = createUserCommand;
+        this.emailService = emailService;
     }
 
     @PostMapping("/login")
@@ -143,6 +148,12 @@ public class AuthenticationControllerAdapter {
         log.info("Executing POST register with email {}", request.getEmail());
 
         User user = createUserCommand.execute(buildCreateCommand(request));
+
+        // Generar link de confirmación (esto debería venir de una configuración)
+        String confirmationLink = "https://tudominio.com/confirm?token=" + generateConfirmationToken(user);
+
+        // Enviar correo de confirmación
+        emailService.sendConfirmationEmail(user.getEmail(), confirmationLink);
 
         UserResponse userResponse = buildUserResponse(user, null);
 

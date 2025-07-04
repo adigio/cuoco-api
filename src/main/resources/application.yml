@@ -39,8 +39,8 @@ shared:
 mail:
   host: smtp.gmail.com
   port: 587
-  username: cuoco.8bits@gmail.com
-  password: tu-app-password
+  username: latribudemicalle1480@gmail.com
+  password: nlzx dnpo hetv dqkv
   properties:
     mail:
       smtp:
