@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -134,7 +135,7 @@ public class RecipeControllerAdapter {
         return ResponseEntity.ok(recipesResponse);
     }
 
-    @GetMapping("/quick")
+    @GetMapping
     @Operation(summary = "Find or create a recipe from a specific provided name")
     @ApiResponses(value = {
             @ApiResponse(
@@ -154,10 +155,10 @@ public class RecipeControllerAdapter {
                     )
             )
     })
-    public ResponseEntity<RecipeResponse> quickRecipe(@Valid @RequestBody QuickRecipeRequest request) {
-        log.info("Executing find or generate recipe with name: {}", request.getName());
+    public ResponseEntity<RecipeResponse> quickRecipe(@RequestParam String name) {
+        log.info("Executing find or generate recipe with name: {}", name);
 
-        Recipe recipe = findOrCreateRecipeCommand.execute(buildQuickRecipeCommand(request));
+        Recipe recipe = findOrCreateRecipeCommand.execute(buildQuickRecipeCommand(name));
 
         RecipeResponse response = buildResponse(recipe);
 
@@ -191,9 +192,9 @@ public class RecipeControllerAdapter {
                 .build();
     }
 
-    private FindOrCreateRecipeCommand.Command buildQuickRecipeCommand(QuickRecipeRequest request) {
+    private FindOrCreateRecipeCommand.Command buildQuickRecipeCommand(String name) {
         return FindOrCreateRecipeCommand.Command.builder()
-                .recipeName(request.getName())
+                .recipeName(name)
                 .build();
     }
 
