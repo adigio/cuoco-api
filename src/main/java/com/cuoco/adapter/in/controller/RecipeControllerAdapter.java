@@ -10,6 +10,7 @@ import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.adapter.in.controller.model.StepResponse;
 import com.cuoco.adapter.in.controller.model.UnitResponse;
 import com.cuoco.adapter.in.utils.Utils;
+import com.cuoco.application.port.in.GetRandomRecipeCommand;
 import com.cuoco.application.port.in.GetRecipeByIdQuery;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
 import com.cuoco.application.usecase.model.Allergy;
@@ -41,6 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -50,13 +52,16 @@ public class RecipeControllerAdapter {
 
     private final GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand;
     private final GetRecipeByIdQuery getRecipeByIdQuery;
+    private final GetRandomRecipeCommand getRandomRecipeCommand;
 
     public RecipeControllerAdapter(
             GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand,
-            GetRecipeByIdQuery getRecipeByIdQuery
+            GetRecipeByIdQuery getRecipeByIdQuery,
+            GetRandomRecipeCommand getRandomRecipeCommand
     ) {
         this.getRecipesFromIngredientsCommand = getRecipesFromIngredientsCommand;
         this.getRecipeByIdQuery = getRecipeByIdQuery;
+        this.getRandomRecipeCommand = getRandomRecipeCommand;
     }
 
     @GetMapping("/{id}")
@@ -134,6 +139,34 @@ public class RecipeControllerAdapter {
 
         log.info("Successfully generated recipes");
         return ResponseEntity.ok(recipesResponse);
+    }
+
+    @GetMapping("/random")
+    public ResponseEntity<List<RecipeResponse>> generateRandomRecipe() {
+        log.info("Executing GET for get random recipe");
+        List<Recipe> recipes = getRandomRecipeCommand.execute();
+        return buildRandomResponse(recipes);
+    }
+
+    private ResponseEntity<List<RecipeResponse>> buildRandomResponse(List<Recipe> recipes) {
+        List<RecipeResponse> responses = recipes.stream()
+                .map(recipe -> RecipeResponse.builder()
+                        .id(recipe.getId())
+                        .name(recipe.getName())
+                        .subtitle(recipe.getSubtitle())
+                        .description(recipe.getDescription())
+                        .steps(recipe.getSteps().stream().map(StepResponse::fromDomain).toList())
+                        .image(recipe.getImage())
+                        .preparationTime(ParametricResponse.fromDomain(recipe.getPreparationTime()))
+                        .cookLevel(ParametricResponse.fromDomain(recipe.getCookLevel()))
+                        .diet(Utils.mapNull(recipe.getDiet()))
+                        .mealTypes(recipe.getMealTypes().stream().map(ParametricResponse::fromDomain).toList())
+                        .allergies(Utils.mapNullOrEmpty(recipe.getAllergies()))
+                        .dietaryNeeds(Utils.mapNullOrEmpty(recipe.getDietaryNeeds()))
+                        .ingredients(recipe.getIngredients().stream().map(IngredientResponse::fromDomain).toList())
+                        .build()
+                ).collect(Collectors.toList());
+        return ResponseEntity.ok(responses);
     }
 
     private GetRecipesFromIngredientsCommand.Command buildGenerateRecipeCommand(RecipeRequest recipeRequest) {
