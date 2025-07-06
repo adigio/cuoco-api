@@ -12,6 +12,7 @@ import com.cuoco.application.port.out.GetMealPrepsFromIngredientsRepository;
 import com.cuoco.application.port.out.GetMealTypeByIdRepository;
 import com.cuoco.application.port.out.GetPreparationTimeByIdRepository;
 import com.cuoco.application.usecase.domainservice.RecipeDomainService;
+import com.cuoco.application.usecase.domainservice.UserDomainService;
 import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.CookLevel;
 import com.cuoco.application.usecase.model.Diet;
@@ -44,6 +45,7 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
     @Value("${shared.meal-preps.recipes-size}")
     private int RECIPES_SIZE_PER_MEAL_PREP;
 
+    private final UserDomainService userDomainService;
     private final RecipeDomainService recipeDomainService;
     private final GetMealPrepsFromIngredientsRepository getMealPrepsFromIngredientsProvider;
     private final CreateAllMealPrepsRepository createAllMealPrepsRepository;
@@ -55,6 +57,7 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
     private final GetDietaryNeedsByIdRepository getDietaryNeedsByIdRepository;
 
     public GetMealPrepsFromIngredientsUseCase(
+            UserDomainService userDomainService,
             RecipeDomainService recipeDomainService,
             @Qualifier("provider") GetMealPrepsFromIngredientsRepository getMealPrepsFromIngredientsProvider,
             CreateAllMealPrepsRepository createAllMealPrepsRepository,
@@ -65,6 +68,7 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
             GetAllergiesByIdRepository getAllergiesByIdRepository,
             GetDietaryNeedsByIdRepository getDietaryNeedsByIdRepository
     ) {
+        this.userDomainService = userDomainService;
         this.recipeDomainService = recipeDomainService;
         this.getMealPrepsFromIngredientsProvider = getMealPrepsFromIngredientsProvider;
         this.createAllMealPrepsRepository = createAllMealPrepsRepository;
@@ -100,10 +104,10 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
     }
 
     private User validateAndGetUser() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userDomainService.getCurrentUser();
 
         if (user.getPlan().getId() != PlanConstants.PRO.getValue()) {
-            log.warn("User plan is not PRO. Access denied.");
+            log.warn("Forbidden: Meal prep feature is only for PRO users.");
             throw new ForbiddenException(ErrorDescription.PRO_FEATURE.getValue());
         }
 

@@ -26,6 +26,9 @@ public class User {
     private List<DietaryNeed> dietaryNeeds;
     private List<Allergy> allergies;
 
+    private List<Recipe> recipes;
+    private List<MealPrep> mealPreps;
+
 }
 
 

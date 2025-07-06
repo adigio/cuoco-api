@@ -5,6 +5,7 @@ import com.cuoco.application.port.in.CreateUserMealPrepCommand;
 import com.cuoco.application.port.out.CreateUserMealPrepRepository;
 import com.cuoco.application.port.out.ExistsUserMealPrepRepository;
 import com.cuoco.application.port.out.GetMealPrepByIdRepository;
+import com.cuoco.application.usecase.domainservice.UserDomainService;
 import com.cuoco.application.usecase.model.MealPrep;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserMealPrep;
@@ -17,15 +18,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class CreateUserMealPrepUseCase implements CreateUserMealPrepCommand {
 
+    private final UserDomainService userDomainService;
     private final CreateUserMealPrepRepository createUserMealPrepRepository;
     private final ExistsUserMealPrepRepository existsUserMealPrepRepository;
     private final GetMealPrepByIdRepository getMealPrepByIdRepository;
 
     public CreateUserMealPrepUseCase(
+            UserDomainService userDomainService,
             CreateUserMealPrepRepository createUserMealPrepRepository,
             ExistsUserMealPrepRepository existsUserMealPrepRepository,
             GetMealPrepByIdRepository getMealPrepByIdRepository
     ) {
+        this.userDomainService = userDomainService;
         this.createUserMealPrepRepository = createUserMealPrepRepository;
         this.existsUserMealPrepRepository = existsUserMealPrepRepository;
         this.getMealPrepByIdRepository = getMealPrepByIdRepository;
@@ -35,7 +39,7 @@ public class CreateUserMealPrepUseCase implements CreateUserMealPrepCommand {
     public void execute(Command command) {
         log.info("Executing create user meal prep use case with command {}", command);
 
-        User user = getUser();
+        User user = userDomainService.getCurrentUser();
 
         MealPrep mealPrep = getMealPrepByIdRepository.execute(command.getId());
 
@@ -48,8 +52,6 @@ public class CreateUserMealPrepUseCase implements CreateUserMealPrepCommand {
 
         createUserMealPrepRepository.execute(userMealPrep);
     }
-
-    private User getUser() { return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); }
 
     private UserMealPrep buildUserMealPrep(User user, MealPrep mealPrep) {
         return UserMealPrep.builder()

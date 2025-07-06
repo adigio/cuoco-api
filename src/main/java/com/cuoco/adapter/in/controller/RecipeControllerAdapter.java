@@ -252,6 +252,7 @@ public class RecipeControllerAdapter {
                 .name(recipe.getName())
                 .subtitle(recipe.getSubtitle())
                 .description(recipe.getDescription())
+                .favorite(recipe.getFavorite())
                 .steps(recipe.getSteps().stream().map(StepResponse::fromDomain).toList())
                 .image(recipe.getImage())
                 .preparationTime(ParametricResponse.fromDomain(recipe.getPreparationTime()))
