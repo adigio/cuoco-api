@@ -69,7 +69,3 @@ mercado pago:
     secondary-color: ${MP_BRAND_SECONDARY_COLOR:#FFA500}
     show-mercado-pago-branding: ${MP_SHOW_BRANDING:false}
 
-logging:
-  level:
-    root: INFO
-.
