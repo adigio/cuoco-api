@@ -2,6 +2,7 @@ package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.IngredientResponse;
 import com.cuoco.adapter.in.controller.model.MealPrepResponse;
+import com.cuoco.adapter.in.controller.model.ParametricResponse;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.adapter.in.controller.model.StepResponse;
 import com.cuoco.application.port.in.CreateUserMealPrepCommand;
@@ -166,6 +167,7 @@ public class UserMealPrepControllerAdapter {
                 .name(recipe.getName())
                 .subtitle(recipe.getSubtitle())
                 .description(recipe.getDescription())
+                .mealTypes(recipe.getMealTypes().stream().map(ParametricResponse::fromDomain).toList())
                 .image(recipe.getImage())
                 .build();
     }
