@@ -1,14 +1,19 @@
-package com.cuoco.shared.utils;
+package com.cuoco.application.utils;
 
+import com.cuoco.application.exception.UnauthorizedException;
 import com.cuoco.application.usecase.model.User;
+import com.cuoco.shared.model.ErrorDescription;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtUtil {
 
@@ -25,13 +30,18 @@ public class JwtUtil {
     }
 
     public String extractEmail(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
 
+        } catch (MalformedJwtException e) {
+            log.warn("Invalid JWT token: {}", e.getMessage());
+            throw new UnauthorizedException(ErrorDescription.INVALID_CREDENTIALS.getValue());
+        }
     }
 
     public boolean validateToken(String token, User user) {

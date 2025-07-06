@@ -6,7 +6,7 @@ import com.cuoco.application.port.out.GetUserByEmailRepository;
 import com.cuoco.application.usecase.model.AuthenticatedUser;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.shared.model.ErrorDescription;
-import com.cuoco.shared.utils.JwtUtil;
+import com.cuoco.application.utils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -34,24 +34,29 @@ public class AuthenticateUserUseCase implements AuthenticateUserCommand {
 
         String authHeader = command.getAuthHeader();
 
-        if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
-            log.info("User don't have a valid auth header");
-            throw new UnauthorizedException(ErrorDescription.UNAUTHORIZED.getValue());
+        if (authHeader == null) {
+            log.info("Auth header is not present");
+            throw new UnauthorizedException(ErrorDescription.NO_AUTH_TOKEN.getValue());
+        }
+
+        if (!authHeader.startsWith(BEARER_PREFIX)) {
+            log.info("Don't have a valid auth token");
+            throw new UnauthorizedException(ErrorDescription.INVALID_CREDENTIALS.getValue());
         }
 
         String receivedJwt = authHeader.substring(7);
         String email = jwtUtil.extractEmail(receivedJwt);
 
         if (email == null || SecurityContextHolder.getContext().getAuthentication() != null) {
-            log.info("Token is not valid. The email is not present.");
-            throw new UnauthorizedException(ErrorDescription.INVALID_TOKEN.getValue());
+            log.info("Token is not valid: The email is not present.");
+            throw new UnauthorizedException(ErrorDescription.INVALID_CREDENTIALS.getValue());
         }
 
         User user = getUserByEmailRepository.execute(email);
 
         if (user == null || !jwtUtil.validateToken(receivedJwt, user)) {
-            log.info("Token or user with email {} are not valid", email);
-            throw new UnauthorizedException(ErrorDescription.INVALID_TOKEN.getValue());
+            log.info("Token or user with email {} are not valid or not exists", email);
+            throw new UnauthorizedException(ErrorDescription.INVALID_CREDENTIALS.getValue());
         }
 
         log.info("User authenticated with email {}", email);

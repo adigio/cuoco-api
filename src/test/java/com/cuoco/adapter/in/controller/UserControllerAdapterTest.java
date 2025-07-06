@@ -4,7 +4,7 @@ import com.cuoco.adapter.in.controller.model.UpdateUserRequest;
 import com.cuoco.application.port.in.UpdateUserProfileCommand;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.factory.domain.UserFactory;
-import com.cuoco.shared.utils.JwtUtil;
+import com.cuoco.application.utils.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

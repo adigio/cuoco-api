@@ -6,7 +6,7 @@ import com.cuoco.application.port.out.GetUserByEmailRepository;
 import com.cuoco.application.usecase.model.AuthenticatedUser;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.shared.model.ErrorDescription;
-import com.cuoco.shared.utils.JwtUtil;
+import com.cuoco.application.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.password.PasswordEncoder;

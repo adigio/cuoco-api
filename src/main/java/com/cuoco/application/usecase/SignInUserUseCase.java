@@ -6,7 +6,7 @@ import com.cuoco.application.port.out.GetUserByEmailRepository;
 import com.cuoco.application.usecase.model.AuthenticatedUser;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.shared.model.ErrorDescription;
-import com.cuoco.shared.utils.JwtUtil;
+import com.cuoco.application.utils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -42,9 +42,8 @@ public class SignInUserUseCase implements SignInUserCommand {
         }
 
         user.setPassword(null);
-        AuthenticatedUser authenticatedUser = buildAuthenticatedUser(user);
 
-        return authenticatedUser;
+        return buildAuthenticatedUser(user);
     }
 
     private AuthenticatedUser buildAuthenticatedUser(User user) {

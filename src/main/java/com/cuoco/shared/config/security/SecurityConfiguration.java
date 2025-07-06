@@ -37,6 +37,8 @@ public class SecurityConfiguration {
                                 "/cook-levels",
                                 "/plans",
                                 "/diets",
+                                "/meal-types",
+                                "/preparation-times",
                                 "/dietary-needs",
                                 "/allergies",
                                 "/v3/api-docs/**",

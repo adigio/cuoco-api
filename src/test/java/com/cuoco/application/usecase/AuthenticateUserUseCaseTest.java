@@ -7,7 +7,7 @@ import com.cuoco.application.usecase.model.AuthenticatedUser;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.factory.domain.UserFactory;
 import com.cuoco.shared.model.ErrorDescription;
-import com.cuoco.shared.utils.JwtUtil;
+import com.cuoco.application.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -72,7 +72,7 @@ class AuthenticateUserUseCaseTest {
         when(jwtUtil.extractEmail(token)).thenReturn(null);
 
         UnauthorizedException ex = assertThrows(UnauthorizedException.class, () -> useCase.execute(command));
-        assertEquals(ErrorDescription.INVALID_TOKEN.getValue(), ex.getDescription());
+        assertEquals(ErrorDescription.INVALID_CREDENTIALS.getValue(), ex.getDescription());
     }
 
     @Test
@@ -87,6 +87,6 @@ class AuthenticateUserUseCaseTest {
         when(getUserByEmailRepository.execute(email)).thenReturn(null);
 
         UnauthorizedException ex = assertThrows(UnauthorizedException.class, () -> useCase.execute(command));
-        assertEquals(ErrorDescription.INVALID_TOKEN.getValue(), ex.getDescription());
+        assertEquals(ErrorDescription.INVALID_CREDENTIALS.getValue(), ex.getDescription());
     }
 }

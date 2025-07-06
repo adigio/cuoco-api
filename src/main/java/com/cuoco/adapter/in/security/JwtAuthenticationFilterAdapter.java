@@ -1,11 +1,13 @@
 package com.cuoco.adapter.in.security;
 
+import com.cuoco.application.exception.UnauthorizedException;
 import com.cuoco.application.port.in.AuthenticateUserCommand;
 import com.cuoco.application.usecase.model.AuthenticatedUser;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class JwtAuthenticationFilterAdapter extends OncePerRequestFilter {
 
@@ -30,18 +33,24 @@ public class JwtAuthenticationFilterAdapter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        final String authHeader = request.getHeader("Authorization");
+        try {
+            final String authHeader = request.getHeader("Authorization");
 
-        AuthenticatedUser authenticatedUser = authenticateUserCommand.execute(buildCommand(authHeader));
+            AuthenticatedUser authenticatedUser = authenticateUserCommand.execute(buildCommand(authHeader));
 
-        if (authenticatedUser != null) {
-            UsernamePasswordAuthenticationToken userToken = buildToken(authenticatedUser);
+            if (authenticatedUser != null) {
+                UsernamePasswordAuthenticationToken userToken = buildToken(authenticatedUser);
 
-            userToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(userToken);
+                userToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(userToken);
+            }
+
+            filterChain.doFilter(request, response);
+
+        } catch (UnauthorizedException e) {
+            log.warn("Unauthorized: {}", e.getDescription());
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getDescription());
         }
-
-        filterChain.doFilter(request, response);
     }
 
     private AuthenticateUserCommand.Command buildCommand(String authHeader) {
@@ -66,6 +75,8 @@ public class JwtAuthenticationFilterAdapter extends OncePerRequestFilter {
                 || matcher.match("/diets", request.getRequestURI())
                 || matcher.match("/dietary-needs", request.getRequestURI())
                 || matcher.match("/cook-levels", request.getRequestURI())
+                || matcher.match("/meal-types", request.getRequestURI())
+                || matcher.match("/preparation-times", request.getRequestURI())
                 || matcher.match("/v3/api-docs/**", request.getRequestURI())
                 || matcher.match("/swagger-ui/**", request.getRequestURI())
                 || matcher.match("/swagger-ui.html", request.getRequestURI());
