@@ -153,10 +153,8 @@ public class AuthenticationControllerAdapter {
 
         User user = createUserCommand.execute(buildCreateCommand(request));
 
-        // Generar link de confirmación (esto debería venir de una configuración)
         String confirmationLink = "http://localhost:8080/auth/confirm?token=" + generateConfirmationToken(user);
 
-        // Enviar correo de confirmación
         emailService.sendConfirmationEmail(user.getEmail(), confirmationLink);
 
         UserResponse userResponse = buildUserResponse(user, null);

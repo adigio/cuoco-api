@@ -23,7 +23,6 @@ public class UpdateUserDatabaseRepositoryAdapter implements UpdateUserRepository
         UserHibernateModel existingUser = updateUserHibernateRepositoryAdapter.findById(user.getId())
                 .orElseThrow(() -> new BadRequestException("Usuario no encontrado"));
 
-        // Actualizamos solo los campos necesarios manteniendo el resto
         existingUser.setActive(user.getActive());
 
         updateUserHibernateRepositoryAdapter.save(existingUser);
