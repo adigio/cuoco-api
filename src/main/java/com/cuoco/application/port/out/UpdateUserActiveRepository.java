@@ -2,7 +2,7 @@ package com.cuoco.application.port.out;
 
 import com.cuoco.application.usecase.model.User;
 
-public interface UpdateUserRepository {
+public interface UpdateUserActiveRepository {
     void execute(User user);
 
 }

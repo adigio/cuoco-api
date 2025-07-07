@@ -3,7 +3,7 @@ package com.cuoco.application.usecase;
 import com.cuoco.application.exception.BadRequestException;
 import com.cuoco.application.port.in.ActivateUserCommand;
 import com.cuoco.application.port.out.GetUserByEmailRepository;
-import com.cuoco.application.port.out.UpdateUserRepository;
+import com.cuoco.application.port.out.UpdateUserActiveRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ActivateUserUseCase implements ActivateUserCommand {
     private final GetUserByEmailRepository getUserByEmailRepository;
-    private final UpdateUserRepository updateUserRepository;
+    private final UpdateUserActiveRepository updateUserActiveRepository;
 
     @Override
     @Transactional
@@ -23,7 +23,7 @@ public class ActivateUserUseCase implements ActivateUserCommand {
         }
 
         user.setActive(true);
-        updateUserRepository.execute(user);
+        updateUserActiveRepository.execute(user);
     }
 
 }
