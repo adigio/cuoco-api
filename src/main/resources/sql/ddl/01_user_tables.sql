@@ -79,3 +79,14 @@ CREATE TABLE user_preferences
     CONSTRAINT `FK_user_preferences_diet_id` FOREIGN KEY (`diet_id`) REFERENCES `diets` (`id`),
     CONSTRAINT `FK_user_preferences_cook_level_id` FOREIGN KEY (`cook_level_id`) REFERENCES `cook_levels` (`id`)
 );
+
+CREATE TABLE user_pro_plan_payment (
+                                       id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                       user_id BIGINT NOT NULL,
+                                       external_reference VARCHAR(128) NOT NULL,
+                                       start_date DATETIME NOT NULL,
+                                       expiration_date DATETIME NOT NULL,
+                                       payment_status VARCHAR(32) NOT NULL,
+                                       INDEX idx_user_id (user_id),
+                                       INDEX idx_external_reference (external_reference)
+);
