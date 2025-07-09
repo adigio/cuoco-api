@@ -47,8 +47,10 @@ CREATE TABLE `meal_prep_recipes`
 
 CREATE TABLE `user_meal_preps`
 (
+    `id`           bigint NOT NULL AUTO_INCREMENT,
     `user_id`      bigint NOT NULL,
     `meal_prep_id` bigint NOT NULL,
+    PRIMARY KEY (`id`),
     KEY `FK_user_meal_prep_meal_prep_id` (`meal_prep_id`),
     KEY `FK_user_meal_prep_user_id` (`user_id`),
     CONSTRAINT `FK_user_meal_prep_user_id` FOREIGN KEY (`meal_prep_id`) REFERENCES `meal_preps` (`id`),

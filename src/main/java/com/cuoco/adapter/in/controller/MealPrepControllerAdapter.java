@@ -4,17 +4,29 @@ import com.cuoco.adapter.in.controller.model.IngredientRequest;
 import com.cuoco.adapter.in.controller.model.IngredientResponse;
 import com.cuoco.adapter.in.controller.model.MealPrepRequest;
 import com.cuoco.adapter.in.controller.model.MealPrepResponse;
+import com.cuoco.adapter.in.controller.model.ParametricResponse;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.adapter.in.controller.model.StepResponse;
 import com.cuoco.adapter.in.controller.model.UnitResponse;
+import com.cuoco.adapter.out.hibernate.CreateUserDatabaseRepositoryAdapter;
+import com.cuoco.application.port.in.GetMealPrepByIdQuery;
 import com.cuoco.application.port.in.GetMealPrepFromIngredientsCommand;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.MealPrep;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.Step;
+import com.cuoco.shared.GlobalExceptionHandler;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,13 +41,37 @@ import java.util.List;
 public class MealPrepControllerAdapter {
 
     private final GetMealPrepFromIngredientsCommand getMealPrepFromIngredientsCommand;
+    private final GetMealPrepByIdQuery getMealPrepByIdQuery;
 
-    public MealPrepControllerAdapter(GetMealPrepFromIngredientsCommand getMealPrepFromIngredientsCommand) {
+    public MealPrepControllerAdapter(
+            GetMealPrepFromIngredientsCommand getMealPrepFromIngredientsCommand,
+            GetMealPrepByIdQuery getMealPrepByIdQuery
+    ) {
         this.getMealPrepFromIngredientsCommand = getMealPrepFromIngredientsCommand;
+        this.getMealPrepByIdQuery = getMealPrepByIdQuery;
     }
 
     @PostMapping
-    public ResponseEntity<List<MealPrepResponse>> generate(@RequestBody MealPrepRequest mealPrepRequest){
+    @Operation(summary = "Create meal preps")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Return all the created meal preps",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = MealPrepResponse.class))
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Service unavailable",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            )
+    })
+    public ResponseEntity<List<MealPrepResponse>> generate(@RequestBody MealPrepRequest mealPrepRequest) {
 
         log.info("Executing GET mealPrep from ingredients with body {}", mealPrepRequest);
 
@@ -45,6 +81,43 @@ public class MealPrepControllerAdapter {
 
         log.info("Successfully generated recipes");
         return ResponseEntity.ok(mealPrepsResponse);
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get meal prep by ID")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Return the meal prep ",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = MealPrepResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Meal prep not found with the provided ID",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Service unavailable",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            )
+    })
+    public ResponseEntity<MealPrepResponse> getById(@PathVariable Long id) {
+        log.info("Executing GET for find meal prep with ID {}", id);
+
+        MealPrep mealPrep = getMealPrepByIdQuery.execute(id);
+        MealPrepResponse mealPrepResponse = buildResponse(mealPrep);
+
+        return ResponseEntity.ok(mealPrepResponse);
     }
 
     private GetMealPrepFromIngredientsCommand.Command buildGenerateMealPrepCommand(MealPrepRequest mealPrepRequest) {

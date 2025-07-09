@@ -8,7 +8,7 @@ import com.cuoco.application.port.out.GetCookLevelByIdRepository;
 import com.cuoco.application.port.out.GetDietByIdRepository;
 import com.cuoco.application.port.out.GetDietaryNeedsByIdRepository;
 import com.cuoco.application.port.out.GetPlanByIdRepository;
-import com.cuoco.application.port.out.UserExistsByEmailRepository;
+import com.cuoco.application.port.out.ExistsUserByEmailRepository;
 import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.CookLevel;
 import com.cuoco.application.usecase.model.Diet;
@@ -31,7 +31,7 @@ public class CreateUserUseCase implements CreateUserCommand {
 
     private final PasswordEncoder passwordEncoder;
     private final CreateUserRepository createUserRepository;
-    private final UserExistsByEmailRepository userExistsByEmailRepository;
+    private final ExistsUserByEmailRepository existsUserByEmailRepository;
     private final GetPlanByIdRepository getPlanByIdRepository;
     private final GetDietByIdRepository getDietByIdRepository;
     private final GetCookLevelByIdRepository getCookLevelByIdRepository;
@@ -41,7 +41,7 @@ public class CreateUserUseCase implements CreateUserCommand {
     public CreateUserUseCase(
             PasswordEncoder passwordEncoder,
             CreateUserRepository createUserRepository,
-            UserExistsByEmailRepository userExistsByEmailRepository,
+            ExistsUserByEmailRepository existsUserByEmailRepository,
             GetPlanByIdRepository getPlanByIdRepository,
             GetDietByIdRepository getDietByIdRepository,
             GetCookLevelByIdRepository getCookLevelByIdRepository,
@@ -50,7 +50,7 @@ public class CreateUserUseCase implements CreateUserCommand {
     ) {
         this.passwordEncoder = passwordEncoder;
         this.createUserRepository = createUserRepository;
-        this.userExistsByEmailRepository = userExistsByEmailRepository;
+        this.existsUserByEmailRepository = existsUserByEmailRepository;
         this.getPlanByIdRepository = getPlanByIdRepository;
         this.getDietByIdRepository = getDietByIdRepository;
         this.getCookLevelByIdRepository = getCookLevelByIdRepository;
@@ -62,7 +62,7 @@ public class CreateUserUseCase implements CreateUserCommand {
     public User execute(Command command) {
         log.info("Executing create user use case for email {}", command.getEmail());
 
-        if(userExistsByEmailRepository.execute(command.getEmail())) {
+        if(existsUserByEmailRepository.execute(command.getEmail())) {
             log.info("Email {} already exists", command.getEmail());
             throw new BadRequestException(ErrorDescription.USER_DUPLICATED.getValue());
         }
@@ -85,21 +85,15 @@ public class CreateUserUseCase implements CreateUserCommand {
     }
 
     private Plan getPlan(Integer planId) {
-        Plan plan = getPlanByIdRepository.execute(planId);
-        if(plan == null) throw new BadRequestException(ErrorDescription.PLAN_NOT_EXISTS.getValue());
-        return plan;
+        return getPlanByIdRepository.execute(planId);
     }
 
     private Diet getDiet(Integer dietId) {
-        Diet diet = getDietByIdRepository.execute(dietId);
-        if(diet == null) throw new BadRequestException(ErrorDescription.DIET_NOT_EXISTS.getValue());
-        return diet;
+        return getDietByIdRepository.execute(dietId);
     }
 
     private CookLevel getCookLevel(Integer cookLevelId) {
-        CookLevel cookLevel = getCookLevelByIdRepository.execute(cookLevelId);
-        if(cookLevel == null) throw new BadRequestException(ErrorDescription.COOK_LEVEL_NOT_EXISTS.getValue());
-        return cookLevel;
+        return getCookLevelByIdRepository.execute(cookLevelId);
     }
 
     private List<DietaryNeed> getDietaryNeeds(Command command) {

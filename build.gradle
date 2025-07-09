@@ -8,6 +8,8 @@ group = 'com.cuoco'
 version = '0.0.1-SNAPSHOT'
 
 java {
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
 	}
@@ -54,6 +56,10 @@ dependencies {
 	testImplementation("com.tngtech.archunit:archunit-junit5:1.2.1")
 	testImplementation 'com.h2database:h2'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.withType(JavaCompile) {
+	options.release = 17
 }
 
 tasks.named('test') {

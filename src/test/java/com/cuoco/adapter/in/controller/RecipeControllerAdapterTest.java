@@ -34,10 +34,15 @@ public class RecipeControllerAdapterTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand;
 
     @MockitoBean
+    @SuppressWarnings("unused")
     private GenerateRecipeImagesCommand generateRecipeImagesCommand;
+
+    public RecipeControllerAdapterTest() {
+    }
 
     @Test
     void GIVEN_valid_ingredients_request_WHEN_generate_THEN_return_recipes_response_with_images() throws Exception {

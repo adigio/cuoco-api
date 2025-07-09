@@ -4,8 +4,8 @@ import com.cuoco.adapter.exception.ForbiddenException;
 import com.cuoco.adapter.exception.UnprocessableException;
 import com.cuoco.adapter.out.hibernate.model.UserHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.UserPreferencesHibernateModel;
-import com.cuoco.adapter.out.hibernate.repository.FindUserByEmailHibernateRepositoryAdapter;
-import com.cuoco.adapter.out.hibernate.repository.FindUserPreferencesByIdHibernateRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.GetUserByEmailHibernateRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.GetUserPreferencesByUserIdHibernateRepositoryAdapter;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.factory.hibernate.UserHibernateModelFactory;
 import com.cuoco.factory.hibernate.UserPreferencesHibernateModelFactory;
@@ -28,10 +28,10 @@ import static org.mockito.Mockito.when;
 class GetUserByEmailDatabaseRepositoryAdapterTest {
 
     @Mock
-    private FindUserByEmailHibernateRepositoryAdapter userRepository;
+    private GetUserByEmailHibernateRepositoryAdapter userRepository;
 
     @Mock
-    private FindUserPreferencesByIdHibernateRepositoryAdapter preferencesRepository;
+    private GetUserPreferencesByUserIdHibernateRepositoryAdapter preferencesRepository;
 
     @InjectMocks
     private GetUserByEmailDatabaseRepositoryAdapter adapter;

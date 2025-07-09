@@ -63,29 +63,12 @@ public class CreateUserDatabaseRepositoryAdapter implements CreateUserRepository
                 .name(user.getName())
                 .email(user.getEmail())
                 .password(user.getPassword())
-                .plan(PlanHibernateModel.builder()
-                        .id(user.getPlan().getId())
-                        .description(user.getPlan().getDescription())
-                        .build())
+                .plan(PlanHibernateModel.fromDomain(user.getPlan()))
                 .active(user.getActive())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
-                .dietaryNeeds(user.getDietaryNeeds().stream().map(this::buildDietaryNeedHibernateModel).toList())
-                .allergies(user.getAllergies().stream().map(this::buildAllergyHibernateModel).toList())
-                .build();
-    }
-
-    private DietaryNeedHibernateModel buildDietaryNeedHibernateModel(DietaryNeed dietaryNeed) {
-        return DietaryNeedHibernateModel.builder()
-                .id(dietaryNeed.getId())
-                .description(dietaryNeed.getDescription())
-                .build();
-    }
-
-    private AllergyHibernateModel buildAllergyHibernateModel(Allergy allergy) {
-        return AllergyHibernateModel.builder()
-                .id(allergy.getId())
-                .description(allergy.getDescription())
+                .dietaryNeeds(user.getDietaryNeeds().stream().map(DietaryNeedHibernateModel::fromDomain).toList())
+                .allergies(user.getAllergies().stream().map(AllergyHibernateModel::fromDomain).toList())
                 .build();
     }
 

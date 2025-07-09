@@ -19,6 +19,7 @@ public class RecipeResponse {
     private String name;
     private String subtitle;
     private String description;
+    private Boolean favorite;
     private List<StepResponse> steps;
     private String image;
     private ParametricResponse preparationTime;

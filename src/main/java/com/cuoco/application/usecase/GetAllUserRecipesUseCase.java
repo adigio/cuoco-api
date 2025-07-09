@@ -1,7 +1,8 @@
 package com.cuoco.application.usecase;
 
 import com.cuoco.application.port.in.GetAllUserRecipesQuery;
-import com.cuoco.application.port.out.GetAllUserRecipesRepository;
+import com.cuoco.application.port.out.GetAllUserRecipesByUserIdRepository;
+import com.cuoco.application.usecase.domainservice.UserDomainService;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserRecipe;
@@ -15,24 +16,26 @@ import java.util.List;
 @Component
 public class GetAllUserRecipesUseCase implements GetAllUserRecipesQuery {
 
-    private GetAllUserRecipesRepository getAllUserRecipesRepository;
+    private final UserDomainService userDomainService;
+    private final GetAllUserRecipesByUserIdRepository getAllUserRecipesByUserIdRepository;
 
-    public GetAllUserRecipesUseCase(GetAllUserRecipesRepository getAllUserRecipesRepository) {
-        this.getAllUserRecipesRepository = getAllUserRecipesRepository;
+    public GetAllUserRecipesUseCase(
+            UserDomainService userDomainService,
+            GetAllUserRecipesByUserIdRepository getAllUserRecipesByUserIdRepository
+    ) {
+        this.userDomainService = userDomainService;
+        this.getAllUserRecipesByUserIdRepository = getAllUserRecipesByUserIdRepository;
     }
 
     @Override
     public List<Recipe> execute() {
-        log.info("Executing get all user recipes user case");
+        log.info("Executing get all user recipes use case");
 
-        User user = getUser();
+        User user = userDomainService.getCurrentUser();
 
-        List<UserRecipe> userRecipes = getAllUserRecipesRepository.execute(user.getId());
+        List<UserRecipe> userRecipes = getAllUserRecipesByUserIdRepository.execute(user.getId());
 
         return userRecipes.stream().map(UserRecipe::getRecipe).toList();
     }
 
-    private User getUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
 }

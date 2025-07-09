@@ -9,6 +9,6 @@ public interface DeleteUserRecipeCommand {
     @Data
     @Builder
     class Command {
-        private Long recipeId;
+        private Long id;
     }
 }

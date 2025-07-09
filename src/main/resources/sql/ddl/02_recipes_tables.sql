@@ -107,8 +107,10 @@ CREATE TABLE `recipe_steps`
 
 CREATE TABLE `user_recipes`
 (
+    `id`        bigint NOT NULL AUTO_INCREMENT,
     `user_id`   bigint DEFAULT NULL,
     `recipe_id` bigint DEFAULT NULL,
+    PRIMARY KEY (`id`),
     KEY `FK_user_recipes_user_id` (`user_id`),
     KEY `FK_user_recipes_recipe_id` (`recipe_id`),
     CONSTRAINT `FK_user_recipes_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),

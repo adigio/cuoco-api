@@ -1,16 +1,19 @@
 package com.cuoco.adapter.in.controller;
 
+import com.cuoco.adapter.in.controller.model.ParametricResponse;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.application.port.in.CreateUserRecipeCommand;
 import com.cuoco.application.port.in.DeleteUserRecipeCommand;
 import com.cuoco.application.port.in.GetAllUserRecipesQuery;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.shared.GlobalExceptionHandler;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -24,12 +27,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/users/recipes")
 @Tag(name = "User favourites recipes", description = "Manipulate favourites recipes saved from the user")
 public class UserRecipeControllerAdapter {
-
-    static final Logger log = LoggerFactory.getLogger(UserRecipeControllerAdapter.class);
 
     private final CreateUserRecipeCommand createUserRecipeCommand;
     private final GetAllUserRecipesQuery getAllUserRecipesQuery;
@@ -46,6 +48,7 @@ public class UserRecipeControllerAdapter {
     }
 
     @PostMapping("/{id}")
+    @Operation(summary = "Creates new user favorite recipes")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201",
@@ -86,6 +89,7 @@ public class UserRecipeControllerAdapter {
     }
 
     @GetMapping
+    @Operation(summary = "Get all the favorite recipes for the current user")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -128,6 +132,7 @@ public class UserRecipeControllerAdapter {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Deletes one favorite recipe from the current user")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "204",
@@ -154,7 +159,7 @@ public class UserRecipeControllerAdapter {
     }
 
     private DeleteUserRecipeCommand.Command buildDeleteCommand(Long recipeId) {
-        return DeleteUserRecipeCommand.Command.builder().recipeId(recipeId).build();
+        return DeleteUserRecipeCommand.Command.builder().id(recipeId).build();
     }
 
     private RecipeResponse buildRecipeResponse(Recipe recipe) {
@@ -163,6 +168,7 @@ public class UserRecipeControllerAdapter {
                 .name(recipe.getName())
                 .subtitle(recipe.getSubtitle())
                 .description(recipe.getDescription())
+                .mealTypes(recipe.getMealTypes().stream().map(ParametricResponse::fromDomain).toList())
                 .image(recipe.getImage())
                 .build();
     }

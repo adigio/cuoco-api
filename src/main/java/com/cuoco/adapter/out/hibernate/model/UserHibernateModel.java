@@ -2,6 +2,7 @@ package com.cuoco.adapter.out.hibernate.model;
 
 import com.cuoco.application.usecase.model.User;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -55,16 +56,24 @@ public class UserHibernateModel {
     )
     private List<DietaryNeedHibernateModel> dietaryNeeds;
 
-    @OneToMany(mappedBy = "user")
-    private List<UserRecipesHibernateModel> recipes;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_recipes",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "recipe_id")
+    )
+    private List<RecipeHibernateModel> recipes;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_meal_preps",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "meal_prep_id")
     )
     private List<MealPrepHibernateModel> mealPreps;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserCalendarsHibernateModel> calendars;
 
     public User toDomain() {
         return User.builder()
@@ -74,6 +83,8 @@ public class UserHibernateModel {
                 .password(password)
                 .plan(plan.toDomain())
                 .active(active)
+                .recipes(recipes.stream().map(RecipeHibernateModel::toDomain).toList())
+                .mealPreps(mealPreps.stream().map(MealPrepHibernateModel::toDomain).toList())
                 .createdAt(createdAt)
                 .build();
     }

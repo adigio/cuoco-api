@@ -3,25 +3,21 @@ package com.cuoco.adapter.in.controller;
 import com.cuoco.adapter.in.controller.model.IngredientRequest;
 import com.cuoco.adapter.in.controller.model.IngredientResponse;
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
+import com.cuoco.adapter.in.controller.model.QuickRecipeRequest;
 import com.cuoco.adapter.in.controller.model.RecipeConfiguration;
 import com.cuoco.adapter.in.controller.model.RecipeFilterRequest;
 import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.adapter.in.controller.model.StepResponse;
-import com.cuoco.adapter.in.controller.model.UnitResponse;
 import com.cuoco.adapter.in.utils.Utils;
+import com.cuoco.application.port.in.FindOrCreateRecipeCommand;
+import com.cuoco.application.port.in.FindRecipesCommand;
 import com.cuoco.application.port.in.GetRecipeByIdQuery;
 import com.cuoco.application.port.in.GetRecipesFromIngredientsCommand;
-import com.cuoco.application.usecase.model.Allergy;
-import com.cuoco.application.usecase.model.CookLevel;
-import com.cuoco.application.usecase.model.Diet;
-import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.Ingredient;
-import com.cuoco.application.usecase.model.MealType;
-import com.cuoco.application.usecase.model.PreparationTime;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.Step;
 import com.cuoco.shared.GlobalExceptionHandler;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,37 +32,43 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
 @RequestMapping("/recipes")
-@Tag(name = "Recipes", description = "Obtains recipes from ingredients, filters and configuration")
+@Tag(name = "Recipes", description = "Obtains recipes with ingredients, filters and configuration")
 public class RecipeControllerAdapter {
 
     private final GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand;
     private final GetRecipeByIdQuery getRecipeByIdQuery;
+    private final FindOrCreateRecipeCommand findOrCreateRecipeCommand;
+    private final FindRecipesCommand findRecipesCommand;
 
     public RecipeControllerAdapter(
             GetRecipesFromIngredientsCommand getRecipesFromIngredientsCommand,
-            GetRecipeByIdQuery getRecipeByIdQuery
+            GetRecipeByIdQuery getRecipeByIdQuery,
+            FindOrCreateRecipeCommand findOrCreateRecipeCommand,
+            FindRecipesCommand findRecipesCommand
     ) {
         this.getRecipesFromIngredientsCommand = getRecipesFromIngredientsCommand;
         this.getRecipeByIdQuery = getRecipeByIdQuery;
+        this.findOrCreateRecipeCommand = findOrCreateRecipeCommand;
+        this.findRecipesCommand = findRecipesCommand;
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get some specific recipe")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
                     description = "Return the specific recipe with the provided ID",
                     content = @Content(
                             mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = RecipeResponse.class))
+                            schema = @Schema(implementation = RecipeResponse.class)
                     )
             ),
             @ApiResponse(
@@ -97,7 +99,8 @@ public class RecipeControllerAdapter {
         return ResponseEntity.ok(recipeResponse);
     }
 
-    @PostMapping()
+    @PostMapping
+    @Operation(summary = "Find or create a recipe with the provided ingredients, filters and configuration")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -136,6 +139,68 @@ public class RecipeControllerAdapter {
         return ResponseEntity.ok(recipesResponse);
     }
 
+    @GetMapping
+    @Operation(summary = "Find or create a recipe from a specific provided name")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Return a recipe from the provided name",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = RecipeResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Service unavailable",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            )
+    })
+    public ResponseEntity<RecipeResponse> quickRecipe(@RequestParam String name) {
+        log.info("Executing find or generate recipe with name: {}", name);
+
+        Recipe recipe = findOrCreateRecipeCommand.execute(buildQuickRecipeCommand(name));
+
+        RecipeResponse response = buildResponse(recipe);
+
+        log.info("Successfully found or generated recipe: {}", recipe.getName());
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/random")
+    @Operation(summary = "Find random recipes with a provided size")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Return a recipe from the provided filter",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = RecipeResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Service unavailable",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
+                    )
+            )
+    })
+    public ResponseEntity<List<RecipeResponse>> getRecipes(@RequestParam Integer size) {
+        log.info("Executing find recipes with size: {}", size);
+
+        List<Recipe> recipes = findRecipesCommand.execute(buildFindRecipesCommand(size));
+
+        List<RecipeResponse> recipesResponse = recipes.stream().map(this::buildResponse).toList();
+
+        log.info("Successfully found recipes");
+        return ResponseEntity.ok(recipesResponse);
+    }
+
     private GetRecipesFromIngredientsCommand.Command buildGenerateRecipeCommand(RecipeRequest recipeRequest) {
 
         boolean filtersEnabled = true;
@@ -162,6 +227,19 @@ public class RecipeControllerAdapter {
                 .build();
     }
 
+    private FindOrCreateRecipeCommand.Command buildQuickRecipeCommand(String name) {
+        return FindOrCreateRecipeCommand.Command.builder()
+                .recipeName(name)
+                .build();
+    }
+
+    private FindRecipesCommand.Command buildFindRecipesCommand(Integer size) {
+        return FindRecipesCommand.Command.builder()
+                .size(size)
+                .random(true)
+                .build();
+    }
+
     private Ingredient buildIngredient(IngredientRequest ingredientRequest) {
         return Ingredient.builder()
                 .name(ingredientRequest.getName())
@@ -174,6 +252,7 @@ public class RecipeControllerAdapter {
                 .name(recipe.getName())
                 .subtitle(recipe.getSubtitle())
                 .description(recipe.getDescription())
+                .favorite(recipe.getFavorite())
                 .steps(recipe.getSteps().stream().map(StepResponse::fromDomain).toList())
                 .image(recipe.getImage())
                 .preparationTime(ParametricResponse.fromDomain(recipe.getPreparationTime()))

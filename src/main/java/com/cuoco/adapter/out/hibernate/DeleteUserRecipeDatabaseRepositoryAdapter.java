@@ -20,7 +20,6 @@ public class DeleteUserRecipeDatabaseRepositoryAdapter implements DeleteUserReci
     @Override
     public void execute(Long userId, Long recipeId) {
         log.info("Executing delete recipe from user database repository with user ID {} and recipe ID {}", userId, recipeId);
-
         deleteUserRecipeHibernateRepositoryAdapter.deleteAllByUserIdAndRecipeId(userId, recipeId);
     }
 }
