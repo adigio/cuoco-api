@@ -43,6 +43,7 @@ shared:
   meal-preps:
     size: ${MEAL_PREP_DEFAULT_SIZE:1}
     recipes-size: ${RECIPES_SIZE_PER_MEAL_PREP:3}
+
   plan:
     free:
       max-recipes: ${FREE_PLAN_MAX_RECIPES:10}
@@ -69,3 +70,17 @@ mercado pago:
     secondary-color: ${MP_BRAND_SECONDARY_COLOR:#FFA500}
     show-mercado-pago-branding: ${MP_SHOW_BRANDING:false}
 
+mail:
+  host: smtp.gmail.com
+  port: 587
+  username: cuoco.8bits@gmail.com
+  password: ${PASSWORD_MAIL}
+  properties:
+    mail:
+      smtp:
+        auth: true
+        starttls:
+          enable: true
+        connectiontimeout: 5000
+        timeout: 5000
+        writetimeout: 5000

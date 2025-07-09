@@ -9,6 +9,7 @@ import com.cuoco.application.port.out.GetDietaryNeedsByIdRepository;
 import com.cuoco.application.port.out.GetPlanByIdRepository;
 import com.cuoco.application.port.out.GetUserByIdRepository;
 import com.cuoco.application.port.out.UpdateUserRepository;
+import com.cuoco.application.usecase.domainservice.UserDomainService;
 import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.CookLevel;
 import com.cuoco.application.usecase.model.Diet;
@@ -29,6 +30,7 @@ import java.util.List;
 @Component
 public class UpdateUserProfileUseCase implements UpdateUserProfileCommand {
 
+    private final UserDomainService userDomainService;
     private final GetUserByIdRepository getUserByIdRepository;
     private final UpdateUserRepository updateUserRepository;
     private final GetPlanByIdRepository getPlanByIdRepository;
@@ -38,6 +40,7 @@ public class UpdateUserProfileUseCase implements UpdateUserProfileCommand {
     private final GetAllergiesByIdRepository getAllergiesByIdRepository;
 
     public UpdateUserProfileUseCase(
+            UserDomainService userDomainService,
             GetUserByIdRepository getUserByIdRepository,
             UpdateUserRepository updateUserRepository,
             GetPlanByIdRepository getPlanByIdRepository,
@@ -46,6 +49,7 @@ public class UpdateUserProfileUseCase implements UpdateUserProfileCommand {
             GetDietaryNeedsByIdRepository getDietaryNeedsByIdRepository,
             GetAllergiesByIdRepository getAllergiesByIdRepository
     ) {
+        this.userDomainService = userDomainService;
         this.getUserByIdRepository = getUserByIdRepository;
         this.updateUserRepository = updateUserRepository;
         this.getPlanByIdRepository = getPlanByIdRepository;
@@ -56,9 +60,8 @@ public class UpdateUserProfileUseCase implements UpdateUserProfileCommand {
     }
 
     @Override
-    @Transactional
     public User execute(Command command) {
-        User user = getUser();
+        User user = userDomainService.getCurrentUser();
         log.info("Executing update user use case with ID {}", user.getId());
 
         User existingUser = getUserByIdRepository.execute(user.getId());
@@ -69,11 +72,6 @@ public class UpdateUserProfileUseCase implements UpdateUserProfileCommand {
         log.info("User with ID {} updated successfully", user.getId());
         return updatedUser;
     }
-
-    private User getUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
-
 
     private User buildUpdateUser(User existingUser, Command command) {
 

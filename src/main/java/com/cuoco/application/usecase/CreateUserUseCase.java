@@ -141,7 +141,7 @@ public class CreateUserUseCase implements CreateUserCommand {
                 .email(command.getEmail())
                 .password(encriptedPassword)
                 .plan(plan)
-                .active(true)
+                .active(false)
                 .preferences(preferences)
                 .dietaryNeeds(existingNeeds)
                 .allergies(existingAlergies)

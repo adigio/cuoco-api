@@ -5,6 +5,7 @@ import com.cuoco.application.port.out.ExistsUserRecipeCalendarRepository;
 import com.cuoco.application.port.out.GetMealTypeByIdRepository;
 import com.cuoco.application.port.out.GetRecipeByIdRepository;
 import com.cuoco.application.port.out.CreateUserCalendarRepository;
+import com.cuoco.application.usecase.domainservice.UserDomainService;
 import com.cuoco.application.usecase.model.Calendar;
 import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.Recipe;
@@ -22,17 +23,20 @@ import java.time.LocalDate;
 @Component
 public class CreateUserRecipeCalendarUseCase implements CreateUserRecipeCalendarCommand {
 
+    private final UserDomainService userDomainService;
     private final CreateUserCalendarRepository createUserCalendarRepository;
     private final ExistsUserRecipeCalendarRepository existsUserRecipeCalendarRepository;
     private final GetRecipeByIdRepository getRecipeByIdRepository;
     private final GetMealTypeByIdRepository getMealTypeByIdRepository;
 
     public CreateUserRecipeCalendarUseCase(
+            UserDomainService userDomainService,
             CreateUserCalendarRepository createUserCalendarRepository,
             ExistsUserRecipeCalendarRepository existsUserRecipeCalendarRepository,
             GetRecipeByIdRepository getRecipeByIdRepository,
             GetMealTypeByIdRepository getMealTypeByIdRepository
     ) {
+        this.userDomainService = userDomainService;
         this.createUserCalendarRepository = createUserCalendarRepository;
         this.existsUserRecipeCalendarRepository = existsUserRecipeCalendarRepository;
         this.getRecipeByIdRepository = getRecipeByIdRepository;
@@ -43,15 +47,11 @@ public class CreateUserRecipeCalendarUseCase implements CreateUserRecipeCalendar
     public void execute(Command command) {
         log.info("Executing user recipe calendar creation use case");
 
-        User user = getUser();
+        User user = userDomainService.getCurrentUser();
 
         UserCalendar userCalendar = buildUserRecipeCalendar(command, user);
 
         createUserCalendarRepository.execute(userCalendar);
-    }
-
-    private User getUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
     private UserCalendar buildUserRecipeCalendar(Command command, User user) {

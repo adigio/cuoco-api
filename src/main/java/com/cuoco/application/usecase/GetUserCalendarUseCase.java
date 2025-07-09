@@ -2,6 +2,7 @@ package com.cuoco.application.usecase;
 
 import com.cuoco.application.port.in.GetUserCalendarQuery;
 import com.cuoco.application.port.out.GetUserCalendarByUserIdRepository;
+import com.cuoco.application.usecase.domainservice.UserDomainService;
 import com.cuoco.application.usecase.model.Calendar;
 import com.cuoco.application.usecase.model.Day;
 import com.cuoco.application.usecase.model.User;
@@ -20,9 +21,14 @@ import java.util.stream.Collectors;
 @Component
 public class GetUserCalendarUseCase implements GetUserCalendarQuery {
 
+    private final UserDomainService userDomainService;
     private final GetUserCalendarByUserIdRepository getUserCalendarByUserIdRepository;
 
-    public GetUserCalendarUseCase(GetUserCalendarByUserIdRepository getUserCalendarByUserIdRepository) {
+    public GetUserCalendarUseCase(
+            UserDomainService userDomainService,
+            GetUserCalendarByUserIdRepository getUserCalendarByUserIdRepository
+    ) {
+        this.userDomainService = userDomainService;
         this.getUserCalendarByUserIdRepository = getUserCalendarByUserIdRepository;
     }
 
@@ -30,7 +36,7 @@ public class GetUserCalendarUseCase implements GetUserCalendarQuery {
     public List<Calendar> execute() {
         log.info("Executing get user calendar use case");
 
-        User user = getUser();
+        User user = userDomainService.getCurrentUser();
 
         List<Calendar> calendarRecipes = getUserCalendarByUserIdRepository.execute(user.getId());
 
@@ -39,10 +45,6 @@ public class GetUserCalendarUseCase implements GetUserCalendarQuery {
         log.info("Successfully retrieved user calendar with {} dates", calendarRecipes.size() );
 
         return calendarRecipes;
-    }
-
-    private User getUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
     private List<Calendar> dropPastDates(List<Calendar> calendar) {

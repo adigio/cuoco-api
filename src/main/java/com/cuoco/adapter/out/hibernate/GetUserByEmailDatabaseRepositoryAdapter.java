@@ -9,11 +9,13 @@ import com.cuoco.adapter.out.hibernate.repository.GetUserPreferencesByUserIdHibe
 import com.cuoco.application.port.out.GetUserByEmailRepository;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.shared.model.ErrorDescription;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
+@Transactional
 public class GetUserByEmailDatabaseRepositoryAdapter implements GetUserByEmailRepository {
 
     private final GetUserByEmailHibernateRepositoryAdapter getUserByEmailHibernateRepositoryAdapter;
