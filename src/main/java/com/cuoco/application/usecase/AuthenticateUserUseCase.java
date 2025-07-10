@@ -1,5 +1,6 @@
 package com.cuoco.application.usecase;
 
+import com.cuoco.application.exception.ForbiddenException;
 import com.cuoco.application.exception.UnauthorizedException;
 import com.cuoco.application.port.in.AuthenticateUserCommand;
 import com.cuoco.application.port.out.GetUserByEmailRepository;
@@ -57,6 +58,11 @@ public class AuthenticateUserUseCase implements AuthenticateUserCommand {
         if (user == null || !jwtUtil.validateToken(receivedJwt, user)) {
             log.info("Token or user with email {} are not valid or not exists", email);
             throw new UnauthorizedException(ErrorDescription.INVALID_CREDENTIALS.getValue());
+        }
+
+        if (user.getActive() != null && !user.getActive()) {
+            log.info("User with email {} is not activated yet", email);
+            throw new ForbiddenException(ErrorDescription.USER_NOT_ACTIVATED.getValue());
         }
 
         log.info("User authenticated with email {}", email);

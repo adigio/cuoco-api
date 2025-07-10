@@ -23,6 +23,7 @@ public enum ErrorDescription {
 
     USER_NOT_EXISTS("El usuario ingresado no existe"),
     USER_DUPLICATED("El usuario ya existe"),
+    USER_NOT_ACTIVATED("El usuario no esta activo"),
     NO_AUTH_TOKEN("El token no esta presente"),
     INVALID_TOKEN("El token ingresado no es válido"),
     INVALID_CREDENTIALS("Las credenciales no son válidas"),
