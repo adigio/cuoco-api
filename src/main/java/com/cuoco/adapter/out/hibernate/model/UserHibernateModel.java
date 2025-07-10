@@ -83,8 +83,8 @@ public class UserHibernateModel {
                 .password(password)
                 .plan(plan.toDomain())
                 .active(active)
-                .recipes(recipes.stream().map(RecipeHibernateModel::toDomain).toList())
-                .mealPreps(mealPreps.stream().map(MealPrepHibernateModel::toDomain).toList())
+                .recipes(recipes != null ? recipes.stream().map(RecipeHibernateModel::toDomain).toList() : null)
+                .mealPreps(mealPreps != null ? mealPreps.stream().map(MealPrepHibernateModel::toDomain).toList() : null)
                 .createdAt(createdAt)
                 .build();
     }
