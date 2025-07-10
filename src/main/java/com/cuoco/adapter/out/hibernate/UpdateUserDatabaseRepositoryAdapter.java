@@ -64,6 +64,7 @@ public class UpdateUserDatabaseRepositoryAdapter implements UpdateUserRepository
                 .name(user.getName())
                 .email(user.getEmail())
                 .password(user.getPassword())
+                .active(user.getActive())
                 .plan(PlanHibernateModel.fromDomain(user.getPlan()))
                 .dietaryNeeds(user.getDietaryNeeds() != null ? user.getDietaryNeeds().stream().map(DietaryNeedHibernateModel::fromDomain).toList() : List.of())
                 .allergies(user.getAllergies() != null ? user.getAllergies().stream().map(AllergyHibernateModel::fromDomain).toList() : List.of())

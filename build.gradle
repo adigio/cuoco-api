@@ -27,6 +27,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	implementation 'com.google.cloud:google-cloud-vision:3.12.0'
 	implementation 'com.google.protobuf:protobuf-java:4.28.2'
