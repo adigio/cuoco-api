@@ -1,6 +1,6 @@
 package com.cuoco.adapter.in.controller.model;
 
-import com.cuoco.application.usecase.model.PaymentPreference;
+import com.cuoco.application.usecase.model.UserPayment;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -21,11 +21,11 @@ public class PaymentPreferenceResponse {
     private String checkoutUrl;
     private String externalReference;
     
-    public static PaymentPreferenceResponse fromDomain(PaymentPreference paymentPreference) {
+    public static PaymentPreferenceResponse fromDomain(UserPayment userPayment) {
         return PaymentPreferenceResponse.builder()
-                .preferenceId(paymentPreference.getPreferenceId())
-                .checkoutUrl(paymentPreference.getCheckoutUrl())
-                .externalReference(paymentPreference.getExternalReference())
+                .preferenceId(userPayment.getPreferenceId())
+                .checkoutUrl(userPayment.getCheckoutUrl())
+                .externalReference(userPayment.getExternalReference())
                 .build();
     }
 } 

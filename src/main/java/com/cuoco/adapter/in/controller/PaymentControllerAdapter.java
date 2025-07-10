@@ -2,14 +2,12 @@ package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.CreatePaymentRequest;
 import com.cuoco.adapter.in.controller.model.PaymentPreferenceResponse;
-import com.cuoco.application.port.in.CreatePaymentPreferenceCommand;
+import com.cuoco.application.port.in.CreateUserPaymentCommand;
 import com.cuoco.application.port.in.ProcessPaymentCallbackCommand;
-import com.cuoco.application.usecase.model.PaymentPreference;
+import com.cuoco.application.usecase.model.UserPayment;
 import com.cuoco.application.usecase.model.PaymentResult;
-import com.cuoco.application.usecase.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -18,31 +16,25 @@ import org.springframework.web.servlet.view.RedirectView;
 @RequestMapping("/payments")
 public class PaymentControllerAdapter {
 
-    private final CreatePaymentPreferenceCommand createPaymentPreferenceCommand;
+    private final CreateUserPaymentCommand createUserPaymentCommand;
     private final ProcessPaymentCallbackCommand processPaymentCallbackCommand;
 
     public PaymentControllerAdapter(
-            CreatePaymentPreferenceCommand createPaymentPreferenceCommand,
+            CreateUserPaymentCommand createUserPaymentCommand,
             ProcessPaymentCallbackCommand processPaymentCallbackCommand
     ) {
-        this.createPaymentPreferenceCommand = createPaymentPreferenceCommand;
+        this.createUserPaymentCommand = createUserPaymentCommand;
         this.processPaymentCallbackCommand = processPaymentCallbackCommand;
     }
 
     @PostMapping
     public ResponseEntity<PaymentPreferenceResponse> createPayment(@RequestBody CreatePaymentRequest request) {
-        log.info("Creating payment preference for plan upgrade");
-
-        User user = getUser();
+        log.info("Executing POST for user payment");
         
-        PaymentPreference preference = createPaymentPreferenceCommand.execute(
-                CreatePaymentPreferenceCommand.Command.builder()
-                        .userId(user.getId())
-                        .planId(request.getPlanId())
-                        .build()
-        );
+        UserPayment preference = createUserPaymentCommand.execute(buildCreatePaymentCommand(request));
 
         PaymentPreferenceResponse response = PaymentPreferenceResponse.fromDomain(preference);
+
         return ResponseEntity.ok(response);
     }
 
@@ -75,7 +67,9 @@ public class PaymentControllerAdapter {
         return new RedirectView(redirectUrl);
     }
 
-    private User getUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    private static CreateUserPaymentCommand.Command buildCreatePaymentCommand(CreatePaymentRequest request) {
+        return CreateUserPaymentCommand.Command.builder()
+                .planId(request.getPlanId())
+                .build();
     }
 } 

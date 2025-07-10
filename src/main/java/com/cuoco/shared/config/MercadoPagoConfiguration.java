@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "mercadopago")
+@ConfigurationProperties(prefix = "mercado-pago")
 public class MercadoPagoConfiguration {
     
     private String baseUrl;

@@ -14,14 +14,11 @@ spring:
       enabled: true
       max-file-size: 100MB
       max-request-size: 100MB
-
 springdoc:
   swagger-ui:
     path: /swagger-ui
-
 jwt:
   secret: ${JWT_SECRET}
-
 gemini:
   api:
     url: ${GEMINI_API_URL}
@@ -29,28 +26,7 @@ gemini:
   image:
     url: ${GEMINI_IMAGE_URL}
   temperature: ${GEMINI_TEMPERATURE:0.7}
-
-shared:
-  recipes:
-    max-recipes:
-      free: ${FREE_USER_MAX_RECIPES:10}
-      pro: ${PRO_USER_MAX_RECIPES:100}
-    size:
-      free: ${FREE_USER_RECIPES_SIZE:3}
-      pro: ${PRO_USER_RECIPES_SIZE:5}
-    images:
-      base-path: ${RECIPE_IMAGES_BASE_PATH:./src/main/resources/imagenes}
-  meal-preps:
-    size: ${MEAL_PREP_DEFAULT_SIZE:1}
-    recipes-size: ${RECIPES_SIZE_PER_MEAL_PREP:3}
-
-  plan:
-    free:
-      max-recipes: ${FREE_PLAN_MAX_RECIPES:10}
-    premium:
-      max-recipes: ${PREMIUM_PLAN_MAX_RECIPES:100}
-
-mercado pago:
+mercado-pago:
   base-url: ${MP_BASE_URL}
   access-token: ${MP_ACCESS_TOKEN}
   public-key: ${MP_PUBLIC_KEY}
@@ -69,7 +45,6 @@ mercado pago:
     primary-color: ${MP_BRAND_PRIMARY_COLOR:#FF6B35}
     secondary-color: ${MP_BRAND_SECONDARY_COLOR:#FFA500}
     show-mercado-pago-branding: ${MP_SHOW_BRANDING:false}
-
 mail:
   host: smtp.gmail.com
   port: 587
@@ -84,3 +59,16 @@ mail:
         connectiontimeout: 5000
         timeout: 5000
         writetimeout: 5000
+shared:
+  recipes:
+    max-recipes:
+      free: ${FREE_USER_MAX_RECIPES:10}
+      pro: ${PRO_USER_MAX_RECIPES:100}
+    size:
+      free: ${FREE_USER_RECIPES_SIZE:3}
+      pro: ${PRO_USER_RECIPES_SIZE:5}
+    images:
+      base-path: ${RECIPE_IMAGES_BASE_PATH:./src/main/resources/imagenes}
+  meal-preps:
+    size: ${MEAL_PREP_DEFAULT_SIZE:1}
+    recipes-size: ${RECIPES_SIZE_PER_MEAL_PREP:3}

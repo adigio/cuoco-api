@@ -21,6 +21,7 @@ public enum ErrorDescription {
 
     INGREDIENTS_EMPTY("Es necesario por lo menos un ingrediente para continuar"),
 
+    PRO_FEATURE("Esta funcionalidad solo es para usuarios PRO"),
     USER_NOT_EXISTS("El usuario ingresado no existe"),
     USER_DUPLICATED("El usuario ya existe"),
     NO_AUTH_TOKEN("El token no esta presente"),
@@ -30,9 +31,11 @@ public enum ErrorDescription {
     INVALID_AUDIO_FILE_EXTENSION("La extensión del archivo de audio no es valida"),
     AUDIO_FILE_IS_REQUIRED("El archivo de audio no esta presente y es requerido"),
     AUDIO_FILE_PROCESSING_ERROR("Error procesando el archivo de audio"),
-    PRO_FEATURE("Esta funcionalidad solo es para usuarios PRO"),
 
-    UNAUTHORIZED("No está autorizado a usar esta función"),
+    INVALID_PAYMENT_PLAN("El plan ingresado no es válido para el pago"),
+
+    FORBIDDEN("No está autorizado a usar esta función"),
+    UNAUTHORIZED("Es requerido autenticarse"),
     UNEXPECTED_ERROR("An unexpected error occurred: "),
     UNHANDLED("Ha ocurrido un error inesperado"),
     NOT_AVAILABLE("El servicio no esta disponible"),

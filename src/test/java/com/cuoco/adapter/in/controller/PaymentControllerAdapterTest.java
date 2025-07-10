@@ -3,9 +3,9 @@ package com.cuoco.adapter.in.controller;
 import com.cuoco.adapter.in.controller.model.CreatePaymentRequest;
 import com.cuoco.adapter.in.controller.model.PaymentPreferenceResponse;
 import com.cuoco.application.exception.BusinessException;
-import com.cuoco.application.port.in.CreatePaymentPreferenceCommand;
+import com.cuoco.application.port.in.CreateUserPaymentCommand;
 import com.cuoco.application.port.in.ProcessPaymentCallbackCommand;
-import com.cuoco.application.usecase.model.PaymentPreference;
+import com.cuoco.application.usecase.model.UserPayment;
 import com.cuoco.application.usecase.model.PaymentResult;
 import com.cuoco.application.usecase.model.PaymentStatus;
 import com.cuoco.application.usecase.model.User;
@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 class PaymentControllerAdapterTest {
 
     @Mock
-    private CreatePaymentPreferenceCommand createPaymentPreferenceCommand;
+    private CreateUserPaymentCommand createUserPaymentCommand;
 
     @Mock
     private ProcessPaymentCallbackCommand processPaymentCallbackCommand;
@@ -50,7 +50,7 @@ class PaymentControllerAdapterTest {
         when(mockSecurityContext.getAuthentication()).thenReturn(mockAuth);
         SecurityContextHolder.setContext(mockSecurityContext);
 
-        controller = new PaymentControllerAdapter(createPaymentPreferenceCommand, processPaymentCallbackCommand);
+        controller = new PaymentControllerAdapter(createUserPaymentCommand, processPaymentCallbackCommand);
     }
 
     @Test
@@ -61,14 +61,14 @@ class PaymentControllerAdapterTest {
                 .planId(2)
                 .build();
 
-        PaymentPreference mockPreference = PaymentPreference.builder()
+        UserPayment mockPreference = UserPayment.builder()
                 .preferenceId("test_preference_id")
                 .checkoutUrl("https://test.checkout.url")
                 .externalReference("test_ref")
                 .userId(1L)
                 .planId(2)
                 .build();
-        when(createPaymentPreferenceCommand.execute(any())).thenReturn(mockPreference);
+        when(createUserPaymentCommand.execute(any())).thenReturn(mockPreference);
 
         // Act  
         ResponseEntity<PaymentPreferenceResponse> response = controller.createPayment(request);
@@ -149,7 +149,7 @@ class PaymentControllerAdapterTest {
                 .planId(99) // inválido
                 .build();
 
-        when(createPaymentPreferenceCommand.execute(any()))
+        when(createUserPaymentCommand.execute(any()))
                 .thenThrow(new BusinessException("Invalid plan ID. Only PRO plan (id=2) is supported.", null));
 
         // Act & Assert

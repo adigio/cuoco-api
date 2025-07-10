@@ -5,6 +5,7 @@ public enum Constants {
     COMMA(","),
     SLASH("/"),
     DOT("."),
+    UNDERSCORE("_"),
     EMPTY("");
 
     private final String value;

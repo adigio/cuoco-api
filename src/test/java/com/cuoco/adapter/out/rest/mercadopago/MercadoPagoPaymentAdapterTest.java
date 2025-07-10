@@ -1,8 +1,8 @@
 package com.cuoco.adapter.out.rest.mercadopago;
 
-import com.cuoco.adapter.out.rest.mercadopago.model.MercadoPagoPreferenceResponse;
+import com.cuoco.adapter.out.rest.mercadopago.model.PreferenceResponseMercadoPagoModel;
 import com.cuoco.application.exception.BusinessException;
-import com.cuoco.application.usecase.model.PaymentPreference;
+import com.cuoco.application.usecase.model.UserPayment;
 import com.cuoco.shared.config.MercadoPagoConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class MercadoPagoPaymentAdapterTest {
     @Mock
     private MercadoPagoConfiguration mercadoPagoConfig;
 
-    private MercadoPagoPaymentAdapter adapter;
+    private CreatePaymentMercadoPagoRepositoryAdapter adapter;
 
     @BeforeEach
     void setUp() {
@@ -55,27 +55,27 @@ class MercadoPagoPaymentAdapterTest {
         when(mercadoPagoConfig.getCallback()).thenReturn(callbackConfig);
         when(mercadoPagoConfig.getPlan()).thenReturn(planConfig);
         
-        adapter = new MercadoPagoPaymentAdapter(restTemplate, mercadoPagoConfig);
+        adapter = new CreatePaymentMercadoPagoRepositoryAdapter(restTemplate, mercadoPagoConfig);
     }
 
     @Test
-    void GIVEN_valid_request_WHEN_createPreference_THEN_return_payment_preference() {
+    void GIVEN_valid_request_WHEN_execute() {
         // Arrange
-        MercadoPagoPreferenceResponse mockResponse = MercadoPagoPreferenceResponse.builder()
+        PreferenceResponseMercadoPagoModel mockResponse = PreferenceResponseMercadoPagoModel.builder()
                 .id("pref_123456")
                 .initPoint("https://checkout.mercadopago.com/pref_123456")
                 .externalReference("CUOCO_PRO_UPGRADE_1_abc123")
                 .status("active")
                 .build();
 
-        ResponseEntity<MercadoPagoPreferenceResponse> responseEntity = 
+        ResponseEntity<PreferenceResponseMercadoPagoModel> responseEntity =
                 new ResponseEntity<>(mockResponse, HttpStatus.CREATED);
 
-        when(restTemplate.exchange(anyString(), any(), any(), eq(MercadoPagoPreferenceResponse.class)))
+        when(restTemplate.exchange(anyString(), any(), any(), eq(PreferenceResponseMercadoPagoModel.class)))
                 .thenReturn(responseEntity);
 
         // Act
-        PaymentPreference result = adapter.createPreference(1L, 2);
+        UserPayment result = adapter.execute(1L, 2);
 
         // Assert
         assertThat(result).isNotNull();
@@ -86,24 +86,24 @@ class MercadoPagoPaymentAdapterTest {
     }
 
     @Test
-    void GIVEN_invalid_plan_id_WHEN_createPreference_THEN_throw_business_exception() {
+    void GIVEN_invalid_plan_id_WHEN_execute_THEN_throw_business_exception() {
         // Act & Assert
         BusinessException exception = assertThrows(BusinessException.class, () ->
-                adapter.createPreference(1L, 1) // Plan inválido
+                adapter.execute(1L, 1) // Plan inválido
         );
 
         assertThat(exception.getMessage()).isEqualTo("Invalid plan ID. Only PRO plan (id=2) is supported.");
     }
 
     @Test
-    void GIVEN_rest_client_exception_WHEN_createPreference_THEN_throw_business_exception() {
+    void GIVEN_rest_client_exception_WHEN_execute_THEN_throw_business_exception() {
         // Arrange
-        when(restTemplate.exchange(anyString(), any(), any(), eq(MercadoPagoPreferenceResponse.class)))
+        when(restTemplate.exchange(anyString(), any(), any(), eq(PreferenceResponseMercadoPagoModel.class)))
                 .thenThrow(new RestClientException("Network error"));
 
         // Act & Assert
         BusinessException exception = assertThrows(BusinessException.class, () ->
-                adapter.createPreference(1L, 2)
+                adapter.execute(1L, 2)
         );
 
         assertThat(exception.getMessage()).isEqualTo("Error communicating with payment service");
