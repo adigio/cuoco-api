@@ -5,18 +5,16 @@ import com.cuoco.adapter.out.hibernate.repository.UpdateUserActiveHibernateRepos
 import com.cuoco.application.exception.BadRequestException;
 import com.cuoco.application.port.out.UpdateUserActiveRepository;
 import com.cuoco.application.usecase.model.User;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 @Slf4j
 @Repository
+@RequiredArgsConstructor
 public class UpdateUserActiveDatabaseActiveRepositoryAdapter implements UpdateUserActiveRepository {
 
     private final UpdateUserActiveHibernateRepositoryAdapter updateUserActiveHibernateRepositoryAdapter;
-
-    public UpdateUserActiveDatabaseActiveRepositoryAdapter(UpdateUserActiveHibernateRepositoryAdapter updateUserActiveHibernateRepositoryAdapter) {
-        this.updateUserActiveHibernateRepositoryAdapter = updateUserActiveHibernateRepositoryAdapter;
-    }
 
     @Override
     public void execute(User user) {
@@ -27,6 +25,4 @@ public class UpdateUserActiveDatabaseActiveRepositoryAdapter implements UpdateUs
 
         updateUserActiveHibernateRepositoryAdapter.save(existingUser);
     }
-
-
 }

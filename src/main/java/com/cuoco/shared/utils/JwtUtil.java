@@ -17,6 +17,7 @@ public class JwtUtil {
 
     public String generateToken(User user) {
         return Jwts.builder()
+                .setId(user.getId().toString())
                 .setSubject(user.getEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 horas

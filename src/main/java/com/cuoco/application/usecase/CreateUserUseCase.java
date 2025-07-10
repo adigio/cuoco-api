@@ -3,12 +3,13 @@ package com.cuoco.application.usecase;
 import com.cuoco.application.exception.BadRequestException;
 import com.cuoco.application.port.in.CreateUserCommand;
 import com.cuoco.application.port.out.CreateUserRepository;
+import com.cuoco.application.port.out.ExistsUserByEmailRepository;
 import com.cuoco.application.port.out.GetAllergiesByIdRepository;
 import com.cuoco.application.port.out.GetCookLevelByIdRepository;
 import com.cuoco.application.port.out.GetDietByIdRepository;
 import com.cuoco.application.port.out.GetDietaryNeedsByIdRepository;
 import com.cuoco.application.port.out.GetPlanByIdRepository;
-import com.cuoco.application.port.out.ExistsUserByEmailRepository;
+import com.cuoco.application.port.out.SendConfirmationEmailRepository;
 import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.CookLevel;
 import com.cuoco.application.usecase.model.Diet;
@@ -16,8 +17,11 @@ import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.Plan;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserPreferences;
+import com.cuoco.application.utils.JwtUtil;
 import com.cuoco.shared.model.ErrorDescription;
+import com.cuoco.shared.utils.PlanConstants;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -27,6 +31,7 @@ import java.util.List;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class CreateUserUseCase implements CreateUserCommand {
 
     private final PasswordEncoder passwordEncoder;
@@ -37,26 +42,8 @@ public class CreateUserUseCase implements CreateUserCommand {
     private final GetCookLevelByIdRepository getCookLevelByIdRepository;
     private final GetDietaryNeedsByIdRepository getDietaryNeedsByIdRepository;
     private final GetAllergiesByIdRepository getAllergiesByIdRepository;
-
-    public CreateUserUseCase(
-            PasswordEncoder passwordEncoder,
-            CreateUserRepository createUserRepository,
-            ExistsUserByEmailRepository existsUserByEmailRepository,
-            GetPlanByIdRepository getPlanByIdRepository,
-            GetDietByIdRepository getDietByIdRepository,
-            GetCookLevelByIdRepository getCookLevelByIdRepository,
-            GetDietaryNeedsByIdRepository getDietaryNeedsByIdRepository,
-            GetAllergiesByIdRepository getAllergiesByIdRepository
-    ) {
-        this.passwordEncoder = passwordEncoder;
-        this.createUserRepository = createUserRepository;
-        this.existsUserByEmailRepository = existsUserByEmailRepository;
-        this.getPlanByIdRepository = getPlanByIdRepository;
-        this.getDietByIdRepository = getDietByIdRepository;
-        this.getCookLevelByIdRepository = getCookLevelByIdRepository;
-        this.getDietaryNeedsByIdRepository = getDietaryNeedsByIdRepository;
-        this.getAllergiesByIdRepository = getAllergiesByIdRepository;
-    }
+    private final SendConfirmationEmailRepository sendConfirmationEmailRepository;
+    private final JwtUtil jwtUtil;
 
     @Transactional
     public User execute(Command command) {
@@ -70,9 +57,9 @@ public class CreateUserUseCase implements CreateUserCommand {
         List<DietaryNeed> existingNeeds = getDietaryNeeds(command);
         List<Allergy> existingAlergies = getAllergies(command);
 
-        Plan plan = getPlan(command.getPlanId());
-        CookLevel cookLevel = getCookLevel(command.getCookLevelId());
-        Diet diet = getDiet(command.getDietId());
+        Plan plan = getPlanByIdRepository.execute(PlanConstants.FREE.getValue());
+        CookLevel cookLevel = getCookLevelByIdRepository.execute(command.getCookLevelId());
+        Diet diet = getDietByIdRepository.execute(command.getDietId());
 
         UserPreferences preferencesToSave = buildUserPreferences(cookLevel, diet);
         User userToSave = buildUser(command, preferencesToSave, plan, existingNeeds, existingAlergies);
@@ -81,19 +68,9 @@ public class CreateUserUseCase implements CreateUserCommand {
 
         userCreated.setPassword(null);
 
+        sendConfirmationEmail(userCreated);
+
         return userCreated;
-    }
-
-    private Plan getPlan(Integer planId) {
-        return getPlanByIdRepository.execute(planId);
-    }
-
-    private Diet getDiet(Integer dietId) {
-        return getDietByIdRepository.execute(dietId);
-    }
-
-    private CookLevel getCookLevel(Integer cookLevelId) {
-        return getCookLevelByIdRepository.execute(cookLevelId);
     }
 
     private List<DietaryNeed> getDietaryNeeds(Command command) {
@@ -155,4 +132,8 @@ public class CreateUserUseCase implements CreateUserCommand {
                 .build();
     }
 
+    private void sendConfirmationEmail(User user) {
+        String token = jwtUtil.generateActivationToken(user);
+        sendConfirmationEmailRepository.execute(user, token);
+    }
 }

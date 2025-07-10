@@ -7,7 +7,6 @@ import com.cuoco.adapter.in.controller.model.ParametricResponse;
 import com.cuoco.adapter.in.controller.model.UserPreferencesResponse;
 import com.cuoco.adapter.in.controller.model.UserRequest;
 import com.cuoco.adapter.in.controller.model.UserResponse;
-import com.cuoco.adapter.out.mail.EmailService;
 import com.cuoco.application.port.in.ActivateUserCommand;
 import com.cuoco.application.port.in.CreateUserCommand;
 import com.cuoco.application.port.in.SignInUserCommand;
@@ -16,7 +15,6 @@ import com.cuoco.application.usecase.model.AuthenticatedUser;
 import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.shared.GlobalExceptionHandler;
-import com.cuoco.shared.utils.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,39 +22,30 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/auth")
+
 @Tag(name = "Authentication", description = "Operations related to authenticate users")
 public class AuthenticationControllerAdapter {
 
     private final SignInUserCommand signInUserCommand;
     private final CreateUserCommand createUserCommand;
     private final ActivateUserCommand activateUserCommand;
-    private final EmailService emailService;
-    private final JwtUtil jwtUtil;
-
-
-    public AuthenticationControllerAdapter(
-            SignInUserCommand signInUserCommand,
-            CreateUserCommand createUserCommand,
-            ActivateUserCommand activateUserCommand,
-            EmailService emailService,
-            JwtUtil jwtUtil
-    ) {
-        this.signInUserCommand = signInUserCommand;
-        this.createUserCommand = createUserCommand;
-        this.activateUserCommand = activateUserCommand;
-        this.emailService = emailService;
-        this.jwtUtil = jwtUtil;
-    }
 
     @PostMapping("/login")
     @Operation(summary = "POST for user authentication with email and password")
@@ -104,14 +93,6 @@ public class AuthenticationControllerAdapter {
         return ResponseEntity.ok(response);
     }
 
-    private AuthResponse buildAuthResponse(AuthenticatedUser authenticatedUser) {
-        return AuthResponse.builder()
-                .data(AuthDataResponse.builder()
-                        .user(buildUserResponse(authenticatedUser.getUser(), authenticatedUser.getToken()))
-                        .build())
-                .build();
-    }
-
     @PostMapping("/register")
     @Operation(summary = "POST for user creation with basic data and preferences")
     @ApiResponses(value = {
@@ -152,26 +133,21 @@ public class AuthenticationControllerAdapter {
         log.info("Executing POST register with email {}", request.getEmail());
 
         User user = createUserCommand.execute(buildCreateCommand(request));
-
-        String confirmationLink = "http://localhost:8080/auth/confirm?token=" + generateConfirmationToken(user);
-
-        emailService.sendConfirmationEmail(user.getEmail(), confirmationLink);
-
         UserResponse userResponse = buildUserResponse(user, null);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(userResponse);
     }
 
     @GetMapping("/confirm")
-    @Operation(summary = "GET para confirmar el email del usuario")
+    @Operation(summary = "GET for confirm user email")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Email confirmado exitosamente"
+                    description = "Email confirmed successfully"
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Token inválido o expirado",
+                    description = "Invalid token or expired",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
@@ -179,18 +155,19 @@ public class AuthenticationControllerAdapter {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "Usuario no encontrado",
+                    description = "User not found",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = GlobalExceptionHandler.ApiErrorResponse.class)
                     )
             )
     })
-    public ResponseEntity<Void> confirmEmail(@RequestParam String token) {
-        log.info("Ejecutando confirmación de email");
+    public ResponseEntity<?> confirmEmail(@RequestParam String token) {
+        log.info("Executing POST email confirmation for token {}", token);
 
-        String email = jwtUtil.extractEmail(token);
-        activateUserCommand.execute(email);
+        ActivateUserCommand.Command command = ActivateUserCommand.Command.builder().token(token).build();
+
+        activateUserCommand.execute(command);
 
         return ResponseEntity.ok().build();
     }
@@ -215,6 +192,14 @@ public class AuthenticationControllerAdapter {
         );
     }
 
+    private AuthResponse buildAuthResponse(AuthenticatedUser authenticatedUser) {
+        return AuthResponse.builder()
+                .data(AuthDataResponse.builder()
+                        .user(buildUserResponse(authenticatedUser.getUser(), authenticatedUser.getToken()))
+                        .build())
+                .build();
+    }
+
     private UserResponse buildUserResponse(User user, String token) {
         return UserResponse.builder()
                 .id(user.getId())
@@ -235,9 +220,4 @@ public class AuthenticationControllerAdapter {
     private List<ParametricResponse> buildAllergies(List<Allergy> allergies) {
         return allergies != null && !allergies.isEmpty() ? allergies.stream().map(ParametricResponse::fromDomain).toList() : null;
     }
-
-    private String generateConfirmationToken(User user) {
-        return jwtUtil.generateToken(user);
-    }
-
 }

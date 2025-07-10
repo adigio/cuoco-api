@@ -1,4 +1,4 @@
-package com.cuoco.adapter.out.mail;
+package com.cuoco.adapter.out.email;
 
 
 public interface EmailService {
