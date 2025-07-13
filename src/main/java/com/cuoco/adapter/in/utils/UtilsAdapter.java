@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class Utils {
+public class UtilsAdapter {
 
     public static ParametricResponse mapNull(Parametric source) {
         return source != null ? ParametricResponse.fromDomain(source) : null;

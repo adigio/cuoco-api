@@ -60,7 +60,7 @@ public class GetMealPrepsFromIngredientsGeminiRestRepositoryAdapter implements G
                 try {
                     return objectMapper.writeValueAsString(value);
                 } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
+                    throw new NotAvailableException(ErrorDescription.NOT_AVAILABLE.getValue());
                 }
             }).toList();
 
@@ -100,7 +100,7 @@ public class GetMealPrepsFromIngredientsGeminiRestRepositoryAdapter implements G
             throw new NotAvailableException("Failed to generate meal preps");
         } catch (Exception e) {
             log.error("Error generating meal preps from Gemini", e);
-            throw new RuntimeException("Failed to generate meal preps");
+            throw new UnprocessableException("Failed to generate meal preps");
         }
     }
 

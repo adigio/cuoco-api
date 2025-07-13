@@ -30,14 +30,14 @@ import java.util.Optional;
 
 @Slf4j
 @Repository
-public class CreateAllMealPrepsDatabaseRepository implements CreateAllMealPrepsRepository {
+public class CreateAllMealPrepsDatabaseRepositoryAdapter implements CreateAllMealPrepsRepository {
 
     private final CreateAllMealPrepsHibernateRepositoryAdapter createAllMealPrepsHibernateRepositoryAdapter;
 
     private final GetIngredientByNameHibernateRepositoryAdapter getIngredientByNameHibernateRepositoryAdapter;
     private final CreateIngredientHibernateRepositoryAdapter createIngredientHibernateRepositoryAdapter;
 
-    public CreateAllMealPrepsDatabaseRepository(
+    public CreateAllMealPrepsDatabaseRepositoryAdapter(
             CreateAllMealPrepsHibernateRepositoryAdapter createAllMealPrepsHibernateRepositoryAdapter,
             GetIngredientByNameHibernateRepositoryAdapter getIngredientByNameHibernateRepositoryAdapter,
             CreateIngredientHibernateRepositoryAdapter createIngredientHibernateRepositoryAdapter

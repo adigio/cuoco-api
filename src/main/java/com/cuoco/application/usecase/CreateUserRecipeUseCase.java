@@ -1,18 +1,17 @@
 package com.cuoco.application.usecase;
 
 
-import com.cuoco.adapter.exception.ConflictException;
+import com.cuoco.application.exception.ConflictException;
 import com.cuoco.application.port.in.CreateUserRecipeCommand;
 import com.cuoco.application.port.out.CreateUserRecipeRepository;
-import com.cuoco.application.port.out.GetRecipeByIdRepository;
 import com.cuoco.application.port.out.ExistsUserRecipeByUserIdAndRecipeIdRepository;
+import com.cuoco.application.port.out.GetRecipeByIdRepository;
 import com.cuoco.application.usecase.domainservice.UserDomainService;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserRecipe;
 import com.cuoco.shared.model.ErrorDescription;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Slf4j
