@@ -15,12 +15,12 @@ import static org.mockito.Mockito.when;
 public class ExistsUserRecipeByUserIdAndRecipeIdRepositoryAdapterTest {
 
     private ExistsUserRecipeByUserIdAndRecipeIdHibernateRepositoryAdapter existRepo;
-    private UserRecipeExistsByUserIdAndRecipeIdRepositoryAdapter adapter;
+    private ExistsUserRecipeDatabaseRepositoryAdapter adapter;
 
     @BeforeEach
     public void setUp() {
         existRepo = mock(ExistsUserRecipeByUserIdAndRecipeIdHibernateRepositoryAdapter.class);
-        adapter = new UserRecipeExistsByUserIdAndRecipeIdRepositoryAdapter(existRepo);
+        adapter = new ExistsUserRecipeDatabaseRepositoryAdapter(existRepo);
     }
 
     @Test
@@ -35,20 +35,16 @@ public class ExistsUserRecipeByUserIdAndRecipeIdRepositoryAdapterTest {
         UserRecipe userRecipe = new UserRecipe();
         userRecipe.setUser(user);
         userRecipe.setRecipe(recipe);
-        userRecipe.setFavorite(false);
 
         when(existRepo.existsByUserIdAndRecipeId(1L, 2L)).thenReturn(true);
 
-        // Act
         boolean result = adapter.execute(userRecipe);
 
-        // Assert
         assertTrue(result);
     }
 
     @Test
     public void shouldReturnFalseWhenRecipeDoesNotExistForUser() {
-        // Arrange
         User user = new User();
         user.setId(3L);
 
@@ -58,14 +54,11 @@ public class ExistsUserRecipeByUserIdAndRecipeIdRepositoryAdapterTest {
         UserRecipe userRecipe = new UserRecipe();
         userRecipe.setUser(user);
         userRecipe.setRecipe(recipe);
-        userRecipe.setFavorite(false);
 
         when(existRepo.existsByUserIdAndRecipeId(3L, 4L)).thenReturn(false);
 
-        // Act
         boolean result = adapter.execute(userRecipe);
 
-        // Assert
         assertFalse(result);
     }
 }

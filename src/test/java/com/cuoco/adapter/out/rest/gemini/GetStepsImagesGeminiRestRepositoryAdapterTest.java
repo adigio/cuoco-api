@@ -1,6 +1,7 @@
 package com.cuoco.adapter.out.rest.gemini;
 
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.GeminiResponseModel;
+import com.cuoco.adapter.out.rest.gemini.utils.ImageUtils;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.Step;
 import com.cuoco.factory.domain.RecipeFactory;
@@ -27,13 +28,16 @@ class GetStepsImagesGeminiRestRepositoryAdapterTest {
     private RestTemplate restTemplate;
 
     @Mock
+    private ImageUtils imageUtils;
+
+    @Mock
     private GeminiResponseModel geminiResponseModel;
 
     private GetRecipeStepsImagesGeminiRestRepositoryAdapter adapter;
 
     @BeforeEach
     void setUp() {
-        adapter = new GetRecipeStepsImagesGeminiRestRepositoryAdapter(restTemplate);
+        adapter = new GetRecipeStepsImagesGeminiRestRepositoryAdapter(restTemplate, imageUtils);
         ReflectionTestUtils.setField(adapter, "imageUrl", "https://test-url.com");
         ReflectionTestUtils.setField(adapter, "apiKey", "test-api-key");
         ReflectionTestUtils.setField(adapter, "temperature", 0.7);

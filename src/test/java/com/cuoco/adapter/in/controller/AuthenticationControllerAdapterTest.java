@@ -11,13 +11,15 @@ import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.factory.domain.UserFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 
@@ -27,23 +29,30 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = AuthenticationControllerAdapter.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
+@ExtendWith(MockitoExtension.class)
 public class AuthenticationControllerAdapterTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
     private ObjectMapper objectMapper;
 
-    @MockitoBean
+    @Mock
     private SignInUserCommand signInUserCommand;
 
-    @MockitoBean
+    @Mock
     private CreateUserCommand createUserCommand;
 
-    @MockitoBean
+    @Mock
     private AuthenticateUserCommand authenticateUserCommand;
+
+    @InjectMocks
+    private AuthenticationControllerAdapter authenticationControllerAdapter;
+
+    @BeforeEach
+    void setUp() {
+        objectMapper = new ObjectMapper();
+        mockMvc = MockMvcBuilders.standaloneSetup(authenticationControllerAdapter).build();
+    }
 
     @Test
     void GIVEN_valid_credentials_WHEN_login_THEN_return_auth_response() throws Exception {
@@ -75,7 +84,6 @@ public class AuthenticationControllerAdapterTest {
     }
 
     @Test
-
     void GIVEN_valid_user_data_WHEN_register_THEN_return_created_user_response() throws Exception {
         User user = UserFactory.create();
 

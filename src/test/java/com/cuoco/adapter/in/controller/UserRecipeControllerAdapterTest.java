@@ -1,108 +1,86 @@
 package com.cuoco.adapter.in.controller;
 
-import com.cuoco.adapter.in.controller.model.UserRecipesResponse;
 import com.cuoco.application.port.in.CreateUserRecipeCommand;
+import com.cuoco.application.port.in.DeleteUserRecipeCommand;
 import com.cuoco.application.port.in.GetAllUserRecipesQuery;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.User;
-import com.cuoco.application.usecase.model.UserRecipe;
+import com.cuoco.factory.domain.RecipeFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ExtendWith(MockitoExtension.class)
 public class UserRecipeControllerAdapterTest {
 
+    private MockMvc mockMvc;
+
+    @Mock
     private CreateUserRecipeCommand createUserRecipeCommand;
+
+    @Mock
     private GetAllUserRecipesQuery getAllUserRecipesQuery;
+
+    @Mock
+    private DeleteUserRecipeCommand deleteUserRecipeCommand;
+
+    @InjectMocks
     private UserRecipeControllerAdapter userRecipeControllerAdapter;
 
     @BeforeEach
-    public void setUp() {
-        createUserRecipeCommand = mock(CreateUserRecipeCommand.class);
-        getAllUserRecipesQuery =mock(GetAllUserRecipesQuery.class);
-        userRecipeControllerAdapter = new UserRecipeControllerAdapter(createUserRecipeCommand, getAllUserRecipesQuery);
+    void setup() {
+        mockMvc = MockMvcBuilders.standaloneSetup(userRecipeControllerAdapter).build();
     }
 
     @Test
-    public void saveRecipe_shouldReturnOk_whenSavedSuccessfully() throws Exception {
-        // Arrange
-        User user = new User();
-        user.setName("testUser");
-        setAuthentication(user);
-        when(createUserRecipeCommand.execute(any(CreateUserRecipeCommand.Command.class))).thenReturn(true);
+    void GIVEN_valid_recipe_id_WHEN_save_recipe_THEN_return_created() throws Exception {
+        Long recipeId = 1L;
+        doNothing().when(createUserRecipeCommand).execute(any(CreateUserRecipeCommand.Command.class));
 
-        // Act
-        ResponseEntity<?> response = userRecipeControllerAdapter.save(123L);
-
-        // Assert
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(true, response.getBody());
+        mockMvc.perform(post("/users/recipes/{id}", recipeId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
     }
 
     @Test
-    void testGetAll_returnsListOfUserRecipesResponse() {
-        // Arrange
-        UserRecipe userRecipe = new UserRecipe();
-        userRecipe.setId(1L);
-        User user = new User();
-        user.setName("testUser");
-        userRecipe.setUser(user);
-        Recipe recipe = new Recipe();
-        recipe.setName("Spaghetti");
-        userRecipe.setRecipe(recipe);
-        userRecipe.setFavorite(true);
-        List<UserRecipe> recipes = new ArrayList<>();
-        recipes.add(userRecipe);
+    void GIVEN_user_has_recipes_WHEN_get_all_recipes_THEN_return_recipes_list() throws Exception {
+        Recipe recipe1 = RecipeFactory.create();
+        Recipe recipe2 = RecipeFactory.create();
+        List<Recipe> recipes = List.of(recipe1, recipe2);
+
         when(getAllUserRecipesQuery.execute()).thenReturn(recipes);
 
-        // Act
-        ResponseEntity<?> response = userRecipeControllerAdapter.getAll();
-
-        // Assert
-        assertEquals(200, response.getStatusCodeValue());
-        assertTrue(response.getBody() instanceof List<?>);
-
-        List<?> body = (List<?>) response.getBody();
-        assertEquals(1, body.size());
-
-        Object first = body.get(0);
-        assertTrue(first instanceof UserRecipesResponse);
-
-        UserRecipesResponse result = (UserRecipesResponse) first;
-        assertEquals(1L, result.getId());
-        assertEquals("testUser", result.getUser().getName());
-        assertEquals("Spaghetti", result.getRecipe().getName());
-        assertTrue(result.isFavorite());
+        mockMvc.perform(get("/users/recipes")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[0].id").value(recipe1.getId()))
+                .andExpect(jsonPath("$[0].name").value(recipe1.getName()))
+                .andExpect(jsonPath("$[1].id").value(recipe2.getId()))
+                .andExpect(jsonPath("$[1].name").value(recipe2.getName()));
     }
 
     @Test
-    void testGetAll_returnsEmptyListWhenNoFavorites() {
-        // Arrange
-        when(getAllUserRecipesQuery.execute()).thenReturn(List.of());
+    void GIVEN_valid_recipe_id_WHEN_delete_recipe_THEN_return_no_content() throws Exception {
+        Long recipeId = 1L;
+        doNothing().when(deleteUserRecipeCommand).execute(any(DeleteUserRecipeCommand.Command.class));
 
-        // Act
-        ResponseEntity<?> response = userRecipeControllerAdapter.getAll();
-
-        // Assert
-        assertEquals(200, response.getStatusCodeValue());
-        assertTrue(response.getBody() instanceof List<?>);
-        assertTrue(((List<?>) response.getBody()).isEmpty());
-    }
-
-    // Utilidad para setear un usuario autenticado en el contexto de seguridad
-    private void setAuthentication(User user) {
-        TestingAuthenticationToken auth = new TestingAuthenticationToken(user, null);
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        mockMvc.perform(delete("/users/recipes/{id}", recipeId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
     }
 }

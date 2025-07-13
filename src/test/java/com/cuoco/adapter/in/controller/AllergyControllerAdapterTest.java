@@ -3,13 +3,15 @@ package com.cuoco.adapter.in.controller;
 import com.cuoco.application.port.in.AuthenticateUserCommand;
 import com.cuoco.application.port.in.GetAllAllergiesQuery;
 import com.cuoco.application.usecase.model.Allergy;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 
@@ -18,20 +20,26 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(AllergyControllerAdapter.class)
+@ExtendWith(MockitoExtension.class)
 class AllergyControllerAdapterTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
-    @MockitoBean
+    @Mock
     private GetAllAllergiesQuery getAllAllergiesQuery;
 
-    @MockitoBean
+    @Mock
     private AuthenticateUserCommand authenticateUserCommand;
 
+    @InjectMocks
+    private AllergyControllerAdapter allergyControllerAdapter;
+
+    @BeforeEach
+    void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(allergyControllerAdapter).build();
+    }
+
     @Test
-    @WithMockUser
     void GIVEN_existing_allergies_WHEN_getAll_THEN_return_list_of_parametric_response() throws Exception {
         List<Allergy> allergies = List.of(
                 Allergy.builder().id(1).description("Mani").build(),

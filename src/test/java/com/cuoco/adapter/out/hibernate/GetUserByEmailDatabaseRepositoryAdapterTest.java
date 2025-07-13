@@ -10,11 +10,11 @@ import com.cuoco.application.usecase.model.User;
 import com.cuoco.factory.hibernate.UserHibernateModelFactory;
 import com.cuoco.factory.hibernate.UserPreferencesHibernateModelFactory;
 import com.cuoco.shared.model.ErrorDescription;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
@@ -25,6 +25,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class GetUserByEmailDatabaseRepositoryAdapterTest {
 
     @Mock
@@ -35,11 +36,6 @@ class GetUserByEmailDatabaseRepositoryAdapterTest {
 
     @InjectMocks
     private GetUserByEmailDatabaseRepositoryAdapter adapter;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     void WHEN_execute_with_existing_user_and_preferences_THEN_return_user_with_preferences() {

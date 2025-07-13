@@ -5,6 +5,8 @@ import com.cuoco.adapter.out.rest.gemini.model.IngredientResponseGeminiModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.GeminiResponseModel;
 import com.cuoco.application.usecase.model.File;
 import com.cuoco.application.usecase.model.Ingredient;
+import com.cuoco.application.usecase.model.ParametricData;
+import com.cuoco.application.usecase.model.Unit;
 import com.cuoco.factory.domain.FileModelFactory;
 import com.cuoco.factory.gemini.GeminiResponseModelFactory;
 import com.cuoco.factory.gemini.IngredientResponseGeminiModelFactory;
@@ -30,12 +32,14 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class
-)
+@ExtendWith(MockitoExtension.class)
 class GetIngredientsGroupedFromImagesGeminiRestFromImagesRepositoryAdapterTest {
 
     @Mock
     private RestTemplate restTemplate;
+
+    @Mock
+    private ObjectMapper objectMapper;
 
     @InjectMocks
     private GetIngredientsGroupedFromImagesGeminiRestFromImagesRepositoryAdapter adapter;
@@ -59,10 +63,14 @@ class GetIngredientsGroupedFromImagesGeminiRestFromImagesRepositoryAdapterTest {
         File image1 = FileModelFactory.create("image1.png", "image/png", "base64data1");
         File image2 = FileModelFactory.create("image2.jpg", "image/jpeg", "base64data2");
 
+        ParametricData parametricData = ParametricData.builder()
+                .units(List.of(Unit.builder().id(1).build()))
+                .build();
+
         when(restTemplate.postForObject(anyString(), any(), eq(GeminiResponseModel.class)))
                 .thenReturn(geminiResponseModel);
 
-        Map<String, List<Ingredient>> result = adapter.execute(List.of(image1, image2));
+        Map<String, List<Ingredient>> result = adapter.execute(List.of(image1, image2), parametricData);
 
         assertEquals(2, result.size());
         assertTrue(result.containsKey("image1.png"));
@@ -80,12 +88,15 @@ class GetIngredientsGroupedFromImagesGeminiRestFromImagesRepositoryAdapterTest {
         GeminiResponseModel geminiResponseModel = GeminiResponseModelFactory.create("INVALID_JSON");
 
         File image = FileModelFactory.create();
+        ParametricData parametricData = ParametricData.builder()
+                .units(List.of(Unit.builder().id(1).build()))
+                .build();
 
         when(restTemplate.postForObject(anyString(), any(), eq(GeminiResponseModel.class)))
                 .thenReturn(geminiResponseModel);
 
         NotAvailableException ex = assertThrows(NotAvailableException.class, () ->
-                adapter.execute(List.of(image)));
+                adapter.execute(List.of(image), parametricData));
 
         assertEquals(ErrorDescription.NOT_AVAILABLE.getValue(), ex.getDescription());
     }
@@ -93,12 +104,15 @@ class GetIngredientsGroupedFromImagesGeminiRestFromImagesRepositoryAdapterTest {
     @Test
     void GIVEN_restTemplate_throws_WHEN_execute_THEN_throw_NotAvailableException() {
         File image = FileModelFactory.create();
+        ParametricData parametricData = ParametricData.builder()
+                .units(List.of(Unit.builder().id(1).build()))
+                .build();
 
         when(restTemplate.postForObject(anyString(), any(), eq(GeminiResponseModel.class)))
                 .thenThrow(new RuntimeException("Connection error"));
 
         NotAvailableException ex = assertThrows(NotAvailableException.class, () ->
-                adapter.execute(List.of(image)));
+                adapter.execute(List.of(image), parametricData));
 
         assertEquals(ErrorDescription.NOT_AVAILABLE.getValue(), ex.getDescription());
     }

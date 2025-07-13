@@ -9,9 +9,11 @@ import com.cuoco.application.port.out.GetDietByIdRepository;
 import com.cuoco.application.port.out.GetDietaryNeedsByIdRepository;
 import com.cuoco.application.port.out.GetPlanByIdRepository;
 import com.cuoco.application.port.out.ExistsUserByEmailRepository;
+import com.cuoco.application.port.out.SendConfirmationEmailRepository;
 import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.User;
+import com.cuoco.application.utils.JwtUtil;
 import com.cuoco.factory.domain.UserFactory;
 import com.cuoco.shared.model.ErrorDescription;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -39,6 +42,8 @@ class CreateUserUseCaseTest {
     private GetCookLevelByIdRepository getCookLevelByIdRepository;
     private GetDietaryNeedsByIdRepository getDietaryNeedsByIdRepository;
     private GetAllergiesByIdRepository getAllergiesByIdRepository;
+    private SendConfirmationEmailRepository sendConfirmationEmailRepository;
+    private JwtUtil jwtUtil;
     private CreateUserUseCase useCase;
 
     @BeforeEach
@@ -51,6 +56,8 @@ class CreateUserUseCaseTest {
         getCookLevelByIdRepository = mock(GetCookLevelByIdRepository.class);
         getDietaryNeedsByIdRepository = mock(GetDietaryNeedsByIdRepository.class);
         getAllergiesByIdRepository = mock(GetAllergiesByIdRepository.class);
+        sendConfirmationEmailRepository = mock(SendConfirmationEmailRepository.class);
+        jwtUtil = mock(JwtUtil.class);
 
         useCase = new CreateUserUseCase(
                 passwordEncoder,
@@ -60,7 +67,9 @@ class CreateUserUseCaseTest {
                 getDietByIdRepository,
                 getCookLevelByIdRepository,
                 getDietaryNeedsByIdRepository,
-                getAllergiesByIdRepository
+                getAllergiesByIdRepository,
+                sendConfirmationEmailRepository,
+                jwtUtil
         );
     }
 
@@ -85,13 +94,15 @@ class CreateUserUseCaseTest {
                 .build();
 
         when(existsUserByEmailRepository.execute(command.getEmail())).thenReturn(false);
-        when(getPlanByIdRepository.execute(command.getPlanId())).thenReturn(plan);
+        when(getPlanByIdRepository.execute(any())).thenReturn(plan);
         when(getDietByIdRepository.execute(command.getDietId())).thenReturn(diet);
         when(getCookLevelByIdRepository.execute(command.getCookLevelId())).thenReturn(cookLevel);
         when(getDietaryNeedsByIdRepository.execute(command.getDietaryNeeds())).thenReturn(user.getDietaryNeeds());
         when(getAllergiesByIdRepository.execute(command.getAllergies())).thenReturn(user.getAllergies());
         when(passwordEncoder.encode(command.getPassword())).thenReturn("encrypted");
         when(createUserRepository.execute(any())).thenReturn(user);
+        doNothing().when(sendConfirmationEmailRepository).execute(any(), any());
+        when(jwtUtil.generateActivationToken(any())).thenReturn("token");
 
         User result = useCase.execute(command);
 
@@ -116,7 +127,7 @@ class CreateUserUseCaseTest {
         var command = CreateUserCommand.Command.builder().email("existing@email.com").planId(1).build();
 
         when(existsUserByEmailRepository.execute(command.getEmail())).thenReturn(false);
-        when(getPlanByIdRepository.execute(command.getPlanId())).thenReturn(null);
+        when(getPlanByIdRepository.execute(any())).thenReturn(null);
 
         BadRequestException ex = assertThrows(BadRequestException.class, () -> useCase.execute(command));
         assertEquals(ErrorDescription.PLAN_NOT_EXISTS.getValue(), ex.getDescription());
@@ -128,7 +139,7 @@ class CreateUserUseCaseTest {
         var command = CreateUserCommand.Command.builder().email("existing@email.com").planId(1).dietId(1).build();
 
         when(existsUserByEmailRepository.execute(command.getEmail())).thenReturn(false);
-        when(getPlanByIdRepository.execute(command.getPlanId())).thenReturn(user.getPlan());
+        when(getPlanByIdRepository.execute(any())).thenReturn(user.getPlan());
         when(getCookLevelByIdRepository.execute(command.getCookLevelId())).thenReturn(user.getPreferences().getCookLevel());
         when(getDietByIdRepository.execute(command.getDietId())).thenReturn(null);
 
@@ -147,7 +158,7 @@ class CreateUserUseCaseTest {
                 .build();
 
         when(existsUserByEmailRepository.execute(command.getEmail())).thenReturn(false);
-        when(getPlanByIdRepository.execute(command.getPlanId())).thenReturn(user.getPlan());
+        when(getPlanByIdRepository.execute(any())).thenReturn(user.getPlan());
         when(getCookLevelByIdRepository.execute(command.getCookLevelId())).thenReturn(null);
 
         BadRequestException ex = assertThrows(BadRequestException.class, () -> useCase.execute(command));
@@ -166,7 +177,7 @@ class CreateUserUseCaseTest {
                 .build();
 
         when(existsUserByEmailRepository.execute(command.getEmail())).thenReturn(false);
-        when(getPlanByIdRepository.execute(command.getPlanId())).thenReturn(user.getPlan());
+        when(getPlanByIdRepository.execute(any())).thenReturn(user.getPlan());
         when(getDietByIdRepository.execute(command.getDietId())).thenReturn(user.getPreferences().getDiet());
         when(getCookLevelByIdRepository.execute(command.getCookLevelId())).thenReturn(user.getPreferences().getCookLevel());
         when(getDietaryNeedsByIdRepository.execute(command.getDietaryNeeds())).thenReturn(Collections.emptyList());
@@ -188,7 +199,7 @@ class CreateUserUseCaseTest {
                 .build();
 
         when(existsUserByEmailRepository.execute(command.getEmail())).thenReturn(false);
-        when(getPlanByIdRepository.execute(command.getPlanId())).thenReturn(user.getPlan());
+        when(getPlanByIdRepository.execute(any())).thenReturn(user.getPlan());
         when(getDietByIdRepository.execute(command.getDietId())).thenReturn(user.getPreferences().getDiet());
         when(getCookLevelByIdRepository.execute(command.getCookLevelId())).thenReturn(user.getPreferences().getCookLevel());
         when(getDietaryNeedsByIdRepository.execute(command.getDietaryNeeds())).thenReturn(user.getDietaryNeeds());
