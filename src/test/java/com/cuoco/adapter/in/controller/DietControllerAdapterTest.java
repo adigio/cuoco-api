@@ -3,13 +3,15 @@ package com.cuoco.adapter.in.controller;
 import com.cuoco.application.port.in.AuthenticateUserCommand;
 import com.cuoco.application.port.in.GetAllDietsQuery;
 import com.cuoco.application.usecase.model.Diet;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 
@@ -18,20 +20,26 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(DietControllerAdapter.class)
+@ExtendWith(MockitoExtension.class)
 public class DietControllerAdapterTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
-    @MockitoBean
+    @Mock
     private GetAllDietsQuery getAllDietsQuery;
 
-    @MockitoBean
+    @Mock
     private AuthenticateUserCommand authenticateUserCommand;
 
+    @InjectMocks
+    private DietControllerAdapter dietControllerAdapter;
+
+    @BeforeEach
+    void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(dietControllerAdapter).build();
+    }
+
     @Test
-    @WithMockUser
     void GIVEN_existing_diets_WHEN_getAll_THEN_return_list_of_parametric_response() throws Exception {
         List<Diet> diets = List.of(
                 Diet.builder().id(1).description("Diet 1").build(),

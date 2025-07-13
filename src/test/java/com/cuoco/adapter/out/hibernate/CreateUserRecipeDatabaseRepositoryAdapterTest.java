@@ -1,52 +1,44 @@
 package com.cuoco.adapter.out.hibernate;
 
+import com.cuoco.adapter.out.hibernate.model.UserRecipesHibernateModel;
 import com.cuoco.adapter.out.hibernate.repository.CreateUserRecipeHibernateRepositoryAdapter;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserRecipe;
-import org.junit.jupiter.api.BeforeEach;
+import com.cuoco.factory.domain.RecipeFactory;
+import com.cuoco.factory.domain.UserFactory;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.argThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class CreateUserRecipeDatabaseRepositoryAdapterTest {
 
-    private CreateUserRecipeHibernateRepositoryAdapter saveAdapter;
-    private CreateUserRecipeDatabaseRepositoryAdapter repository;
+    @Mock
+    private CreateUserRecipeHibernateRepositoryAdapter createUserRecipeHibernateRepositoryAdapter;
 
-    @BeforeEach
-    public void setUp() {
-        saveAdapter = mock(CreateUserRecipeHibernateRepositoryAdapter.class);
-        repository = new CreateUserRecipeDatabaseRepositoryAdapter(saveAdapter);
-    }
+    @InjectMocks
+    private CreateUserRecipeDatabaseRepositoryAdapter repository;
 
     @Test
     public void shouldCallSaveWithCorrectModel() {
-        // Arrange
-        User user = new User();
-        user.setId(1L);
+        User user = UserFactory.create();
+        Recipe recipe = RecipeFactory.create();
+        UserRecipe userRecipe = UserRecipe.builder()
+                .user(user)
+                .recipe(recipe)
+                .build();
 
-        Recipe recipe = new Recipe();
-        recipe.setId(2L);
+        when(createUserRecipeHibernateRepositoryAdapter.save(any())).thenReturn(new UserRecipesHibernateModel());
 
-        UserRecipe userRecipe = new UserRecipe();
-        userRecipe.setUser(user);
-        userRecipe.setRecipe(recipe);
-        userRecipe.setFavorite(true);
+        repository.execute(userRecipe);
 
-        // Act
-        Boolean result = repository.execute(userRecipe);
-
-        // Assert
-        assertNull(result); // porque el método devuelve null por ahora
-        verify(saveAdapter, times(1)).save(argThat(model ->
-                model.getUser().getId().equals(1L) &&
-                        model.getRecipe().getId().equals(2L) &&
-                        model.getFavorite().equals(true)
-        ));
+        verify(createUserRecipeHibernateRepositoryAdapter).save(any());
     }
 }

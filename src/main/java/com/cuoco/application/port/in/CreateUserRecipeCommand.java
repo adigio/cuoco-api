@@ -5,7 +5,7 @@ import lombok.Data;
 
 public interface CreateUserRecipeCommand {
 
-    void execute(CreateUserRecipeCommand.Command command);
+    void execute(Command command);
 
     @Data
     @Builder

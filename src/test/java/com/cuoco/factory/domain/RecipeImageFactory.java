@@ -4,33 +4,33 @@ import com.cuoco.application.usecase.model.Step;
 
 public class RecipeImageFactory {
 
-    public static Step createMainRecipeImage() {
+    public static Step createMainImage() {
         return Step.builder()
-                .imageType("MAIN")
-                .imagePath("src/main/resources/imagenes/recetas/test-recipe/test-recipe-main.jpg")
-                .stepNumber(null)
-                .stepDescription(null)
-                .imageUrl("https://example.com/main-image.jpg")
-                .imageData("fake-main-image-data".getBytes())
+                .id(1L)
+                .title("Main Recipe Image")
+                .number(1)
+                .description("Main image for the recipe")
+                .time("5 minutes")
+                .imageName("test-recipe-main.jpg")
                 .build();
+    }
+
+    public static Step createStepImage(Integer stepNumber) {
+        return Step.builder()
+                .id((long) stepNumber)
+                .title("Step " + stepNumber + " Image")
+                .number(stepNumber)
+                .description("Image for step " + stepNumber)
+                .time("2 minutes")
+                .imageName("step-" + stepNumber + ".jpg")
+                .build();
+    }
+
+    public static Step createMainRecipeImage() {
+        return createMainImage();
     }
 
     public static Step createStepRecipeImage() {
-        return createStepRecipeImageWithNumber(1);
-    }
-
-    public static Step createStepRecipeImageWithNumber(Integer stepNumber) {
-        return Step.builder()
-                .imageType("STEP")
-                .stepNumber(stepNumber)
-                .stepDescription("Step " + stepNumber + " description")
-                .imagePath(String.format("src/main/resources/imagenes/pasos/test-recipe/test-recipe-step-%d.jpg", stepNumber))
-                .imageUrl(String.format("https://example.com/step-%d-image.jpg", stepNumber))
-                .imageData(("fake-step-" + stepNumber + "-image-data").getBytes())
-                .build();
-    }
-
-    public static Step create() {
-        return createMainRecipeImage();
+        return createStepImage(1);
     }
 } 

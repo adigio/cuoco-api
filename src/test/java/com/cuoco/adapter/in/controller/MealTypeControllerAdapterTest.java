@@ -1,8 +1,8 @@
 package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
-import com.cuoco.application.port.in.GetAllPlansQuery;
-import com.cuoco.application.usecase.model.Plan;
+import com.cuoco.application.port.in.GetAllMealTypesQuery;
+import com.cuoco.application.usecase.model.MealType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,34 +17,34 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class PlanControllerAdapterTest {
+class MealTypeControllerAdapterTest {
 
     @Mock
-    private GetAllPlansQuery getAllPlansQuery;
+    private GetAllMealTypesQuery getAllMealTypesQuery;
 
-    private PlanControllerAdapter planControllerAdapter;
+    private MealTypeControllerAdapter mealTypeControllerAdapter;
 
     @BeforeEach
     void setUp() {
-        planControllerAdapter = new PlanControllerAdapter(getAllPlansQuery);
+        mealTypeControllerAdapter = new MealTypeControllerAdapter(getAllMealTypesQuery);
     }
 
     @Test
-    void shouldGetAllPlansSuccessfully() {
+    void shouldGetAllMealTypesSuccessfully() {
         // Given
-        List<Plan> plans = List.of(
-                Plan.builder().id(1).description("Basic Plan").build(),
-                Plan.builder().id(2).description("Premium Plan").build()
+        List<MealType> mealTypes = List.of(
+                MealType.builder().id(1).description("Breakfast").build(),
+                MealType.builder().id(2).description("Lunch").build()
         );
-        when(getAllPlansQuery.execute()).thenReturn(plans);
+        when(getAllMealTypesQuery.execute()).thenReturn(mealTypes);
 
         // When
-        ResponseEntity<List<ParametricResponse>> response = planControllerAdapter.getAll();
+        ResponseEntity<List<ParametricResponse>> response = mealTypeControllerAdapter.getAll();
 
         // Then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(2, response.getBody().size());
-        verify(getAllPlansQuery, times(1)).execute();
+        verify(getAllMealTypesQuery, times(1)).execute();
     }
-}
+} 

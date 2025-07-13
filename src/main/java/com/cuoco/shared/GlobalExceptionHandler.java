@@ -53,6 +53,12 @@ public class GlobalExceptionHandler {
         return buildResponseError(HttpStatus.CONFLICT, ex);
     }
 
+    @ExceptionHandler(com.cuoco.application.exception.ConflictException.class)
+    public ResponseEntity<ApiErrorResponse> handle(com.cuoco.application.exception.ConflictException ex) {
+        log.warn(HttpStatus.CONFLICT.getReasonPhrase());
+        return buildResponseError(HttpStatus.CONFLICT, ex);
+    }
+
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ApiErrorResponse> handle(BadRequestException ex) {
         log.warn(HttpStatus.BAD_REQUEST.getReasonPhrase());

@@ -6,14 +6,16 @@ import com.cuoco.application.port.in.GetIngredientsFromTextCommand;
 import com.cuoco.application.port.in.GetIngredientsGroupedFromImagesCommand;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.factory.domain.IngredientFactory;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
@@ -27,23 +29,30 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = IngredientControllerAdapter.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
+@ExtendWith(MockitoExtension.class)
 public class IngredientControllerAdapterTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
-    @MockitoBean
+    @Mock
     private GetIngredientsFromAudioCommand getIngredientsFromAudioCommand;
 
-    @MockitoBean
+    @Mock
     private GetIngredientsGroupedFromImagesCommand getIngredientsGroupedFromImagesCommand;
 
-    @MockitoBean
+    @Mock
     private GetIngredientsFromTextCommand getIngredientsFromTextCommand;
 
-    @MockitoBean
+    @Mock
     private AuthenticateUserCommand authenticateUserCommand;
+
+    @InjectMocks
+    private IngredientControllerAdapter ingredientControllerAdapter;
+
+    @BeforeEach
+    void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(ingredientControllerAdapter).build();
+    }
 
     @Test
     void GIVEN_audio_file_WHEN_postAudio_THEN_return_ingredient_response() throws Exception {
@@ -67,7 +76,7 @@ public class IngredientControllerAdapterTest {
                 .andExpect(jsonPath("$[0].name").value(ingredient.getName()))
                 .andExpect(jsonPath("$[0].quantity").value(ingredient.getQuantity()))
                 .andExpect(jsonPath("$[0].unit.symbol").value(ingredient.getUnit().getSymbol()))
-                .andExpect(jsonPath("$[0].confirmed").value(ingredient.isConfirmed()))
+                .andExpect(jsonPath("$[0].confirmed").value(ingredient.getConfirmed()))
                 .andExpect(jsonPath("$[0].source").value(ingredient.getSource()));
     }
 
@@ -131,7 +140,7 @@ public class IngredientControllerAdapterTest {
                 .andExpect(jsonPath("$[0].name").value(ingredient.getName()))
                 .andExpect(jsonPath("$[0].quantity").value(ingredient.getQuantity()))
                 .andExpect(jsonPath("$[0].unit.symbol").value(ingredient.getUnit().getSymbol()))
-                .andExpect(jsonPath("$[0].confirmed").value(ingredient.isConfirmed()))
+                .andExpect(jsonPath("$[0].confirmed").value(ingredient.getConfirmed()))
                 .andExpect(jsonPath("$[0].source").value(ingredient.getSource()));
     }
 }

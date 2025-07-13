@@ -5,13 +5,13 @@ import com.cuoco.application.port.out.GetAllergiesByIdRepository;
 import com.cuoco.application.port.out.GetCookLevelByIdRepository;
 import com.cuoco.application.port.out.GetDietByIdRepository;
 import com.cuoco.application.port.out.GetDietaryNeedsByIdRepository;
-import com.cuoco.application.port.out.GetPlanByIdRepository;
+import com.cuoco.application.port.out.GetUserByIdRepository;
 import com.cuoco.application.port.out.UpdateUserRepository;
+import com.cuoco.application.usecase.domainservice.UserDomainService;
 import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.CookLevel;
 import com.cuoco.application.usecase.model.Diet;
 import com.cuoco.application.usecase.model.DietaryNeed;
-import com.cuoco.application.usecase.model.Plan;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.factory.domain.UserFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,19 +22,23 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UpdateUserProfileUseCaseTest {
 
     @Mock
-    private UpdateUserRepository updateUserRepository;
+    private UserDomainService userDomainService;
     @Mock
-    private GetPlanByIdRepository getPlanByIdRepository;
+    private GetUserByIdRepository getUserByIdRepository;
+    @Mock
+    private UpdateUserRepository updateUserRepository;
     @Mock
     private GetDietByIdRepository getDietByIdRepository;
     @Mock
@@ -49,8 +53,9 @@ class UpdateUserProfileUseCaseTest {
     @BeforeEach
     void setUp() {
         updateUserProfileUseCase = new UpdateUserProfileUseCase(
+                userDomainService,
+                getUserByIdRepository,
                 updateUserRepository,
-                getPlanByIdRepository,
                 getDietByIdRepository,
                 getCookLevelByIdRepository,
                 getDietaryNeedsByIdRepository,
@@ -61,11 +66,11 @@ class UpdateUserProfileUseCaseTest {
     @Test
     void shouldUpdateUserProfileSuccessfully() {
         // Given
-        String userEmail = "test@example.com";
         String userName = "Updated Name";
+        User currentUser = UserFactory.create();
+        User existingUser = UserFactory.create();
         
         UpdateUserProfileCommand.Command command = UpdateUserProfileCommand.Command.builder()
-                .userEmail(userEmail)
                 .name(userName)
                 .planId(1)
                 .cookLevelId(1)
@@ -75,7 +80,6 @@ class UpdateUserProfileUseCaseTest {
                 .build();
 
         // Mock repository responses
-        Plan mockPlan = Plan.builder().id(1).description("Premium").build();
         CookLevel mockCookLevel = CookLevel.builder().id(1).description("Beginner").build();
         Diet mockDiet = Diet.builder().id(1).description("Vegetarian").build();
         List<DietaryNeed> mockDietaryNeeds = List.of(
@@ -86,14 +90,14 @@ class UpdateUserProfileUseCaseTest {
                 Allergy.builder().id(1).description("Nuts").build()
         );
 
-        when(getPlanByIdRepository.execute(1)).thenReturn(mockPlan);
+        when(userDomainService.getCurrentUser()).thenReturn(currentUser);
+        when(getUserByIdRepository.execute(currentUser.getId())).thenReturn(existingUser);
         when(getCookLevelByIdRepository.execute(1)).thenReturn(mockCookLevel);
         when(getDietByIdRepository.execute(1)).thenReturn(mockDiet);
         when(getDietaryNeedsByIdRepository.execute(List.of(1, 2))).thenReturn(mockDietaryNeeds);
         when(getAllergiesByIdRepository.execute(List.of(1))).thenReturn(mockAllergies);
 
         User expectedUser = UserFactory.create();
-        expectedUser.setEmail(userEmail);
         expectedUser.setName(userName);
         when(updateUserRepository.execute(any(User.class))).thenReturn(expectedUser);
 
@@ -102,11 +106,9 @@ class UpdateUserProfileUseCaseTest {
 
         // Then
         assertNotNull(result);
-        assertEquals(userEmail, result.getEmail());
         assertEquals(userName, result.getName());
         
         verify(updateUserRepository, times(1)).execute(any(User.class));
-        verify(getPlanByIdRepository, times(1)).execute(1);
         verify(getCookLevelByIdRepository, times(1)).execute(1);
         verify(getDietByIdRepository, times(1)).execute(1);
         verify(getDietaryNeedsByIdRepository, times(1)).execute(List.of(1, 2));
@@ -116,15 +118,17 @@ class UpdateUserProfileUseCaseTest {
     @Test
     void shouldPassCorrectUserDataToRepository() {
         // Given
-        String userEmail = "test@example.com";
         String userName = "Test User";
+        User currentUser = UserFactory.create();
+        User existingUser = UserFactory.create();
         
         UpdateUserProfileCommand.Command command = UpdateUserProfileCommand.Command.builder()
-                .userEmail(userEmail)
                 .name(userName)
                 .build();
 
         User expectedUser = UserFactory.create();
+        when(userDomainService.getCurrentUser()).thenReturn(currentUser);
+        when(getUserByIdRepository.execute(currentUser.getId())).thenReturn(existingUser);
         when(updateUserRepository.execute(any(User.class))).thenReturn(expectedUser);
 
         // When
@@ -132,7 +136,6 @@ class UpdateUserProfileUseCaseTest {
 
         // Then
         verify(updateUserRepository).execute(argThat(user -> 
-            user.getEmail().equals(userEmail) && 
             user.getName().equals(userName)
         ));
     }
@@ -140,18 +143,17 @@ class UpdateUserProfileUseCaseTest {
     @Test
     void shouldMapAllFieldsFromCommandToUser() {
         // Given
-        String userEmail = "test@example.com";
         String userName = "Test User";
-        Integer planId = 2;
         Integer cookLevelId = 3;
         Integer dietId = 1;
         List<Integer> dietaryNeeds = List.of(1, 2, 3);
         List<Integer> allergies = List.of(4, 5);
         
+        User currentUser = UserFactory.create();
+        User existingUser = UserFactory.create();
+        
         UpdateUserProfileCommand.Command command = UpdateUserProfileCommand.Command.builder()
-                .userEmail(userEmail)
                 .name(userName)
-                .planId(planId)
                 .cookLevelId(cookLevelId)
                 .dietId(dietId)
                 .dietaryNeeds(dietaryNeeds)
@@ -159,7 +161,8 @@ class UpdateUserProfileUseCaseTest {
                 .build();
 
         // Mock all repository responses
-        when(getPlanByIdRepository.execute(planId)).thenReturn(Plan.builder().id(planId).build());
+        when(userDomainService.getCurrentUser()).thenReturn(currentUser);
+        when(getUserByIdRepository.execute(currentUser.getId())).thenReturn(existingUser);
         when(getCookLevelByIdRepository.execute(cookLevelId)).thenReturn(CookLevel.builder().id(cookLevelId).build());
         when(getDietByIdRepository.execute(dietId)).thenReturn(Diet.builder().id(dietId).build());
         when(getDietaryNeedsByIdRepository.execute(dietaryNeeds)).thenReturn(List.of(
@@ -180,9 +183,7 @@ class UpdateUserProfileUseCaseTest {
 
         // Then
         verify(updateUserRepository).execute(argThat(user -> 
-            user.getEmail().equals(userEmail) && 
             user.getName().equals(userName) &&
-            user.getPlan() != null && user.getPlan().getId().equals(planId) &&
             user.getPreferences() != null && 
             user.getPreferences().getCookLevel() != null && 
             user.getPreferences().getCookLevel().getId().equals(cookLevelId) &&
@@ -196,10 +197,10 @@ class UpdateUserProfileUseCaseTest {
     @Test
     void shouldHandleNullFieldsInCommand() {
         // Given
-        String userEmail = "test@example.com";
+        User currentUser = UserFactory.create();
+        User existingUser = UserFactory.create();
         
         UpdateUserProfileCommand.Command command = UpdateUserProfileCommand.Command.builder()
-                .userEmail(userEmail)
                 .name(null)
                 .planId(null)
                 .cookLevelId(null)
@@ -209,6 +210,8 @@ class UpdateUserProfileUseCaseTest {
                 .build();
 
         User expectedUser = UserFactory.create();
+        when(userDomainService.getCurrentUser()).thenReturn(currentUser);
+        when(getUserByIdRepository.execute(currentUser.getId())).thenReturn(existingUser);
         when(updateUserRepository.execute(any(User.class))).thenReturn(expectedUser);
 
         // When
@@ -217,7 +220,6 @@ class UpdateUserProfileUseCaseTest {
         // Then
         assertNotNull(result);
         verify(updateUserRepository, times(1)).execute(any(User.class));
-        verify(getPlanByIdRepository, never()).execute(anyInt());
         verify(getCookLevelByIdRepository, never()).execute(anyInt());
         verify(getDietByIdRepository, never()).execute(anyInt());
         verify(getDietaryNeedsByIdRepository, never()).execute(anyList());

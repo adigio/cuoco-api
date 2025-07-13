@@ -3,13 +3,12 @@ package com.cuoco.adapter.in.controller;
 import com.cuoco.adapter.in.controller.model.IngredientRequest;
 import com.cuoco.adapter.in.controller.model.IngredientResponse;
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
-import com.cuoco.adapter.in.controller.model.QuickRecipeRequest;
 import com.cuoco.adapter.in.controller.model.RecipeConfiguration;
 import com.cuoco.adapter.in.controller.model.RecipeFilterRequest;
 import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.adapter.in.controller.model.StepResponse;
-import com.cuoco.adapter.in.utils.Utils;
+import com.cuoco.adapter.in.utils.UtilsAdapter;
 import com.cuoco.application.port.in.FindOrCreateRecipeCommand;
 import com.cuoco.application.port.in.FindRecipesCommand;
 import com.cuoco.application.port.in.GetRecipeByIdQuery;
@@ -18,7 +17,6 @@ import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.shared.GlobalExceptionHandler;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -257,10 +255,10 @@ public class RecipeControllerAdapter {
                 .image(recipe.getImage())
                 .preparationTime(ParametricResponse.fromDomain(recipe.getPreparationTime()))
                 .cookLevel(ParametricResponse.fromDomain(recipe.getCookLevel()))
-                .diet(Utils.mapNull(recipe.getDiet()))
+                .diet(UtilsAdapter.mapNull(recipe.getDiet()))
                 .mealTypes(recipe.getMealTypes().stream().map(ParametricResponse::fromDomain).toList())
-                .allergies(Utils.mapNullOrEmpty(recipe.getAllergies()))
-                .dietaryNeeds(Utils.mapNullOrEmpty(recipe.getDietaryNeeds()))
+                .allergies(UtilsAdapter.mapNullOrEmpty(recipe.getAllergies()))
+                .dietaryNeeds(UtilsAdapter.mapNullOrEmpty(recipe.getDietaryNeeds()))
                 .ingredients(recipe.getIngredients().stream().map(IngredientResponse::fromDomain).toList())
                 .build();
     }
