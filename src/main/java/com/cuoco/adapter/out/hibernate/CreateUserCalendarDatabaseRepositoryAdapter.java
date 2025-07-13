@@ -13,6 +13,7 @@ import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.CalendarRecipe;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserCalendar;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -20,13 +21,10 @@ import java.util.List;
 
 @Slf4j
 @Repository
+@RequiredArgsConstructor
 public class CreateUserCalendarDatabaseRepositoryAdapter implements CreateUserCalendarRepository {
 
     private final CreateAllUserRecipeCalendarsHibernateRepositoryAdapter createAllUserRecipeCalendarsHibernateRepositoryAdapter;
-
-    public CreateUserCalendarDatabaseRepositoryAdapter(CreateAllUserRecipeCalendarsHibernateRepositoryAdapter createAllUserRecipeCalendarsHibernateRepositoryAdapter) {
-        this.createAllUserRecipeCalendarsHibernateRepositoryAdapter = createAllUserRecipeCalendarsHibernateRepositoryAdapter;
-    }
 
     @Override
     public void execute(UserCalendar userRecipeCalendars) {

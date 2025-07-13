@@ -49,7 +49,7 @@ class GetIngredientsFromAudioAsyncGeminiRestRepositoryAdapterTest {
         CompletableFuture<List<Ingredient>> future = adapter.execute(audioBase64, format, language);
 
         assertNotNull(future);
-        List<Ingredient> result = future.get(); // wait for completion
+        List<Ingredient> result = future.get();
 
         assertEquals(expectedIngredients, result);
         verify(getIngredientsFromAudioRepository).execute(audioBase64, format, language);

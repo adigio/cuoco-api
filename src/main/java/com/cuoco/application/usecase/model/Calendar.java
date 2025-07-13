@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 @Builder
 public class Calendar {
+    private Long id;
     private Day day;
     private LocalDate date;
     private List<CalendarRecipe> recipes;

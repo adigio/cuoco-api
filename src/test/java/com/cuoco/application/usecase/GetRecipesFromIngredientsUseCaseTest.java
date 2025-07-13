@@ -104,8 +104,6 @@ class GetRecipesFromIngredientsUseCaseTest {
                 .ingredients(ingredients)
                 .build();
 
-        // This test would need to be updated to expect the actual exception
-        // For now, we'll just verify the method is called
         when(recipeDomainService.getOrCreate(any())).thenReturn(List.of());
         
         useCase.execute(command);

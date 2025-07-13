@@ -47,7 +47,6 @@ class FindOrGenerateRecipeUseCaseTest {
 
     @Test
     void GIVEN_existing_recipe_name_WHEN_execute_THEN_return_recipe_from_database() {
-        // Given
         String recipeName = "Pasta Bolognesa";
         Recipe existingRecipe = RecipeFactory.create();
         existingRecipe.setName(recipeName);
@@ -58,10 +57,8 @@ class FindOrGenerateRecipeUseCaseTest {
                 .recipeName(recipeName)
                 .build();
 
-        // When
         Recipe result = useCase.execute(command);
 
-        // Then
         assertNotNull(result);
         assertEquals(recipeName, result.getName());
         assertEquals(existingRecipe.getId(), result.getId());
@@ -73,7 +70,6 @@ class FindOrGenerateRecipeUseCaseTest {
 
     @Test
     void GIVEN_non_existing_recipe_name_WHEN_execute_THEN_generate_and_save_new_recipe() {
-        // Given
         String recipeName = "Pizza Margherita";
         Recipe generatedRecipe = RecipeFactory.create();
         Recipe savedRecipe = RecipeFactory.create();
@@ -87,10 +83,8 @@ class FindOrGenerateRecipeUseCaseTest {
                 .recipeName(recipeName)
                 .build();
 
-        // When
         Recipe result = useCase.execute(command);
 
-        // Then
         assertNotNull(result);
         assertEquals(recipeName, result.getName());
 
@@ -101,7 +95,6 @@ class FindOrGenerateRecipeUseCaseTest {
 
     @Test
     void GIVEN_non_existing_recipe_and_generation_fails_WHEN_execute_THEN_throw_exception() {
-        // Given
         String recipeName = "Impossible Recipe";
 
         when(findRecipeByNameRepository.execute(recipeName)).thenReturn(null);
@@ -111,7 +104,6 @@ class FindOrGenerateRecipeUseCaseTest {
                 .recipeName(recipeName)
                 .build();
 
-        // When & Then
         RecipeGenerationException exception = assertThrows(RecipeGenerationException.class, () -> useCase.execute(command));
 
         assertEquals("Could not generate recipe for: " + recipeName, exception.getDescription());
@@ -123,7 +115,6 @@ class FindOrGenerateRecipeUseCaseTest {
 
     @Test
     void GIVEN_recipe_name_with_whitespace_WHEN_execute_THEN_search_with_trimmed_name() {
-        // Given
         String recipeNameWithSpaces = "  Lasagna Bolognesa  ";
         String trimmedName = recipeNameWithSpaces.trim();
         Recipe existingRecipe = RecipeFactory.create();
@@ -135,10 +126,8 @@ class FindOrGenerateRecipeUseCaseTest {
                 .recipeName(recipeNameWithSpaces)
                 .build();
 
-        // When
         Recipe result = useCase.execute(command);
 
-        // Then
         assertNotNull(result);
         assertEquals(trimmedName, result.getName());
 

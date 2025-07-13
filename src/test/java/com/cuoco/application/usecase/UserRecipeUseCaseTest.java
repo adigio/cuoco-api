@@ -1,6 +1,6 @@
 package com.cuoco.application.usecase;
 
-import com.cuoco.adapter.exception.ConflictException;
+import com.cuoco.application.exception.ConflictException;
 import com.cuoco.application.port.in.CreateUserRecipeCommand;
 import com.cuoco.application.port.out.CreateUserRecipeRepository;
 import com.cuoco.application.port.out.GetRecipeByIdRepository;
@@ -49,7 +49,6 @@ public class UserRecipeUseCaseTest {
 
     @Test
     public void shouldSaveRecipeIfNotExists() {
-        // Arrange
         User user = UserFactory.create();
         Long recipeId = 1L;
         Recipe recipe = RecipeFactory.create();
@@ -62,16 +61,13 @@ public class UserRecipeUseCaseTest {
         when(existsUserRecipeByUserIdAndRecipeIdRepository.execute(any(UserRecipe.class))).thenReturn(false);
         doNothing().when(createUserRecipeRepository).execute(any(UserRecipe.class));
 
-        // Act
         useCase.execute(command);
 
-        // Assert
         verify(createUserRecipeRepository).execute(any(UserRecipe.class));
     }
 
     @Test
     public void shouldThrowConflictExceptionIfRecipeAlreadySaved() {
-        // Arrange
         User user = UserFactory.create();
         Long recipeId = 1L;
         Recipe recipe = RecipeFactory.create();
@@ -83,14 +79,12 @@ public class UserRecipeUseCaseTest {
         when(getRecipeByIdRepository.execute(recipeId)).thenReturn(recipe);
         when(existsUserRecipeByUserIdAndRecipeIdRepository.execute(any(UserRecipe.class))).thenReturn(true);
 
-        // Act & Assert
         assertThrows(ConflictException.class, () -> useCase.execute(command));
         verify(createUserRecipeRepository, never()).execute(any());
     }
 
     @Test
     public void shouldThrowExceptionIfSaveFails() {
-        // Arrange
         User user = UserFactory.create();
         Long recipeId = 1L;
         Recipe recipe = RecipeFactory.create();
@@ -103,7 +97,6 @@ public class UserRecipeUseCaseTest {
         when(existsUserRecipeByUserIdAndRecipeIdRepository.execute(any(UserRecipe.class))).thenReturn(false);
         doThrow(new RuntimeException("Error")).when(createUserRecipeRepository).execute(any(UserRecipe.class));
 
-        // Act & Assert
         assertThrows(RuntimeException.class, () -> useCase.execute(command));
     }
 }

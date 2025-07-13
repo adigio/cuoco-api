@@ -41,7 +41,6 @@ class GetRecipeMainImageGeminiRestRepositoryAdapterTest {
 
     @Test
     void shouldGenerateRecipeMainImageSuccessfully() throws Exception {
-        // Given
         Recipe recipe = RecipeFactory.create();
 
         when(imageUtils.imageExists(any(), any())).thenReturn(false);
@@ -50,23 +49,19 @@ class GetRecipeMainImageGeminiRestRepositoryAdapterTest {
                 .thenReturn(GeminiResponseModel.builder().build());
         when(imageUtils.extractImageFromResponse(any())).thenReturn(null);
 
-        // When
         boolean result = adapter.execute(recipe);
 
-        // Then
         assertTrue(result);
     }
 
     @Test
     void shouldThrowExceptionWhenGeminiResponseIsNull() {
-        // Given
         Recipe recipe = RecipeFactory.create();
         when(imageUtils.imageExists(any(), any())).thenReturn(false);
         when(imageUtils.buildPromptBody(any())).thenReturn(null);
         when(restTemplate.postForObject(anyString(), any(), eq(GeminiResponseModel.class)))
                 .thenReturn(null);
 
-        // When & Then
         assertThrows(Exception.class, () -> adapter.execute(recipe));
     }
 } 

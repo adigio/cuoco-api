@@ -38,7 +38,6 @@ class UpdateUserDatabaseRepositoryAdapterTest {
 
     @Test
     void shouldUpdateUserSuccessfully() {
-        // Given
         User userToUpdate = UserFactory.create();
         userToUpdate.setEmail("test@example.com");
         userToUpdate.setName("Updated Name");
@@ -53,10 +52,8 @@ class UpdateUserDatabaseRepositoryAdapterTest {
         when(createUserPreferencesHibernateRepositoryAdapter.save(any(UserPreferencesHibernateModel.class)))
                 .thenReturn(savedPreferences);
 
-        // When
         User result = updateUserDatabaseRepositoryAdapter.execute(userToUpdate);
 
-        // Then
         assertNotNull(result);
         verify(createUserHibernateRepositoryAdapter, times(1)).save(any(UserHibernateModel.class));
         verify(createUserPreferencesHibernateRepositoryAdapter, times(1)).save(any(UserPreferencesHibernateModel.class));
@@ -64,7 +61,6 @@ class UpdateUserDatabaseRepositoryAdapterTest {
 
     @Test
     void shouldUpdateUserWithAllFields() {
-        // Given
         User userToUpdate = UserFactory.create();
         userToUpdate.setEmail("test@example.com");
 
@@ -76,10 +72,8 @@ class UpdateUserDatabaseRepositoryAdapterTest {
         when(createUserPreferencesHibernateRepositoryAdapter.save(any(UserPreferencesHibernateModel.class)))
                 .thenReturn(savedPreferences);
 
-        // When
         User result = updateUserDatabaseRepositoryAdapter.execute(userToUpdate);
 
-        // Then
         assertNotNull(result);
         verify(createUserHibernateRepositoryAdapter, times(1)).save(any(UserHibernateModel.class));
         verify(createUserPreferencesHibernateRepositoryAdapter, times(1)).save(any(UserPreferencesHibernateModel.class));
@@ -87,7 +81,6 @@ class UpdateUserDatabaseRepositoryAdapterTest {
 
     @Test
     void shouldHandleUserWithNullFields() {
-        // Given
         User userToUpdate = UserFactory.create();
         userToUpdate.setEmail("test@example.com");
         userToUpdate.setName(null);
@@ -100,10 +93,8 @@ class UpdateUserDatabaseRepositoryAdapterTest {
         when(createUserPreferencesHibernateRepositoryAdapter.save(any(UserPreferencesHibernateModel.class)))
                 .thenReturn(savedPreferences);
 
-        // When
         User result = updateUserDatabaseRepositoryAdapter.execute(userToUpdate);
 
-        // Then
         assertNotNull(result);
         verify(createUserHibernateRepositoryAdapter, times(1)).save(any(UserHibernateModel.class));
         verify(createUserPreferencesHibernateRepositoryAdapter, times(1)).save(any(UserPreferencesHibernateModel.class));

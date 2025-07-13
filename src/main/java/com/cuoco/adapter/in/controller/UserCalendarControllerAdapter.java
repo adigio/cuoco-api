@@ -6,12 +6,13 @@ import com.cuoco.adapter.in.controller.model.DayResponse;
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
 import com.cuoco.adapter.in.controller.model.RecipeCalendarRequest;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
-import com.cuoco.adapter.in.controller.model.UnitResponse;
 import com.cuoco.adapter.in.controller.model.UserRecipeCalendarRequest;
-import com.cuoco.application.port.in.CreateUserRecipeCalendarCommand;
+import com.cuoco.application.port.in.CreateOrUpdateUserRecipeCalendarCommand;
 import com.cuoco.application.port.in.GetUserCalendarQuery;
 import com.cuoco.application.usecase.model.Calendar;
 import com.cuoco.application.usecase.model.CalendarRecipe;
+import com.cuoco.application.usecase.model.Day;
+import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.shared.GlobalExceptionHandler;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,16 +40,16 @@ import java.util.List;
 @Tag(name = "User calendar", description = "Manipulates user planning calendar operations")
 public class UserCalendarControllerAdapter {
 
-    private final CreateUserRecipeCalendarCommand createUserRecipeCalendarCommand;
+    private final CreateOrUpdateUserRecipeCalendarCommand createOrUpdateUserRecipeCalendarCommand;
     private final GetUserCalendarQuery getUserCalendarQuery;
 
-    public UserCalendarControllerAdapter(CreateUserRecipeCalendarCommand createUserRecipeCalendarCommand, GetUserCalendarQuery getUserCalendarQuery) {
-        this.createUserRecipeCalendarCommand = createUserRecipeCalendarCommand;
+    public UserCalendarControllerAdapter(CreateOrUpdateUserRecipeCalendarCommand createOrUpdateUserRecipeCalendarCommand, GetUserCalendarQuery getUserCalendarQuery) {
+        this.createOrUpdateUserRecipeCalendarCommand = createOrUpdateUserRecipeCalendarCommand;
         this.getUserCalendarQuery = getUserCalendarQuery;
     }
 
-    @PostMapping()
-    @Operation(summary = "Creates the user calendar")
+    @PutMapping()
+    @Operation(summary = "Creates or update the user calendar")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201",
@@ -66,7 +67,7 @@ public class UserCalendarControllerAdapter {
     public ResponseEntity<?> save(@RequestBody @Valid List<UserRecipeCalendarRequest> requests) {
         log.info("Executing POST for user recipe calendar creation");
 
-        createUserRecipeCalendarCommand.execute(buildCommand(requests));
+        createOrUpdateUserRecipeCalendarCommand.execute(buildCommand(requests));
 
         log.info("Calendar successfully created");
         return ResponseEntity.status(HttpStatus.CREATED.value()).build();
@@ -101,41 +102,41 @@ public class UserCalendarControllerAdapter {
         return ResponseEntity.ok(response);
     }
 
-    private CreateUserRecipeCalendarCommand.Command buildCommand(List<UserRecipeCalendarRequest> requests) {
-        return CreateUserRecipeCalendarCommand.Command.builder()
-                .calendarCommands(requests.stream().map(this::buildCalendar).toList())
+    private CreateOrUpdateUserRecipeCalendarCommand.Command buildCommand(List<UserRecipeCalendarRequest> requests) {
+        return CreateOrUpdateUserRecipeCalendarCommand.Command.builder()
+                .calendars(requests.stream().map(this::buildCalendars).toList())
                 .build();
     }
 
-    private CreateUserRecipeCalendarCommand.Command.CalendarCommand buildCalendar(UserRecipeCalendarRequest userRecipeCalendarRequest) {
-        return CreateUserRecipeCalendarCommand.Command.CalendarCommand.builder()
-                .dayId(userRecipeCalendarRequest.getDayId())
-                .calendarRecipeCommands(userRecipeCalendarRequest.getRecipes().stream().map(this::buildRecipesCalendarCommand).toList())
+    private Calendar buildCalendars(UserRecipeCalendarRequest userRecipeCalendarRequest) {
+        return Calendar.builder()
+                .day(Day.builder().id(userRecipeCalendarRequest.getDayId()).build())
+                .recipes(userRecipeCalendarRequest.getRecipes().stream().map(this::buildCalendarRecipe).toList())
                 .build();
     }
 
-    private CreateUserRecipeCalendarCommand.Command.CalendarRecipeCommand buildRecipesCalendarCommand(RecipeCalendarRequest recipeCalendarRequest) {
-        return CreateUserRecipeCalendarCommand.Command.CalendarRecipeCommand.builder()
-                .recipeId(recipeCalendarRequest.getRecipeId())
-                .mealtypeId(recipeCalendarRequest.getMealTypeId())
+    private CalendarRecipe buildCalendarRecipe(RecipeCalendarRequest recipeCalendarRequest) {
+        return CalendarRecipe.builder()
+                .recipe(Recipe.builder().id(recipeCalendarRequest.getRecipeId()).build())
+                .mealType(MealType.builder().id(recipeCalendarRequest.getMealTypeId()).build())
                 .build();
     }
 
     private CalendarResponse buildCalendarResponse(Calendar calendar) {
         return CalendarResponse.builder()
                 .day(DayResponse.fromDomain(calendar.getDay()))
-                .recipes(calendar.getRecipes().stream().map(this::buildCalendarRecipe).toList())
+                .recipes(calendar.getRecipes().stream().map(this::buildCalendarRecipeResponse).toList())
                 .build();
     }
 
-    private CalendarRecipeResponse buildCalendarRecipe(CalendarRecipe calendarRecipe) {
+    private CalendarRecipeResponse buildCalendarRecipeResponse(CalendarRecipe calendarRecipe) {
         return CalendarRecipeResponse.builder()
-                .recipe(buildReducedRecipe(calendarRecipe.getRecipe()))
+                .recipe(buildReducedRecipeResponse(calendarRecipe.getRecipe()))
                 .mealType(ParametricResponse.fromDomain(calendarRecipe.getMealType()))
                 .build();
     }
 
-    private RecipeResponse buildReducedRecipe(Recipe recipe) {
+    private RecipeResponse buildReducedRecipeResponse(Recipe recipe) {
         return RecipeResponse.builder()
                 .id(recipe.getId())
                 .name(recipe.getName())

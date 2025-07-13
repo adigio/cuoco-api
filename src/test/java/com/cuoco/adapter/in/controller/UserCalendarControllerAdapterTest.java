@@ -3,7 +3,7 @@ package com.cuoco.adapter.in.controller;
 import com.cuoco.adapter.in.controller.model.RecipeCalendarRequest;
 import com.cuoco.adapter.in.controller.model.UserRecipeCalendarRequest;
 import com.cuoco.adapter.in.controller.model.CalendarResponse;
-import com.cuoco.application.port.in.CreateUserRecipeCalendarCommand;
+import com.cuoco.application.port.in.CreateOrUpdateUserRecipeCalendarCommand;
 import com.cuoco.application.port.in.GetUserCalendarQuery;
 import com.cuoco.application.usecase.model.Calendar;
 import com.cuoco.factory.domain.CalendarFactory;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 class UserCalendarControllerAdapterTest {
 
     @Mock
-    private CreateUserRecipeCalendarCommand createUserRecipeCalendarCommand;
+    private CreateOrUpdateUserRecipeCalendarCommand createOrUpdateUserRecipeCalendarCommand;
 
     @Mock
     private GetUserCalendarQuery getUserCalendarQuery;
@@ -35,14 +35,13 @@ class UserCalendarControllerAdapterTest {
     @BeforeEach
     void setUp() {
         userCalendarControllerAdapter = new UserCalendarControllerAdapter(
-                createUserRecipeCalendarCommand,
+                createOrUpdateUserRecipeCalendarCommand,
                 getUserCalendarQuery
         );
     }
 
     @Test
     void shouldSaveCalendarSuccessfully() {
-        // Given
         List<UserRecipeCalendarRequest> requests = List.of(
                 UserRecipeCalendarRequest.builder()
                         .dayId(1)
@@ -53,24 +52,19 @@ class UserCalendarControllerAdapterTest {
                         .build()
         );
 
-        // When
         ResponseEntity<?> response = userCalendarControllerAdapter.save(requests);
 
-        // Then
         assertEquals(HttpStatus.CREATED.value(), response.getStatusCodeValue());
-        verify(createUserRecipeCalendarCommand, times(1)).execute(any(CreateUserRecipeCalendarCommand.Command.class));
+        verify(createOrUpdateUserRecipeCalendarCommand, times(1)).execute(any(CreateOrUpdateUserRecipeCalendarCommand.Command.class));
     }
 
     @Test
     void shouldGetCalendarSuccessfully() {
-        // Given
         List<Calendar> calendars = List.of(CalendarFactory.create());
         when(getUserCalendarQuery.execute()).thenReturn(calendars);
 
-        // When
         ResponseEntity<List<CalendarResponse>> response = userCalendarControllerAdapter.get();
 
-        // Then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().size());

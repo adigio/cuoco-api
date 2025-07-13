@@ -31,17 +31,14 @@ class PlanControllerAdapterTest {
 
     @Test
     void shouldGetAllPlansSuccessfully() {
-        // Given
         List<Plan> plans = List.of(
                 Plan.builder().id(1).description("Basic Plan").build(),
                 Plan.builder().id(2).description("Premium Plan").build()
         );
         when(getAllPlansQuery.execute()).thenReturn(plans);
 
-        // When
         ResponseEntity<List<ParametricResponse>> response = planControllerAdapter.getAll();
 
-        // Then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(2, response.getBody().size());

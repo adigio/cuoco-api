@@ -31,17 +31,14 @@ class MealTypeControllerAdapterTest {
 
     @Test
     void shouldGetAllMealTypesSuccessfully() {
-        // Given
         List<MealType> mealTypes = List.of(
                 MealType.builder().id(1).description("Breakfast").build(),
                 MealType.builder().id(2).description("Lunch").build()
         );
         when(getAllMealTypesQuery.execute()).thenReturn(mealTypes);
 
-        // When
         ResponseEntity<List<ParametricResponse>> response = mealTypeControllerAdapter.getAll();
 
-        // Then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(2, response.getBody().size());

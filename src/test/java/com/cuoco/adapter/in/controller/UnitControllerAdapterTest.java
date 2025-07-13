@@ -31,17 +31,14 @@ class UnitControllerAdapterTest {
 
     @Test
     void shouldGetAllUnitsSuccessfully() {
-        // Given
         List<Unit> units = List.of(
                 Unit.builder().id(1).description("Cup").symbol("cup").build(),
                 Unit.builder().id(2).description("Gram").symbol("g").build()
         );
         when(getAllUnitsQuery.execute()).thenReturn(units);
 
-        // When
         ResponseEntity<List<UnitResponse>> response = unitControllerAdapter.getAll();
 
-        // Then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(2, response.getBody().size());

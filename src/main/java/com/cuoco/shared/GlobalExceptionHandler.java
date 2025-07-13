@@ -125,6 +125,12 @@ public class GlobalExceptionHandler {
         return buildResponseError(HttpStatus.SERVICE_UNAVAILABLE, ex);
     }
 
+    @ExceptionHandler(com.cuoco.application.exception.NotAvailableException.class)
+    public ResponseEntity<ApiErrorResponse> handle(com.cuoco.application.exception.NotAvailableException ex) {
+        log.error(HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase(), ex);
+        return buildResponseError(HttpStatus.SERVICE_UNAVAILABLE, ex);
+    }
+
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<ApiErrorResponse> handle(Throwable ex) {
         log.error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), ex);

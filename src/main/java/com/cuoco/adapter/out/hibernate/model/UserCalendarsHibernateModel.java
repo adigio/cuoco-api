@@ -38,6 +38,7 @@ public class UserCalendarsHibernateModel {
 
     public Calendar toDomain() {
         return Calendar.builder()
+                .id(id)
                 .date(plannedDate)
                 .recipes(recipes.stream().map(UserCalendarRecipesHibernateModel::toDomain).toList())
                 .build();

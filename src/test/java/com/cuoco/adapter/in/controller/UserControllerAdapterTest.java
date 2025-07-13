@@ -45,7 +45,6 @@ class UserControllerAdapterTest {
 
     @Test
     void GIVEN_valid_profile_data_WHEN_updateProfile_THEN_return_updated_user_response() throws Exception {
-        // Arrange
         UpdateUserRequest request = UpdateUserRequest.builder()
                 .name("Juan Pérez")
                 .planId(2)
@@ -55,7 +54,6 @@ class UserControllerAdapterTest {
 
         when(updateUserProfileCommand.execute(any())).thenReturn(expectedUser);
 
-        // Act & Assert
         mockMvc.perform(patch("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -77,6 +75,6 @@ class UserControllerAdapterTest {
         mockMvc.perform(patch("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk()); // The controller doesn't validate the request
+                .andExpect(status().isOk());
     }
 }

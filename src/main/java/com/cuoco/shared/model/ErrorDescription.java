@@ -21,6 +21,8 @@ public enum ErrorDescription {
 
     INGREDIENTS_EMPTY("Es necesario por lo menos un ingrediente para continuar"),
 
+    INVALID_CALENDAR_DAY("El dia ingresado no es valido. Debe estar entre 1 y 7"),
+
     USER_NOT_EXISTS("El usuario ingresado no existe"),
     USER_DUPLICATED("El usuario ya existe"),
     USER_NOT_ACTIVATED("El usuario no esta activo"),

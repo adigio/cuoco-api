@@ -1,5 +1,6 @@
 package com.cuoco.adapter.out.rest.gemini;
 
+import com.cuoco.adapter.exception.NotAvailableException;
 import com.cuoco.adapter.exception.UnprocessableException;
 import com.cuoco.adapter.out.rest.gemini.model.RecipeResponseGeminiModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.CandidateGeminiResponseModel;
@@ -45,7 +46,6 @@ class CreateRecipeByNameGeminiRestRespositoryAdapterTest {
 
     @Test
     void shouldCreateRecipeByNameSuccessfully() throws Exception {
-        // Given
         String recipeName = "Pasta Carbonara";
         ParametricData parametricData = ParametricDataFactory.create();
         RecipeResponseGeminiModel expectedRecipe = RecipeResponseGeminiModelFactory.create();
@@ -62,10 +62,8 @@ class CreateRecipeByNameGeminiRestRespositoryAdapterTest {
         when(restTemplate.postForObject(anyString(), any(), eq(GeminiResponseModel.class)))
                 .thenReturn(geminiResponse);
 
-        // When
         Recipe result = adapter.execute(recipeName, parametricData);
 
-        // Then
         assertNotNull(result);
         assertEquals(expectedRecipe.toDomain().getName(), result.getName());
     }
@@ -79,7 +77,7 @@ class CreateRecipeByNameGeminiRestRespositoryAdapterTest {
                 .thenReturn(null);
 
         // When & Then
-        assertThrows(UnprocessableException.class, () -> adapter.execute(recipeName, parametricData));
+        assertThrows(NotAvailableException.class, () -> adapter.execute(recipeName, parametricData));
     }
 
     @Test
@@ -100,7 +98,6 @@ class CreateRecipeByNameGeminiRestRespositoryAdapterTest {
         when(restTemplate.postForObject(anyString(), any(), eq(GeminiResponseModel.class)))
                 .thenReturn(geminiResponse);
 
-        // When & Then
-        assertThrows(UnprocessableException.class, () -> adapter.execute(recipeName, parametricData));
+        assertThrows(NotAvailableException.class, () -> adapter.execute(recipeName, parametricData));
     }
 } 

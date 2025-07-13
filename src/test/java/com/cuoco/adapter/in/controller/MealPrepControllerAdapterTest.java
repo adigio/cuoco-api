@@ -43,7 +43,6 @@ class MealPrepControllerAdapterTest {
 
     @Test
     void shouldGenerateMealPrepsSuccessfully() {
-        // Given
         MealPrepRequest request = MealPrepRequest.builder()
                 .ingredients(List.of(IngredientRequest.builder().name("Tomato").build()))
                 .filters(new MealPrepFilterRequest() {{
@@ -56,10 +55,8 @@ class MealPrepControllerAdapterTest {
         when(getMealPrepFromIngredientsCommand.execute(any(GetMealPrepFromIngredientsCommand.Command.class)))
                 .thenReturn(mealPreps);
 
-        // When
         ResponseEntity<List<MealPrepResponse>> response = mealPrepControllerAdapter.generate(request);
 
-        // Then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().size());
@@ -68,15 +65,12 @@ class MealPrepControllerAdapterTest {
 
     @Test
     void shouldGetMealPrepByIdSuccessfully() {
-        // Given
         Long mealPrepId = 1L;
         MealPrep mealPrep = MealPrepFactory.create();
         when(getMealPrepByIdQuery.execute(mealPrepId)).thenReturn(mealPrep);
 
-        // When
         ResponseEntity<MealPrepResponse> response = mealPrepControllerAdapter.getById(mealPrepId);
 
-        // Then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(mealPrep.getId(), response.getBody().getId());

@@ -84,7 +84,10 @@ public class CreateRecipeByNameGeminiRestRespositoryAdapter implements CreateRec
         } catch (JsonProcessingException e) {
             log.error("Failed to convert some properties to JSON. ", e);
             throw new NotAvailableException(ErrorDescription.NOT_AVAILABLE.getValue());
-        }catch (Exception e) {
+        } catch (UnprocessableException e) {
+            log.error("Failed to get response from Gemini: ", e);
+            throw new NotAvailableException(ErrorDescription.NOT_AVAILABLE.getValue());
+        } catch (Exception e) {
             log.error("Error getting recipes from ingredients in Gemini. ", e);
             throw new NotAvailableException(ErrorDescription.NOT_AVAILABLE.getValue());
         }

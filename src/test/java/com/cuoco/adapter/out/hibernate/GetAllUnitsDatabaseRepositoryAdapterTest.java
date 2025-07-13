@@ -31,17 +31,14 @@ class GetAllUnitsDatabaseRepositoryAdapterTest {
 
     @Test
     void shouldGetAllUnitsSuccessfully() {
-        // Given
         List<UnitHibernateModel> expectedUnits = List.of(
                 UnitHibernateModel.builder().id(1).description("Cup").symbol("cup").build(),
                 UnitHibernateModel.builder().id(2).description("Gram").symbol("g").build()
         );
         when(getAllUnitsHibernateRepositoryAdapter.findAll()).thenReturn(expectedUnits);
 
-        // When
         List<Unit> result = getAllUnitsDatabaseRepositoryAdapter.execute();
 
-        // Then
         assertNotNull(result);
         assertEquals(2, result.size());
         assertEquals("Cup", result.get(0).getDescription());

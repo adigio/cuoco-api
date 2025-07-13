@@ -40,10 +40,8 @@ class GetUserRecipesUseCaseTest {
         when(userDomainService.getCurrentUser()).thenReturn(user);
         when(repository.execute(user.getId())).thenReturn(userRecipes);
 
-        // Act
         List<Recipe> result = useCase.execute();
 
-        // Assert
         assertEquals(expectedRecipes, result);
         verify(repository).execute(user.getId());
     }

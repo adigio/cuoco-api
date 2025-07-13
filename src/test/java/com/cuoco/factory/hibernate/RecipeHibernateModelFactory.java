@@ -4,6 +4,7 @@ import com.cuoco.adapter.out.hibernate.model.RecipeHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.RecipeIngredientsHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.RecipeStepsHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.IngredientHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.UnitHibernateModel;
 
 import java.util.List;
 
@@ -28,14 +29,18 @@ public class RecipeHibernateModelFactory {
                 .ingredients(List.of(
                         RecipeIngredientsHibernateModel.builder()
                                 .id(1L)
-                                .ingredient(IngredientHibernateModel.builder()
-                                        .id(1L)
-                                        .name("Test Ingredient")
-                                        .build())
+                                .ingredient(
+                                        IngredientHibernateModel.builder()
+                                                .id(1L)
+                                                .name("Test Ingredient")
+                                                .unit(UnitHibernateModel.builder().id(1).description("Gramo").symbol("gr").build())
+                                                .build()
+                                )
                                 .quantity(1.0)
                                 .optional(false)
                                 .build()
-                ))
+                        )
+                )
                 .build();
     }
 } 

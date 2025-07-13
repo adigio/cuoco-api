@@ -65,7 +65,6 @@ class UpdateUserProfileUseCaseTest {
 
     @Test
     void shouldUpdateUserProfileSuccessfully() {
-        // Given
         String userName = "Updated Name";
         User currentUser = UserFactory.create();
         User existingUser = UserFactory.create();
@@ -79,7 +78,6 @@ class UpdateUserProfileUseCaseTest {
                 .allergies(List.of(1))
                 .build();
 
-        // Mock repository responses
         CookLevel mockCookLevel = CookLevel.builder().id(1).description("Beginner").build();
         Diet mockDiet = Diet.builder().id(1).description("Vegetarian").build();
         List<DietaryNeed> mockDietaryNeeds = List.of(
@@ -101,10 +99,8 @@ class UpdateUserProfileUseCaseTest {
         expectedUser.setName(userName);
         when(updateUserRepository.execute(any(User.class))).thenReturn(expectedUser);
 
-        // When
         User result = updateUserProfileUseCase.execute(command);
 
-        // Then
         assertNotNull(result);
         assertEquals(userName, result.getName());
         
@@ -117,7 +113,6 @@ class UpdateUserProfileUseCaseTest {
 
     @Test
     void shouldPassCorrectUserDataToRepository() {
-        // Given
         String userName = "Test User";
         User currentUser = UserFactory.create();
         User existingUser = UserFactory.create();
@@ -131,10 +126,8 @@ class UpdateUserProfileUseCaseTest {
         when(getUserByIdRepository.execute(currentUser.getId())).thenReturn(existingUser);
         when(updateUserRepository.execute(any(User.class))).thenReturn(expectedUser);
 
-        // When
         updateUserProfileUseCase.execute(command);
 
-        // Then
         verify(updateUserRepository).execute(argThat(user -> 
             user.getName().equals(userName)
         ));
@@ -142,7 +135,6 @@ class UpdateUserProfileUseCaseTest {
 
     @Test
     void shouldMapAllFieldsFromCommandToUser() {
-        // Given
         String userName = "Test User";
         Integer cookLevelId = 3;
         Integer dietId = 1;
@@ -160,7 +152,6 @@ class UpdateUserProfileUseCaseTest {
                 .allergies(allergies)
                 .build();
 
-        // Mock all repository responses
         when(userDomainService.getCurrentUser()).thenReturn(currentUser);
         when(getUserByIdRepository.execute(currentUser.getId())).thenReturn(existingUser);
         when(getCookLevelByIdRepository.execute(cookLevelId)).thenReturn(CookLevel.builder().id(cookLevelId).build());
@@ -177,11 +168,9 @@ class UpdateUserProfileUseCaseTest {
 
         User expectedUser = UserFactory.create();
         when(updateUserRepository.execute(any(User.class))).thenReturn(expectedUser);
-
-        // When
+        
         updateUserProfileUseCase.execute(command);
 
-        // Then
         verify(updateUserRepository).execute(argThat(user -> 
             user.getName().equals(userName) &&
             user.getPreferences() != null && 
@@ -196,7 +185,6 @@ class UpdateUserProfileUseCaseTest {
 
     @Test
     void shouldHandleNullFieldsInCommand() {
-        // Given
         User currentUser = UserFactory.create();
         User existingUser = UserFactory.create();
         
@@ -214,10 +202,8 @@ class UpdateUserProfileUseCaseTest {
         when(getUserByIdRepository.execute(currentUser.getId())).thenReturn(existingUser);
         when(updateUserRepository.execute(any(User.class))).thenReturn(expectedUser);
 
-        // When
         User result = updateUserProfileUseCase.execute(command);
 
-        // Then
         assertNotNull(result);
         verify(updateUserRepository, times(1)).execute(any(User.class));
         verify(getCookLevelByIdRepository, never()).execute(anyInt());

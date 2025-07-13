@@ -29,28 +29,23 @@ public class GetRecipeByIdDatabaseRepositoryAdapterTest {
 
     @Test
     public void shouldReturnRecipeWhenFound() {
-        // Arrange
         long recipeId = 123L;
         RecipeHibernateModel mockEntity = RecipeHibernateModelFactory.create();
         Recipe expectedRecipe = mockEntity.toDomain();
 
         when(hibernateRepository.findById(recipeId)).thenReturn(Optional.of(mockEntity));
 
-        // Act
         Recipe result = adapter.execute(recipeId);
 
-        // Assert
         assertNotNull(result);
         assertEquals(expectedRecipe.getId(), result.getId());
     }
 
     @Test
     public void shouldThrowExceptionIfRecipeNotFound() {
-        // Arrange
         long recipeId = 456L;
         when(hibernateRepository.findById(recipeId)).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThrows(BadRequestException.class, () -> adapter.execute(recipeId));
     }
 }
