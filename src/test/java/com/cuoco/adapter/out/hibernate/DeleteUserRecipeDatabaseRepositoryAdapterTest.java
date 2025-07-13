@@ -30,14 +30,11 @@ class DeleteUserRecipeDatabaseRepositoryAdapterTest {
 
     @Test
     void shouldDeleteUserRecipeSuccessfully() {
-        // Given
         Long userId = 1L;
         Long recipeId = 1L;
 
-        // When
         deleteUserRecipeDatabaseRepositoryAdapter.execute(userId, recipeId);
 
-        // Then
         verify(deleteUserRecipeHibernateRepositoryAdapter).deleteAllByUserIdAndRecipeId(userId, recipeId);
     }
 } 

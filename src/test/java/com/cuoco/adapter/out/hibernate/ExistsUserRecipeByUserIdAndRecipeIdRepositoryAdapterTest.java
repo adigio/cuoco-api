@@ -25,7 +25,6 @@ public class ExistsUserRecipeByUserIdAndRecipeIdRepositoryAdapterTest {
 
     @Test
     public void shouldReturnTrueWhenRecipeExistsForUser() {
-        // Arrange
         User user = new User();
         user.setId(1L);
 

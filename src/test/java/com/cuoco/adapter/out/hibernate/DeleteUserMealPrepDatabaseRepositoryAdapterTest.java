@@ -30,14 +30,11 @@ class DeleteUserMealPrepDatabaseRepositoryAdapterTest {
 
     @Test
     void shouldDeleteUserMealPrepSuccessfully() {
-        // Given
         Long userId = 1L;
         Long mealPrepId = 1L;
 
-        // When
         deleteUserMealPrepDatabaseRepositoryAdapter.execute(userId, mealPrepId);
 
-        // Then
         verify(deleteUserMealPrepsHibernateRepositoryAdapter).deleteAllByUserIdAndMealPrepId(userId, mealPrepId);
     }
 } 

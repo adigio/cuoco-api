@@ -31,8 +31,7 @@ class CreateUserMealPrepDatabaseRepositoryAdapterTest {
     }
 
     @Test
-    void shouldCreateUserMealPrepSuccessfully() {
-        // Given
+    void GIVEN_valid_user_meal_prep_WHEN_execute_THEN_should_persist_user_meal_preps() {
         User user = UserFactory.create();
         MealPrep mealPrep = MealPrepFactory.create();
         UserMealPrep userMealPrep = UserMealPrep.builder()
@@ -40,10 +39,8 @@ class CreateUserMealPrepDatabaseRepositoryAdapterTest {
                 .mealPrep(mealPrep)
                 .build();
 
-        // When
         createUserMealPrepDatabaseRepositoryAdapter.execute(userMealPrep);
 
-        // Then
         verify(createUserMealPrepHibernateRepositoryAdapter).save(any());
     }
 } 
