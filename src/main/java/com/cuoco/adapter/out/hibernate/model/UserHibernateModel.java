@@ -1,5 +1,6 @@
 package com.cuoco.adapter.out.hibernate.model;
 
+import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -85,6 +86,8 @@ public class UserHibernateModel {
                 .active(active)
                 .recipes(recipes != null ? recipes.stream().map(RecipeHibernateModel::toDomain).toList() : null)
                 .mealPreps(mealPreps != null ? mealPreps.stream().map(MealPrepHibernateModel::toDomain).toList() : null)
+                .allergies(allergies != null ? allergies.stream().map(AllergyHibernateModel::toDomain).toList() : null)
+                .dietaryNeeds(dietaryNeeds != null ? dietaryNeeds.stream().map(DietaryNeedHibernateModel::toDomain).toList() : null)
                 .createdAt(createdAt)
                 .build();
     }

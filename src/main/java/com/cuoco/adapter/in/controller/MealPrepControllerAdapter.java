@@ -148,6 +148,7 @@ public class MealPrepControllerAdapter {
                 .id(mealPrep.getId())
                 .title(mealPrep.getTitle())
                 .estimatedCookingTime(mealPrep.getEstimatedCookingTime())
+                .favorite(mealPrep.getFavorite())
                 .servings(mealPrep.getServings())
                 .freeze(mealPrep.getFreeze())
                 .steps(mealPrep.getSteps().stream().map(StepResponse::fromDomain).toList())

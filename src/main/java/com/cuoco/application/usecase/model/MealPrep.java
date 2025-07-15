@@ -13,6 +13,7 @@ public class MealPrep {
     private String title;
     private User user;
     private String estimatedCookingTime;
+    private Boolean favorite;
     private Integer servings;
     private Boolean freeze;
     private List<Step> steps;

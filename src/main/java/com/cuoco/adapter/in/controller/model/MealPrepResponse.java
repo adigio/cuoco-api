@@ -18,6 +18,7 @@ public class MealPrepResponse {
     private Long id;
     private String title;
     private String estimatedCookingTime;
+    private Boolean favorite;
     private Integer servings;
     private Boolean freeze;
     private List<StepResponse> steps;
