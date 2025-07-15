@@ -169,10 +169,10 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
     }
 
     private RecipeConfiguration buildRecipeConfiguration(List<Recipe> notInclude) {
-        int SIZE = RECIPES_SIZE_PER_MEAL_PREP * MEAL_PREP_SIZE;
+        int recipesSize = RECIPES_SIZE_PER_MEAL_PREP * MEAL_PREP_SIZE;
 
         return RecipeConfiguration.builder()
-                .size(SIZE)
+                .size(recipesSize)
                 .notInclude(notInclude)
                 .build();
     }
@@ -194,7 +194,10 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
     }
 
     private MealPrepConfiguration buildMealPrepConfiguration(List<MealPrep> notInclude) {
+        int mealPrepSize = MEAL_PREP_SIZE;
+
         return MealPrepConfiguration.builder()
+                .size(mealPrepSize)
                 .notInclude(notInclude)
                 .build();
     }
