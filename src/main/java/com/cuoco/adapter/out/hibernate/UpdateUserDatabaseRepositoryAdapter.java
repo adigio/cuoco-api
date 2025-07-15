@@ -1,24 +1,22 @@
 package com.cuoco.adapter.out.hibernate;
 
-import com.cuoco.adapter.out.hibernate.model.*;
-import com.cuoco.adapter.out.hibernate.repository.*;
-import com.cuoco.application.exception.BadRequestException;
+import com.cuoco.adapter.out.hibernate.model.AllergyHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.CookLevelHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.DietHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.DietaryNeedHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.PlanHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.UserHibernateModel;
+import com.cuoco.adapter.out.hibernate.model.UserPreferencesHibernateModel;
+import com.cuoco.adapter.out.hibernate.repository.CreateUserHibernateRepositoryAdapter;
+import com.cuoco.adapter.out.hibernate.repository.CreateUserPreferencesHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.UpdateUserRepository;
-import com.cuoco.application.usecase.model.Allergy;
-import com.cuoco.application.usecase.model.CookLevel;
-import com.cuoco.application.usecase.model.Diet;
-import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserPreferences;
-import com.cuoco.shared.model.ErrorDescription;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Repository
 @Transactional

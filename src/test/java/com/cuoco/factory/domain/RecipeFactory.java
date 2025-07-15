@@ -1,8 +1,20 @@
 package com.cuoco.factory.domain;
 
-import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.adapter.in.controller.model.IngredientRequest;
-import com.cuoco.application.usecase.model.*;
+import com.cuoco.adapter.in.controller.model.RecipeRequest;
+import com.cuoco.application.usecase.model.Allergy;
+import com.cuoco.application.usecase.model.CookLevel;
+import com.cuoco.application.usecase.model.Diet;
+import com.cuoco.application.usecase.model.DietaryNeed;
+import com.cuoco.application.usecase.model.Filters;
+import com.cuoco.application.usecase.model.Ingredient;
+import com.cuoco.application.usecase.model.MealType;
+import com.cuoco.application.usecase.model.ParametricData;
+import com.cuoco.application.usecase.model.PreparationTime;
+import com.cuoco.application.usecase.model.Recipe;
+import com.cuoco.application.usecase.model.RecipeConfiguration;
+import com.cuoco.application.usecase.model.Step;
+import com.cuoco.application.usecase.model.Unit;
 
 import java.util.List;
 

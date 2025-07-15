@@ -1,11 +1,11 @@
 package com.cuoco.factory.domain;
 
-import com.cuoco.application.usecase.model.ParametricData;
 import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.CookLevel;
 import com.cuoco.application.usecase.model.Diet;
 import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.MealType;
+import com.cuoco.application.usecase.model.ParametricData;
 import com.cuoco.application.usecase.model.PreparationTime;
 import com.cuoco.application.usecase.model.Unit;
 

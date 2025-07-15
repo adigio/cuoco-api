@@ -5,7 +5,6 @@ import com.cuoco.application.port.out.DeleteUserRecipeRepository;
 import com.cuoco.application.usecase.domainservice.UserDomainService;
 import com.cuoco.application.usecase.model.User;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Slf4j

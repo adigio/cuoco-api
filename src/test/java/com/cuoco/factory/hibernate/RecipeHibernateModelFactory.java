@@ -1,9 +1,9 @@
 package com.cuoco.factory.hibernate;
 
+import com.cuoco.adapter.out.hibernate.model.IngredientHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.RecipeHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.RecipeIngredientsHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.RecipeStepsHibernateModel;
-import com.cuoco.adapter.out.hibernate.model.IngredientHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.UnitHibernateModel;
 
 import java.util.List;

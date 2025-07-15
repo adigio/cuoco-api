@@ -1,7 +1,6 @@
 package com.cuoco.factory.domain;
 
 import com.cuoco.application.usecase.model.MealPrep;
-import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.Step;
 
 import java.util.List;

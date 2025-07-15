@@ -10,8 +10,6 @@ import com.cuoco.adapter.out.hibernate.model.UserPreferencesHibernateModel;
 import com.cuoco.adapter.out.hibernate.repository.CreateUserHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.CreateUserPreferencesHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.CreateUserRepository;
-import com.cuoco.application.usecase.model.Allergy;
-import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserPreferences;
 import jakarta.transaction.Transactional;

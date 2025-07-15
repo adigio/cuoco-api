@@ -1,7 +1,6 @@
 package com.cuoco.adapter.out.rest.gemini;
 
 import com.cuoco.adapter.exception.NotAvailableException;
-import com.cuoco.adapter.exception.UnprocessableException;
 import com.cuoco.adapter.out.rest.gemini.model.RecipeResponseGeminiModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.CandidateGeminiResponseModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.ContentGeminiRequestModel;
