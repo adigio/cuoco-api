@@ -31,7 +31,7 @@ public class SendConfirmationNotificationEmailRepositoryAdapter implements SendC
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-            helper.setFrom("latribudemicalle1480@gmail.com");
+            helper.setFrom("noreply@cuoco.com.ar");
             helper.setTo(user.getEmail());
             helper.setSubject("Confirma tu cuenta en Cuoco");
 
