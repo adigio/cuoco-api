@@ -23,5 +23,4 @@ public class MealPrepResponse {
     private List<StepResponse> steps;
     private List<RecipeResponse> recipes;
     private List<IngredientResponse> ingredients;
-
 }

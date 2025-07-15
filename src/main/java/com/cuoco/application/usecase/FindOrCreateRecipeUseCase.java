@@ -8,6 +8,7 @@ import com.cuoco.application.port.out.FindRecipeByNameRepository;
 import com.cuoco.application.usecase.domainservice.RecipeDomainService;
 import com.cuoco.application.usecase.model.ParametricData;
 import com.cuoco.application.usecase.model.Recipe;
+import com.cuoco.shared.model.ErrorDescription;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -48,7 +49,7 @@ public class FindOrCreateRecipeUseCase implements FindOrCreateRecipeCommand {
         Recipe generatedRecipe = createRecipeByNameRepository.execute(command.getRecipeName(), parametricData);
         
         if (generatedRecipe == null) {
-            throw new RecipeGenerationException("Could not generate recipe for: " + command.getRecipeName());
+            throw new RecipeGenerationException(ErrorDescription.CANNOT_GENERATE_RECIPE.getValue());
         }
 
         Recipe savedRecipe = createRecipeRepository.execute(generatedRecipe);

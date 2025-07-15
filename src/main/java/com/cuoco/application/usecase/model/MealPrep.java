@@ -21,4 +21,6 @@ public class MealPrep {
     private List<Recipe> recipes;
 
     private Filters filters;
+    private MealPrepConfiguration configuration;
+
 }

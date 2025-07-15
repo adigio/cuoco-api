@@ -26,6 +26,8 @@ OBJETIVO:
     - Descripción del paso
     - Duración del paso (por ejemplo: "30 min" o "1 h")
 
+No incluir estos meal preps (Ignorar si esta vacio): {{NOT_INCLUDE}}
+
 Ejemplo de la estructura del JSON de respuesta:
 
 [

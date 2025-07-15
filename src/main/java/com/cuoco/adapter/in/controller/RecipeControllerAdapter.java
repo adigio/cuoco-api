@@ -3,7 +3,7 @@ package com.cuoco.adapter.in.controller;
 import com.cuoco.adapter.in.controller.model.IngredientRequest;
 import com.cuoco.adapter.in.controller.model.IngredientResponse;
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
-import com.cuoco.adapter.in.controller.model.RecipeConfiguration;
+import com.cuoco.adapter.in.controller.model.RecipeConfigurationRequest;
 import com.cuoco.adapter.in.controller.model.RecipeFilterRequest;
 import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
@@ -208,7 +208,7 @@ public class RecipeControllerAdapter {
             recipeRequest.setFilters(new RecipeFilterRequest());
         }
 
-        if(recipeRequest.getConfiguration() == null) recipeRequest.setConfiguration(new RecipeConfiguration());
+        if(recipeRequest.getConfiguration() == null) recipeRequest.setConfiguration(new RecipeConfigurationRequest());
 
         return GetRecipesFromIngredientsCommand.Command.builder()
                 .filtersEnabled(filtersEnabled)
