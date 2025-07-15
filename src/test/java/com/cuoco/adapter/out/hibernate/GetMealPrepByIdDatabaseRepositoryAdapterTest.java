@@ -29,28 +29,23 @@ class GetMealPrepByIdDatabaseRepositoryAdapterTest {
 
     @Test
     void shouldGetMealPrepByIdSuccessfully() {
-        // Given
         Long mealPrepId = 1L;
         MealPrepHibernateModel mealPrepHibernateModel = MealPrepHibernateModelFactory.create();
         when(getMealPrepByIdHibernateRepositoryAdapter.findById(mealPrepId))
                 .thenReturn(Optional.of(mealPrepHibernateModel));
 
-        // When
         MealPrep result = getMealPrepByIdDatabaseRepositoryAdapter.execute(mealPrepId);
 
-        // Then
         assertNotNull(result);
         assertEquals(mealPrepHibernateModel.getId(), result.getId());
     }
 
     @Test
     void shouldThrowBadRequestExceptionWhenMealPrepNotFound() {
-        // Given
         Long mealPrepId = 999L;
         when(getMealPrepByIdHibernateRepositoryAdapter.findById(mealPrepId))
                 .thenReturn(Optional.empty());
 
-        // When & Then
         assertThrows(BadRequestException.class, () -> {
             getMealPrepByIdDatabaseRepositoryAdapter.execute(mealPrepId);
         });
