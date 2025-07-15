@@ -4,6 +4,7 @@ import com.cuoco.application.exception.BadRequestException;
 import com.cuoco.application.exception.ForbiddenException;
 import com.cuoco.application.port.in.GetMealPrepFromIngredientsCommand;
 import com.cuoco.application.port.out.CreateAllMealPrepsRepository;
+import com.cuoco.application.port.out.GetAllMealPrepsByIdsRepository;
 import com.cuoco.application.port.out.GetAllergiesByIdRepository;
 import com.cuoco.application.port.out.GetCookLevelByIdRepository;
 import com.cuoco.application.port.out.GetDietByIdRepository;
@@ -20,6 +21,7 @@ import com.cuoco.application.usecase.model.DietaryNeed;
 import com.cuoco.application.usecase.model.Filters;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.MealPrep;
+import com.cuoco.application.usecase.model.MealPrepConfiguration;
 import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.PreparationTime;
 import com.cuoco.application.usecase.model.Recipe;
@@ -30,10 +32,10 @@ import com.cuoco.shared.utils.PlanConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -48,6 +50,7 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
     private final UserDomainService userDomainService;
     private final RecipeDomainService recipeDomainService;
     private final GetMealPrepsFromIngredientsRepository getMealPrepsFromIngredientsProvider;
+    private final GetAllMealPrepsByIdsRepository getAllMealPrepsByIdsRepository;
     private final CreateAllMealPrepsRepository createAllMealPrepsRepository;
     private final GetPreparationTimeByIdRepository getPreparationTimeByIdRepository;
     private final GetCookLevelByIdRepository getCookLevelByIdRepository;
@@ -60,6 +63,7 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
             UserDomainService userDomainService,
             RecipeDomainService recipeDomainService,
             @Qualifier("provider") GetMealPrepsFromIngredientsRepository getMealPrepsFromIngredientsProvider,
+            GetAllMealPrepsByIdsRepository getAllMealPrepsByIdsRepository,
             CreateAllMealPrepsRepository createAllMealPrepsRepository,
             GetPreparationTimeByIdRepository getPreparationTimeByIdRepository,
             GetCookLevelByIdRepository getCookLevelByIdRepository,
@@ -71,6 +75,7 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
         this.userDomainService = userDomainService;
         this.recipeDomainService = recipeDomainService;
         this.getMealPrepsFromIngredientsProvider = getMealPrepsFromIngredientsProvider;
+        this.getAllMealPrepsByIdsRepository = getAllMealPrepsByIdsRepository;
         this.createAllMealPrepsRepository = createAllMealPrepsRepository;
         this.getPreparationTimeByIdRepository = getPreparationTimeByIdRepository;
         this.getCookLevelByIdRepository = getCookLevelByIdRepository;
@@ -86,14 +91,20 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
 
         User user = validateAndGetUser();
 
-        Recipe recipeParameters = buildRecipe(command);
+        List<MealPrep> mealPrepsToNotInclude = buildNotIncludes(command.getNotInclude());
+        List<Recipe> recipesToNotInclude = extractRecipesToNotInclude(mealPrepsToNotInclude);
+
+        Recipe recipeParameters = buildRecipe(command, recipesToNotInclude);
         List<Recipe> recipes = recipeDomainService.getOrCreate(recipeParameters);
+
+        MealPrepConfiguration configuration = buildMealPrepConfiguration(mealPrepsToNotInclude);
 
         MealPrep mealPrepToGenerate = buildMealPrep(
                 user,
                 recipeParameters.getIngredients(),
                 recipes,
-                recipeParameters.getFilters()
+                recipeParameters.getFilters(),
+                configuration
         );
 
         List<MealPrep> generatedMealPreps = getMealPrepsFromIngredientsProvider.execute(mealPrepToGenerate);
@@ -114,16 +125,25 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
         return user;
     }
 
-    private Recipe buildRecipe(Command command) {
+    private List<MealPrep> buildNotIncludes(List<Long> notIncludeIds) {
+        return notIncludeIds != null && !notIncludeIds.isEmpty() ? getAllMealPrepsByIdsRepository.execute(notIncludeIds) : List.of();
+    }
 
-        if(command.getIngredients().isEmpty()) {
-            throw new BadRequestException(ErrorDescription.INGREDIENTS_EMPTY.getValue());
-        }
+    private List<Recipe> extractRecipesToNotInclude(List<MealPrep> mealPrepsToNotInclude) {
+        return mealPrepsToNotInclude.stream()
+                .flatMap(mealPrep -> mealPrep.getRecipes().stream())
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    private Recipe buildRecipe(Command command, List<Recipe> notInclude) {
+
+        if(command.getIngredients().isEmpty()) throw new BadRequestException(ErrorDescription.INGREDIENTS_EMPTY.getValue());
 
         return Recipe.builder()
                 .ingredients(command.getIngredients())
                 .filters(buildFilters(command))
-                .configuration(buildConfiguration())
+                .configuration(buildRecipeConfiguration(notInclude))
                 .build();
     }
 
@@ -139,7 +159,6 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
         return Filters.builder()
                 .enable(true)
                 .freeze(freeze)
-                .servings(command.getServings())
                 .preparationTime(preparationTime)
                 .cookLevel(cookLevel)
                 .mealTypes(types)
@@ -149,20 +168,34 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
                 .build();
     }
 
-    private RecipeConfiguration buildConfiguration() {
+    private RecipeConfiguration buildRecipeConfiguration(List<Recipe> notInclude) {
         int SIZE = RECIPES_SIZE_PER_MEAL_PREP * MEAL_PREP_SIZE;
 
         return RecipeConfiguration.builder()
                 .size(SIZE)
+                .notInclude(notInclude)
                 .build();
     }
 
-    private MealPrep buildMealPrep(User user, List<Ingredient> ingredients, List<Recipe> recipes, Filters filters) {
+    private MealPrep buildMealPrep(
+            User user,
+            List<Ingredient> ingredients,
+            List<Recipe> recipes,
+            Filters filters,
+            MealPrepConfiguration configuration
+    ) {
         return MealPrep.builder()
                 .user(user)
                 .ingredients(ingredients)
                 .recipes(recipes)
                 .filters(filters)
+                .configuration(configuration)
+                .build();
+    }
+
+    private MealPrepConfiguration buildMealPrepConfiguration(List<MealPrep> notInclude) {
+        return MealPrepConfiguration.builder()
+                .notInclude(notInclude)
                 .build();
     }
 }

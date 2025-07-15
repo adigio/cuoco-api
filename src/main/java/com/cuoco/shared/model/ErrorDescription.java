@@ -36,6 +36,9 @@ public enum ErrorDescription {
     AUDIO_FILE_PROCESSING_ERROR("Error procesando el archivo de audio"),
     PRO_FEATURE("Esta funcionalidad solo es para usuarios PRO"),
 
+    CANNOT_GENERATE_RECIPE("Failed to generate recipe"),
+    CANNOT_GENERATE_MEAL_PREP("Could not generate meal prep"),
+
     UNAUTHORIZED("No está autorizado a usar esta función"),
     UNEXPECTED_ERROR("An unexpected error occurred: "),
     UNHANDLED("Ha ocurrido un error inesperado"),

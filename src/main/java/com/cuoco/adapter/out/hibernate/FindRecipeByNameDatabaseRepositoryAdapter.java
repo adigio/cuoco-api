@@ -1,7 +1,6 @@
 package com.cuoco.adapter.out.hibernate;
 
 import com.cuoco.adapter.out.hibernate.model.RecipeHibernateModel;
-import com.cuoco.adapter.out.hibernate.repository.CreateRecipeHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.repository.FindRecipeByNameHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.FindRecipeByNameRepository;
 import com.cuoco.application.usecase.model.Recipe;

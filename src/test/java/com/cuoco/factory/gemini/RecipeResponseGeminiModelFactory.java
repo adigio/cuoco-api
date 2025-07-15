@@ -1,7 +1,7 @@
 package com.cuoco.factory.gemini;
 
-import com.cuoco.adapter.out.rest.gemini.model.RecipeResponseGeminiModel;
 import com.cuoco.adapter.out.rest.gemini.model.IngredientResponseGeminiModel;
+import com.cuoco.adapter.out.rest.gemini.model.RecipeResponseGeminiModel;
 import com.cuoco.adapter.out.rest.gemini.model.StepResponseGeminiModel;
 import com.cuoco.application.usecase.model.Unit;
 

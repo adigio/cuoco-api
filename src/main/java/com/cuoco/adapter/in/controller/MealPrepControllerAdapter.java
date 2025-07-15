@@ -2,19 +2,17 @@ package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.IngredientRequest;
 import com.cuoco.adapter.in.controller.model.IngredientResponse;
+import com.cuoco.adapter.in.controller.model.MealPrepConfigurationRequest;
+import com.cuoco.adapter.in.controller.model.MealPrepFilterRequest;
 import com.cuoco.adapter.in.controller.model.MealPrepRequest;
 import com.cuoco.adapter.in.controller.model.MealPrepResponse;
-import com.cuoco.adapter.in.controller.model.ParametricResponse;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
 import com.cuoco.adapter.in.controller.model.StepResponse;
-import com.cuoco.adapter.in.controller.model.UnitResponse;
-import com.cuoco.adapter.out.hibernate.CreateUserDatabaseRepositoryAdapter;
 import com.cuoco.application.port.in.GetMealPrepByIdQuery;
 import com.cuoco.application.port.in.GetMealPrepFromIngredientsCommand;
 import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.MealPrep;
 import com.cuoco.application.usecase.model.Recipe;
-import com.cuoco.application.usecase.model.Step;
 import com.cuoco.shared.GlobalExceptionHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -76,7 +74,6 @@ public class MealPrepControllerAdapter {
         log.info("Executing GET mealPrep from ingredients with body {}", mealPrepRequest);
 
         List<MealPrep> mealPreps = getMealPrepFromIngredientsCommand.execute(buildGenerateMealPrepCommand(mealPrepRequest));
-
         List<MealPrepResponse> mealPrepsResponse = mealPreps.stream().map(this::buildResponse).toList();
 
         log.info("Successfully generated recipes");
@@ -121,6 +118,10 @@ public class MealPrepControllerAdapter {
     }
 
     private GetMealPrepFromIngredientsCommand.Command buildGenerateMealPrepCommand(MealPrepRequest mealPrepRequest) {
+
+        if(mealPrepRequest.getFilters() == null) mealPrepRequest.setFilters(new MealPrepFilterRequest());
+        if(mealPrepRequest.getConfiguration() == null) mealPrepRequest.setConfiguration(new MealPrepConfigurationRequest());
+
         return GetMealPrepFromIngredientsCommand.Command.builder()
                 .ingredients(mealPrepRequest.getIngredients().stream().map(this::buildIngredient).toList())
                 .freeze(mealPrepRequest.getFilters().getFreeze())
@@ -131,6 +132,8 @@ public class MealPrepControllerAdapter {
                 .typeIds(mealPrepRequest.getFilters().getTypeIds())
                 .allergiesIds(mealPrepRequest.getFilters().getAllergiesIds())
                 .dietaryNeedsIds(mealPrepRequest.getFilters().getDietaryNeedsIds())
+                .size(mealPrepRequest.getConfiguration().getSize())
+                .notInclude(mealPrepRequest.getConfiguration().getNotInclude())
                 .build();
     }
 

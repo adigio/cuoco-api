@@ -74,6 +74,8 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
 
         List<Recipe> recipesToResponse = recipeDomainService.getOrCreate(recipeToFind);
 
+        recipesToResponse.forEach(recipe -> recipeDomainService.adjustIngredientsByServings(recipe, command.getServings()));
+
         return recipesToResponse;
     }
 
@@ -112,7 +114,6 @@ public class GetRecipesFromIngredientsUseCase implements GetRecipesFromIngredien
 
         return Filters.builder()
                 .enable(true)
-                .servings(command.getServings())
                 .preparationTime(preparationTime)
                 .cookLevel(cookLevel)
                 .mealTypes(types)

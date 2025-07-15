@@ -9,8 +9,6 @@ import com.cuoco.adapter.out.hibernate.repository.DeleteAllUserRecipeCalendarsHi
 import com.cuoco.application.port.out.DeleteUserCalendarRepository;
 import com.cuoco.application.usecase.model.Calendar;
 import com.cuoco.application.usecase.model.CalendarRecipe;
-import com.cuoco.application.usecase.model.MealType;
-import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserCalendar;
 import lombok.RequiredArgsConstructor;

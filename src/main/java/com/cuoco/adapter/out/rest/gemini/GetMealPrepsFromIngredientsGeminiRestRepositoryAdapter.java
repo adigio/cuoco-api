@@ -3,6 +3,7 @@ package com.cuoco.adapter.out.rest.gemini;
 import com.cuoco.adapter.exception.NotAvailableException;
 import com.cuoco.adapter.exception.UnprocessableException;
 import com.cuoco.adapter.out.rest.gemini.model.MealPrepResponseGeminiModel;
+import com.cuoco.adapter.out.rest.gemini.model.RecipeRequestGeminiModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.ContentGeminiRequestModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.GeminiResponseModel;
 import com.cuoco.adapter.out.rest.gemini.model.wrapper.GenerationConfigurationGeminiRequestModel;
@@ -11,7 +12,11 @@ import com.cuoco.adapter.out.rest.gemini.model.wrapper.PromptBodyGeminiRequestMo
 import com.cuoco.adapter.out.rest.gemini.utils.Constants;
 import com.cuoco.adapter.out.rest.gemini.utils.Utils;
 import com.cuoco.application.port.out.GetMealPrepsFromIngredientsRepository;
+import com.cuoco.application.usecase.model.Allergy;
+import com.cuoco.application.usecase.model.DietaryNeed;
+import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.MealPrep;
+import com.cuoco.application.usecase.model.MealType;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.shared.FileReader;
 import com.cuoco.shared.model.ErrorDescription;
@@ -56,17 +61,13 @@ public class GetMealPrepsFromIngredientsGeminiRestRepositoryAdapter implements G
         try {
             log.info("Executing meal prep generation from Gemini with ingredients: {}", mealPrep.getIngredients());
 
-            List<String> recipesJson = mealPrep.getRecipes().stream().map(value -> {
-                try {
-                    return objectMapper.writeValueAsString(value);
-                } catch (JsonProcessingException e) {
-                    throw new NotAvailableException(ErrorDescription.NOT_AVAILABLE.getValue());
-                }
-            }).toList();
+            String recipesJson = buildRecipesJson(mealPrep.getRecipes());
+            String mealPrepsToNotInclude = buildMealPrepsToNotInclude(mealPrep.getConfiguration().getNotInclude());
 
             String basicPrompt = BASIC_PROMPT
-                    .replace(Constants.RECIPES.getValue(), objectMapper.writeValueAsString(recipesJson))
-                    .replace(Constants.MAX_MEAL_PREPS.getValue(), mealPrep.getFilters().getServings().toString())
+                    .replace(Constants.RECIPES.getValue(), recipesJson)
+                    .replace(Constants.NOT_INCLUDE.getValue(), mealPrepsToNotInclude)
+                    .replace(Constants.MAX_MEAL_PREPS.getValue(), mealPrep.getConfiguration().getSize().toString())
                     .replace(Constants.FREEZE.getValue(), mealPrep.getFilters().getFreeze().toString());
 
             PromptBodyGeminiRequestModel prompt = buildPromptBody(basicPrompt);
@@ -96,12 +97,38 @@ public class GetMealPrepsFromIngredientsGeminiRestRepositoryAdapter implements G
 
             return mealPreps;
         } catch (JsonProcessingException e) {
-            log.error("Error generating meal preps from Gemini", e);
-            throw new NotAvailableException("Failed to generate meal preps");
+            log.error("Failed to convert JSON in meal preps gemini adapter. ", e);
+            throw new NotAvailableException(ErrorDescription.NOT_AVAILABLE.getValue());
         } catch (Exception e) {
             log.error("Error generating meal preps from Gemini", e);
-            throw new UnprocessableException("Failed to generate meal preps");
+            throw new NotAvailableException(ErrorDescription.NOT_AVAILABLE.getValue());
         }
+    }
+
+    private String buildRecipesJson(List<Recipe> recipes) throws JsonProcessingException {
+        List<RecipeRequestGeminiModel> requests = recipes.stream().map(this::buildRecipeRequest).toList();
+        return objectMapper.writeValueAsString(requests);
+    }
+
+    private RecipeRequestGeminiModel buildRecipeRequest(Recipe recipe) {
+        return RecipeRequestGeminiModel.builder()
+                .id(recipe.getId())
+                .name(recipe.getName())
+                .subtitle(recipe.getSubtitle())
+                .description(recipe.getDescription())
+                .preparationTime(recipe.getPreparationTime().getDescription())
+                .cookLevelName(recipe.getCookLevel().getDescription())
+                .dietName(recipe.getDiet().getDescription())
+                .mealTypesNames(recipe.getMealTypes().stream().map(MealType::getDescription).toList())
+                .allergiesNames(recipe.getAllergies().stream().map(Allergy::getDescription).toList())
+                .dietaryNeedsNames(recipe.getDietaryNeeds().stream().map(DietaryNeed::getDescription).toList())
+                .ingredientNames(recipe.getIngredients().stream().map(Ingredient::getName).toList())
+                .build();
+    }
+
+    private String buildMealPrepsToNotInclude(List<MealPrep> mealPrepsToNotInclude) throws JsonProcessingException {
+        List<String> notInclude = mealPrepsToNotInclude.stream().map(MealPrep::getTitle).toList();
+        return objectMapper.writeValueAsString(notInclude);
     }
 
     private PromptBodyGeminiRequestModel buildPromptBody(String prompt) {

@@ -12,7 +12,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RecipeConfiguration {
+public class MealPrepConfigurationRequest {
     private Integer size;
     private List<Long> notInclude;
 }

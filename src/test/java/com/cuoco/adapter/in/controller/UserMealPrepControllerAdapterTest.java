@@ -1,7 +1,7 @@
 package com.cuoco.adapter.in.controller;
 
-import com.cuoco.application.port.in.CreateUserMealPrepCommand;
 import com.cuoco.adapter.in.controller.model.MealPrepResponse;
+import com.cuoco.application.port.in.CreateUserMealPrepCommand;
 import com.cuoco.application.port.in.DeleteUserMealPrepCommand;
 import com.cuoco.application.port.in.GetAllUserMealPrepsQuery;
 import com.cuoco.application.usecase.model.MealPrep;
@@ -16,9 +16,12 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserMealPrepControllerAdapterTest {

@@ -2,7 +2,6 @@ package com.cuoco.adapter.in.controller;
 
 import com.cuoco.adapter.in.controller.model.ImageIngredientsResponse;
 import com.cuoco.adapter.in.controller.model.IngredientResponse;
-import com.cuoco.adapter.in.controller.model.MealPrepResponse;
 import com.cuoco.adapter.in.controller.model.TextRequest;
 import com.cuoco.adapter.in.controller.model.UnitResponse;
 import com.cuoco.application.port.in.GetIngredientsFromAudioCommand;

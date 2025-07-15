@@ -1,8 +1,20 @@
 package com.cuoco.factory.domain;
 
-import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.adapter.in.controller.model.IngredientRequest;
-import com.cuoco.application.usecase.model.*;
+import com.cuoco.adapter.in.controller.model.RecipeRequest;
+import com.cuoco.application.usecase.model.Allergy;
+import com.cuoco.application.usecase.model.CookLevel;
+import com.cuoco.application.usecase.model.Diet;
+import com.cuoco.application.usecase.model.DietaryNeed;
+import com.cuoco.application.usecase.model.Filters;
+import com.cuoco.application.usecase.model.Ingredient;
+import com.cuoco.application.usecase.model.MealType;
+import com.cuoco.application.usecase.model.ParametricData;
+import com.cuoco.application.usecase.model.PreparationTime;
+import com.cuoco.application.usecase.model.Recipe;
+import com.cuoco.application.usecase.model.RecipeConfiguration;
+import com.cuoco.application.usecase.model.Step;
+import com.cuoco.application.usecase.model.Unit;
 
 import java.util.List;
 
@@ -45,7 +57,6 @@ public class RecipeFactory {
                 .filters(Filters.builder()
                         .useProfilePreferences(true)
                         .enable(true)
-                        .servings(4)
                         .preparationTime(PreparationTime.builder().id(1).description("30 minutes").build())
                         .cookLevel(CookLevel.builder().id(1).description("Beginner").build())
                         .diet(Diet.builder().id(1).description("Vegetarian").build())
@@ -99,7 +110,6 @@ public class RecipeFactory {
                 .filters(Filters.builder()
                         .useProfilePreferences(true)
                         .enable(true)
-                        .servings(4)
                         .preparationTime(PreparationTime.builder().id(1).description("30 minutes").build())
                         .cookLevel(CookLevel.builder().id(1).description("Beginner").build())
                         .diet(Diet.builder().id(1).description("Vegetarian").build())
@@ -121,7 +131,6 @@ public class RecipeFactory {
         Filters filters = Filters.builder()
                 .useProfilePreferences(true)
                 .enable(true)
-                .servings(2)
                 .preparationTime(PreparationTime.builder().id(1).description("15 minutes").build())
                 .cookLevel(CookLevel.builder().id(1).description("Easy").build())
                 .diet(Diet.builder().id(1).description("Vegan").build())

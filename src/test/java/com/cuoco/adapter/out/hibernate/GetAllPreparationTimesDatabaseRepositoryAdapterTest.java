@@ -1,7 +1,7 @@
 package com.cuoco.adapter.out.hibernate;
 
-import com.cuoco.adapter.out.hibernate.repository.GetAllPreparationTimesHibernateRepositoryAdapter;
 import com.cuoco.adapter.out.hibernate.model.PreparationTimeHibernateModel;
+import com.cuoco.adapter.out.hibernate.repository.GetAllPreparationTimesHibernateRepositoryAdapter;
 import com.cuoco.application.usecase.model.PreparationTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

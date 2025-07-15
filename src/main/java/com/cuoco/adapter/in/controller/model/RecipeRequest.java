@@ -19,5 +19,5 @@ public class RecipeRequest {
     @NotEmpty(message = "Es requerido un ingrediente como minimo")
     private List<IngredientRequest> ingredients;
     private RecipeFilterRequest filters;
-    private RecipeConfiguration configuration;
+    private RecipeConfigurationRequest configuration;
 }

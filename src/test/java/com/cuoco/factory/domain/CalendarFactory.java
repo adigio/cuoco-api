@@ -4,7 +4,6 @@ import com.cuoco.application.usecase.model.Calendar;
 import com.cuoco.application.usecase.model.CalendarRecipe;
 import com.cuoco.application.usecase.model.Day;
 import com.cuoco.application.usecase.model.MealType;
-import com.cuoco.application.usecase.model.Recipe;
 
 import java.util.List;
 

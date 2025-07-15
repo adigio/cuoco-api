@@ -8,7 +8,7 @@ REGLAS OBLIGATORIAS:
 2. No incluyas recetas que usen solo algunos de los ingredientes proporcionados.
 3. Las recetas deben ser lógicas y plausibles dentro de la cocina argentina.
 4. Usá español rioplatense: decí "papa" en lugar de "patata", "palta" en lugar de "aguacate", "choclo" en lugar de "maíz", etc.
-5. En el campo "steps", defini cada paso que lleva la receta para lograr la coccion completa del plato. En number poner el numero de orden del paso, titulo del paso y la descripcion completa de cada uno de los pasos.
+5. En el campo "steps", defini cada paso que lleva la receta para lograr la coccion completa del plato. En number poner el numero de orden del paso, titulo del paso y la descripcion completa de cada uno de los pasos. MINIMO 3/4.
 6. En el campo "quantity" de cada ingrediente, usá SIEMPRE números decimales (ej: 1.00, 250.00, 0.50). Nunca uses palabras como "pizca", "a gusto", etc.
 7. En "unit", usá EXACTAMENTE las unidades provistas en el JSON de units (id y symbol correctos).
 8. En "preparation_time", "cook_level", "diet", "meal_types", "allergies" y "dietary_needs", usá EXACTAMENTE los valores provistos en los JSON correspondientes. No inventes ni modifiques descripciones, ids o estructuras.
@@ -23,7 +23,7 @@ REGLAS OBLIGATORIAS:
 NO crear ni incluir las recetas de la siguiente lista de nombres:
 (Si la receta esta en la lista, crear otra diferente. Si la lista es vacia o null, ignorar este paso)
 
-No incluir estas recetas: {{NOT_INCLUDE}}
+No incluir estas recetas (Ignorar si esta vacio): {{NOT_INCLUDE}}
 
 ESTRUCTURA DEL JSON (respetar exactamente):
 

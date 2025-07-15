@@ -3,7 +3,7 @@ package com.cuoco.adapter.in.controller;
 import com.cuoco.adapter.in.controller.model.IngredientRequest;
 import com.cuoco.adapter.in.controller.model.IngredientResponse;
 import com.cuoco.adapter.in.controller.model.ParametricResponse;
-import com.cuoco.adapter.in.controller.model.RecipeConfiguration;
+import com.cuoco.adapter.in.controller.model.RecipeConfigurationRequest;
 import com.cuoco.adapter.in.controller.model.RecipeFilterRequest;
 import com.cuoco.adapter.in.controller.model.RecipeRequest;
 import com.cuoco.adapter.in.controller.model.RecipeResponse;
@@ -86,10 +86,10 @@ public class RecipeControllerAdapter {
                     )
             )
     })
-    public ResponseEntity<RecipeResponse> getRecipe(@PathVariable(name = "id") Long recipeId) {
+    public ResponseEntity<RecipeResponse> getRecipe(@PathVariable(name = "id") Long recipeId, @RequestParam(required = false) Integer servings) {
         log.info("Executing GET for find recipe with ID {}", recipeId);
 
-        Recipe recipe = getRecipeByIdQuery.execute(recipeId);
+        Recipe recipe = getRecipeByIdQuery.execute(recipeId, servings);
 
         RecipeResponse recipeResponse = buildResponse(recipe);
 
@@ -208,7 +208,7 @@ public class RecipeControllerAdapter {
             recipeRequest.setFilters(new RecipeFilterRequest());
         }
 
-        if(recipeRequest.getConfiguration() == null) recipeRequest.setConfiguration(new RecipeConfiguration());
+        if(recipeRequest.getConfiguration() == null) recipeRequest.setConfiguration(new RecipeConfigurationRequest());
 
         return GetRecipesFromIngredientsCommand.Command.builder()
                 .filtersEnabled(filtersEnabled)

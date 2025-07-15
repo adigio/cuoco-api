@@ -26,6 +26,9 @@ public interface GetMealPrepFromIngredientsCommand {
         private List<Integer> typeIds;
         private List<Integer> allergiesIds;
         private List<Integer> dietaryNeedsIds;
+
+        private Integer size;
+        private List<Long> notInclude;
     }
 }
 

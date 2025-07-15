@@ -19,7 +19,6 @@ public class Filters {
     private Boolean useProfilePreferences;
     private Boolean enable;
 
-    private Integer servings;
     private PreparationTime preparationTime;
     private CookLevel cookLevel;
     private Diet diet;
