@@ -5,33 +5,23 @@ import com.cuoco.application.port.in.FindOrCreateRecipeCommand;
 import com.cuoco.application.port.out.CreateRecipeByNameRepository;
 import com.cuoco.application.port.out.CreateRecipeRepository;
 import com.cuoco.application.port.out.FindRecipeByNameRepository;
-import com.cuoco.application.usecase.domainservice.RecipeDomainService;
+import com.cuoco.application.usecase.domainservice.ParametricDataDomainService;
 import com.cuoco.application.usecase.model.ParametricData;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.shared.model.ErrorDescription;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class FindOrCreateRecipeUseCase implements FindOrCreateRecipeCommand {
 
+    private final ParametricDataDomainService parametricDataDomainService;
     private final CreateRecipeByNameRepository createRecipeByNameRepository;
     private final FindRecipeByNameRepository findRecipeByNameRepository;
     private final CreateRecipeRepository createRecipeRepository;
-    private final RecipeDomainService recipeDomainService;
-
-    public FindOrCreateRecipeUseCase(
-            CreateRecipeByNameRepository createRecipeByNameRepository,
-            FindRecipeByNameRepository findRecipeByNameRepository,
-            CreateRecipeRepository createRecipeRepository,
-            RecipeDomainService recipeDomainService
-    ) {
-        this.createRecipeByNameRepository = createRecipeByNameRepository;
-        this.findRecipeByNameRepository = findRecipeByNameRepository;
-        this.createRecipeRepository = createRecipeRepository;
-        this.recipeDomainService = recipeDomainService;
-    }
 
     @Override
     public Recipe execute(Command command) {
@@ -45,7 +35,7 @@ public class FindOrCreateRecipeUseCase implements FindOrCreateRecipeCommand {
         }
 
         log.info("Recipe not found in database. Generating new recipe for: {}", command.getRecipeName());
-        ParametricData parametricData = recipeDomainService.buildParametricData();
+        ParametricData parametricData = parametricDataDomainService.getAll();
         Recipe generatedRecipe = createRecipeByNameRepository.execute(command.getRecipeName(), parametricData);
         
         if (generatedRecipe == null) {

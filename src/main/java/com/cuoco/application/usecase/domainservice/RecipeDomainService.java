@@ -2,17 +2,9 @@ package com.cuoco.application.usecase.domainservice;
 
 import com.cuoco.application.port.out.CreateAllRecipesRepository;
 import com.cuoco.application.port.out.CreateRecipeImagesRepository;
-import com.cuoco.application.port.out.GetAllAllergiesRepository;
-import com.cuoco.application.port.out.GetAllCookLevelsRepository;
-import com.cuoco.application.port.out.GetAllDietaryNeedsRepository;
-import com.cuoco.application.port.out.GetAllDietsRepository;
-import com.cuoco.application.port.out.GetAllMealTypesRepository;
-import com.cuoco.application.port.out.GetAllPreparationTimesRepository;
 import com.cuoco.application.port.out.GetAllRecipesByIdsRepository;
-import com.cuoco.application.port.out.GetAllUnitsRepository;
 import com.cuoco.application.port.out.GetRecipeStepsImagesRepository;
 import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
-import com.cuoco.application.usecase.model.ParametricData;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.Step;
 import lombok.extern.slf4j.Slf4j;
@@ -32,17 +24,9 @@ public class RecipeDomainService {
     private final GetAllRecipesByIdsRepository getAllRecipesByIdsRepository;
     private final CreateAllRecipesRepository createAllRecipesRepository;
     private final CreateRecipeImagesRepository createRecipeImagesRepository;
-
     private final GetRecipeStepsImagesRepository getRecipeStepsImagesRepository;
-
     private final AsyncRecipeDomainService asyncRecipeDomainService;
-    private final GetAllUnitsRepository getAllUnitsRepository;
-    private final GetAllPreparationTimesRepository getAllPreparationTimesRepository;
-    private final GetAllCookLevelsRepository getAllCookLevelsRepository;
-    private final GetAllDietsRepository getAllDietsRepository;
-    private final GetAllMealTypesRepository getAllMealTypesRepository;
-    private final GetAllAllergiesRepository getAllAllergiesRepository;
-    private final GetAllDietaryNeedsRepository getAllDietaryNeedsRepository;
+    private final ParametricDataDomainService parametricDataDomainService;
 
     public RecipeDomainService(
             @Qualifier("repository") GetRecipesFromIngredientsRepository getRecipesFromIngredientsRepository,
@@ -52,13 +36,7 @@ public class RecipeDomainService {
             CreateRecipeImagesRepository createRecipeImagesRepository,
             GetRecipeStepsImagesRepository getRecipeStepsImagesRepository,
             AsyncRecipeDomainService asyncRecipeDomainService,
-            GetAllUnitsRepository getAllUnitsRepository,
-            GetAllPreparationTimesRepository getAllPreparationTimesRepository,
-            GetAllCookLevelsRepository getAllCookLevelsRepository,
-            GetAllDietsRepository getAllDietsRepository,
-            GetAllMealTypesRepository getAllMealTypesRepository,
-            GetAllAllergiesRepository getAllAllergiesRepository,
-            GetAllDietaryNeedsRepository getAllDietaryNeedsRepository
+            ParametricDataDomainService parametricDataDomainService
     ) {
         this.getRecipesFromIngredientsRepository = getRecipesFromIngredientsRepository;
         this.getRecipesFromIngredientsProvider = getRecipesFromIngredientsProvider;
@@ -67,13 +45,7 @@ public class RecipeDomainService {
         this.createRecipeImagesRepository = createRecipeImagesRepository;
         this.getRecipeStepsImagesRepository = getRecipeStepsImagesRepository;
         this.asyncRecipeDomainService = asyncRecipeDomainService;
-        this.getAllUnitsRepository = getAllUnitsRepository;
-        this.getAllPreparationTimesRepository = getAllPreparationTimesRepository;
-        this.getAllCookLevelsRepository = getAllCookLevelsRepository;
-        this.getAllDietsRepository = getAllDietsRepository;
-        this.getAllMealTypesRepository = getAllMealTypesRepository;
-        this.getAllAllergiesRepository = getAllAllergiesRepository;
-        this.getAllDietaryNeedsRepository = getAllDietaryNeedsRepository;
+        this.parametricDataDomainService = parametricDataDomainService;
     }
 
     public List<Recipe> getOrCreate(Recipe recipeToFind) {
@@ -83,9 +55,6 @@ public class RecipeDomainService {
 
         if(foundedRecipes.isEmpty()) {
             log.info("Can't find saved recipes with the provided ingredients and filters. Generating new ones");
-
-            recipeToFind.getConfiguration().setParametricData(buildParametricData());
-
             return generateRecipes(recipeToFind, List.of(), targetSize);
         }
 
@@ -93,8 +62,6 @@ public class RecipeDomainService {
             int remaining = targetSize - foundedRecipes.size();
 
             log.info("Founded only {} saved recipes. Generating {} new recipes to complete", foundedRecipes.size(), remaining);
-
-            recipeToFind.getConfiguration().setParametricData(buildParametricData());
 
             List<Recipe> newRecipes = generateRecipes(recipeToFind, foundedRecipes, remaining);
 
@@ -108,6 +75,8 @@ public class RecipeDomainService {
     }
 
     private List<Recipe> generateRecipes(Recipe recipeParameters, List<Recipe> foundedRecipes, int size) {
+
+        recipeParameters.getConfiguration().setParametricData(parametricDataDomainService.getAll());
 
         List<Recipe> recipesToNotInclude = buildRecipesToNotInclude(recipeParameters.getConfiguration().getNotInclude(), foundedRecipes);
 
@@ -138,18 +107,6 @@ public class RecipeDomainService {
         }
 
         return recipe;
-    }
-
-    public ParametricData buildParametricData() {
-        return ParametricData.builder()
-                .units(getAllUnitsRepository.execute())
-                .preparationTimes(getAllPreparationTimesRepository.execute())
-                .cookLevels(getAllCookLevelsRepository.execute())
-                .diets(getAllDietsRepository.execute())
-                .mealTypes(getAllMealTypesRepository.execute())
-                .allergies(getAllAllergiesRepository.execute())
-                .dietaryNeeds(getAllDietaryNeedsRepository.execute())
-                .build();
     }
 
     private List<Recipe> buildRecipesToNotInclude(List<Recipe> requiredNotInclude, List<Recipe> foundedRecipes) {
