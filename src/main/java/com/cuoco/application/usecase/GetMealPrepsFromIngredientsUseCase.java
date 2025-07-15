@@ -159,7 +159,6 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
         return Filters.builder()
                 .enable(true)
                 .freeze(freeze)
-                .servings(command.getServings())
                 .preparationTime(preparationTime)
                 .cookLevel(cookLevel)
                 .mealTypes(types)

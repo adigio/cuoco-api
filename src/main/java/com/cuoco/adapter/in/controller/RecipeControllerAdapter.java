@@ -86,10 +86,10 @@ public class RecipeControllerAdapter {
                     )
             )
     })
-    public ResponseEntity<RecipeResponse> getRecipe(@PathVariable(name = "id") Long recipeId) {
+    public ResponseEntity<RecipeResponse> getRecipe(@PathVariable(name = "id") Long recipeId, @RequestParam(required = false) Integer servings) {
         log.info("Executing GET for find recipe with ID {}", recipeId);
 
-        Recipe recipe = getRecipeByIdQuery.execute(recipeId);
+        Recipe recipe = getRecipeByIdQuery.execute(recipeId, servings);
 
         RecipeResponse recipeResponse = buildResponse(recipe);
 

@@ -67,7 +67,7 @@ public class GetMealPrepsFromIngredientsGeminiRestRepositoryAdapter implements G
             String basicPrompt = BASIC_PROMPT
                     .replace(Constants.RECIPES.getValue(), recipesJson)
                     .replace(Constants.NOT_INCLUDE.getValue(), mealPrepsToNotInclude)
-                    .replace(Constants.MAX_MEAL_PREPS.getValue(), mealPrep.getFilters().getServings().toString())
+                    .replace(Constants.MAX_MEAL_PREPS.getValue(), mealPrep.getConfiguration().getSize().toString())
                     .replace(Constants.FREEZE.getValue(), mealPrep.getFilters().getFreeze().toString());
 
             PromptBodyGeminiRequestModel prompt = buildPromptBody(basicPrompt);

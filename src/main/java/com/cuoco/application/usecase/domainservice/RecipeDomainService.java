@@ -5,6 +5,7 @@ import com.cuoco.application.port.out.CreateRecipeImagesRepository;
 import com.cuoco.application.port.out.GetAllRecipesByIdsRepository;
 import com.cuoco.application.port.out.GetRecipeStepsImagesRepository;
 import com.cuoco.application.port.out.GetRecipesFromIngredientsRepository;
+import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.Step;
 import lombok.extern.slf4j.Slf4j;
@@ -107,6 +108,18 @@ public class RecipeDomainService {
         }
 
         return recipe;
+    }
+
+    public void adjustIngredientsByServings(Recipe recipe, Integer servings) {
+        if(servings != null && servings > 1) {
+            log.info("Multiplying recipe ID {} ingredients quantity by {} servings", recipe.getId(), servings);
+
+            for (Ingredient ingredient : recipe.getIngredients()) {
+                if (ingredient.getQuantity() != null) {
+                    ingredient.setQuantity(ingredient.getQuantity() * servings);
+                }
+            }
+        }
     }
 
     private List<Recipe> buildRecipesToNotInclude(List<Recipe> requiredNotInclude, List<Recipe> foundedRecipes) {
