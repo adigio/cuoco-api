@@ -69,6 +69,7 @@ Instrucciones CRITICAS:
 - Usar español argentino (ejemplo: papa, palta, choclo, etc.).
 - Los ingredientes proporcionados deben aparecer en la lista de ingredientes de las recetas dadas
 - El meal prep y sus steps deben ser lógicos combinando TODOS los ingredientes dados
+- Los steps deben ser como minimo 4
 - Las instrucciones deben ir como texto plano, sin '\n' ni saltos de línea.
 - Solo usar números decimales en "quantity", sin texto.
 - Usar correctamente acentos y la letra ñ.
