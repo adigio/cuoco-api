@@ -68,7 +68,7 @@ public class SendResetPasswordConfirmationEmailRepositoryAdapter implements Send
         String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
 
         return baseUrl
-                .concat("/reset-password?token=")
+                .concat("/password/change?token=")
                 .concat(token);
     }
 }
