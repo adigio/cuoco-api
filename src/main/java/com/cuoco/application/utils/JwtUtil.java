@@ -40,6 +40,16 @@ public class JwtUtil {
                 .compact();
     }
 
+    public String generateResetPasswordToken(User user) {
+        return Jwts.builder()
+                .setId(user.getId().toString())
+                .setSubject(user.getEmail())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 2)) // 2 horas
+                .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     public String extractId(String token) {
         try {
             return Jwts.parserBuilder()

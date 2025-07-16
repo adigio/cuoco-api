@@ -18,6 +18,7 @@ public class User {
     private String name;
     private String email;
     private String password;
+    private Boolean changePassword;
     private Plan plan;
     private Boolean active;
     private UserPreferences preferences;

@@ -41,6 +41,13 @@ email:
         timeout: 5000
         writetimeout: 5000
 shared:
+  email:
+    no-reply:
+      name: ${NO_REPLY_NAME:Cuoco}
+      from: ${NO_REPLY_EMAIL:noresponder@cuoco.com.ar}
+    notification:
+      name: ${NOTIFICATION_NAME:Cuoco}
+      from: ${NOTIFICATION_EMAIL:notifications@cuoco.com.ar}
   recipes:
     size:
       free: ${FREE_USER_RECIPES_SIZE:3}

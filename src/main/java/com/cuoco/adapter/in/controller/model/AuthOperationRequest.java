@@ -14,11 +14,7 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AuthRequest {
-
-    @NotBlank(message = "Password is required")
-    private String password;
-
+public class AuthOperationRequest {
     @NotBlank(message = "Email is required")
     @Email(message = "Email is not valid")
     private String email;

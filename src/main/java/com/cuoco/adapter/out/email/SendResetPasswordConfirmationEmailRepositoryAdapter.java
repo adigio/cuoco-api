@@ -1,7 +1,7 @@
 package com.cuoco.adapter.out.email;
 
 import com.cuoco.adapter.exception.NotAvailableException;
-import com.cuoco.application.port.out.SendConfirmationEmailRepository;
+import com.cuoco.application.port.out.SendResetPasswordConfirmationRepository;
 import com.cuoco.application.usecase.model.User;
 import com.cuoco.shared.FileReader;
 import com.cuoco.shared.model.ErrorDescription;
@@ -21,9 +21,9 @@ import java.io.UnsupportedEncodingException;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class SendConfirmationNotificationEmailRepositoryAdapter implements SendConfirmationEmailRepository {
+public class SendResetPasswordConfirmationEmailRepositoryAdapter implements SendResetPasswordConfirmationRepository {
 
-    private final String EMAIL_BODY = FileReader.execute("email/userConfirmation.html");
+    private final String EMAIL_BODY = FileReader.execute("email/resetPassword.html");
 
     @Value("${shared.email.no-reply.name}")
     private String fromName;
@@ -37,46 +37,38 @@ public class SendConfirmationNotificationEmailRepositoryAdapter implements SendC
     @Override
     public void execute(User user, String token) {
         try {
-            log.info("Executing send confirmation email for user with ID {}", user.getId());
+            log.info("Executing send reset password email for user with ID {}", user.getId());
 
-            String confirmationLink = buildConfirmationLink(token);
+            String passwordLink = buildPasswordLink(token);
 
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
             helper.setFrom(new InternetAddress(fromEmail, fromName));
             helper.setTo(user.getEmail());
-            helper.setSubject(user.getName() +", ¡Confirmá tu cuenta en Cuoco!");
+            helper.setSubject("Solicitud de cambio de contraseña");
 
             String content = EMAIL_BODY
                     .replace("{{NAME}}", user.getName())
-                    .replace("{{LINK}}", confirmationLink);
+                    .replace("{{LINK}}", passwordLink);
 
             helper.setText(content, true);
 
             mailSender.send(message);
 
-            log.info("Successfully sended confirmation email to {} with link {}", user.getEmail(), confirmationLink);
+            log.info("Successfully sended confirmation email to {} with link {}", user.getEmail(), passwordLink);
         } catch (MessagingException | UnsupportedEncodingException e) {
             log.error("Error sending confirmation email to {}: {}", user.getEmail(), e.getMessage());
             throw new NotAvailableException(ErrorDescription.NOT_AVAILABLE.getValue());
         }
     }
 
-    private String buildConfirmationLink(String token) {
+    private String buildPasswordLink(String token) {
 
-        String baseUrl = request.getRequestURL().toString()
-                .replace(request.getRequestURI(), "");
+        String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
 
-        String contextPath = baseUrl.contains("cuoco.com.ar") ? "/api" : "";
-
-        String confirmationLink = baseUrl
-                .concat(contextPath)
-                .concat("/auth/confirm?token=")
+        return baseUrl
+                .concat("/reset-password?token=")
                 .concat(token);
-
-        log.info("Builded URL link from this base {} and this context {}", baseUrl, contextPath);
-        return confirmationLink;
     }
 }
-
