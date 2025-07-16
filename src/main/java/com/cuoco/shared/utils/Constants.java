@@ -2,6 +2,7 @@ package com.cuoco.shared.utils;
 
 public enum Constants {
 
+    UNDERSCORE("_"),
     COMMA(","),
     SLASH("/"),
     DOT("."),

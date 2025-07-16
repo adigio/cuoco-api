@@ -5,11 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 @Builder
-public class Plan implements Parametric {
+@AllArgsConstructor
+public class PaymentStatus implements Parametric {
     private Integer id;
     private String description;
-
-    private PlanConfiguration configuration;
 }

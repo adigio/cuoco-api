@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,10 +24,15 @@ public class PlanHibernateModel {
     private Integer id;
     private String description;
 
+    @OneToOne
+    @JoinColumn(name = "configuration_id")
+    private PlanConfigurationHibernateModel configuration;
+
     public static PlanHibernateModel fromDomain(Plan plan) {
         return PlanHibernateModel.builder()
                 .id(plan.getId())
                 .description(plan.getDescription())
+                .configuration(PlanConfigurationHibernateModel.fromDomain(plan.getConfiguration()))
                 .build();
     }
 
@@ -33,6 +40,7 @@ public class PlanHibernateModel {
         return Plan.builder()
                 .id(id)
                 .description(description)
+                .configuration(configuration != null ? configuration.toDomain() : null)
                 .build();
     }
 }

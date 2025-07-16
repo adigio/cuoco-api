@@ -40,6 +40,16 @@ email:
         connectiontimeout: 5000
         timeout: 5000
         writetimeout: 5000
+mercado-pago:
+  access-token: ${MP_ACCESS_TOKEN}
+  callbacks:
+    success: ${MP_CALLBACK_SUCCESS:/payment/success}
+    pending: ${MP_CALLBACK_PENDING:/payment/pending}
+    failure: ${MP_CALLBACK_FAILURE:/payment/failure}
+  branding:
+    primary-color: ${MP_BRANDING_PRIMARY_COLOR:#FF6B35}
+    secondary-color: ${MP_BRANDING_SECONDARY_COLOR:#FFA500}
+    show-mercado-pago-branding: ${MP_BRANDING_ENABLE_MP_BRANDING:false}
 shared:
   email:
     no-reply:
@@ -57,3 +67,7 @@ shared:
   meal-preps:
     size: ${MEAL_PREP_DEFAULT_SIZE:1}
     recipes-size: ${RECIPES_SIZE_PER_MEAL_PREP:3}
+
+
+
+
