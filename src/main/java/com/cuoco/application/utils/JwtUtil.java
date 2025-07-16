@@ -61,7 +61,7 @@ public class JwtUtil {
 
         } catch (MalformedJwtException e) {
             log.warn("Extract ID: Invalid JWT token: {}", e.getMessage());
-            throw new UnauthorizedException(ErrorDescription.INVALID_CREDENTIALS.getValue());
+            throw new UnauthorizedException(ErrorDescription.INVALID_TOKEN.getValue());
         }
     }
 
