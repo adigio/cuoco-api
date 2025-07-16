@@ -68,19 +68,19 @@ ESTRUCTURA DEL JSON (respetar exactamente):
         {
             "name": "ingrediente1",
             "quantity": 200.00,
-            "unit": { "id": "1", "symbol": "gr" },
+            "unit_id": 2,
             "optional": false
         },
         {
             "name": "ingrediente2",
             "quantity": 100.00,
-            "unit": { "id": "2", "symbol": "ml" },
+            "unit_id": 2,
             "optional": false
         },
         {
             "name": "ingrediente3",
             "quantity": 1.50,
-            "unit": { "id": "3", "symbol": "cd" },
+            "unit_id": 3,
             "optional": true
         }
     ]

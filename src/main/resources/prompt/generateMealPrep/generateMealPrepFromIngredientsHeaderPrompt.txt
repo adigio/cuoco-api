@@ -52,9 +52,9 @@ Ejemplo de la estructura del JSON de respuesta:
       }
     ],
     "ingredients": [
-      { "name": "ingrediente1", "quantity": 200.0, "unit": { "id": "1", "symbol": "gr"}, "optional": false },
-      { "name": "ingrediente2", "quantity": 100.0, "unit": { "id": "2", "symbol": "ml"}, "optional": false },
-      { "name": "ingrediente3", "quantity": 1.0, "unit":  { "id": "3", "symbol": "ud"}, "optional": true }
+      { "name": "ingrediente1", "quantity": 200.0, "unit_id": 1, "optional": false },
+      { "name": "ingrediente2", "quantity": 100.0, "unit_id": 1, "optional": false },
+      { "name": "ingrediente3", "quantity": 1.0, "unit_id":  3, "optional": true }
     ]
 
   }
@@ -63,6 +63,9 @@ Ejemplo de la estructura del JSON de respuesta:
 Condiciones:
 
 - ¿Apto para freezar?: {{FREEZE}} (sí o no; si es sí, sugerir pasos para almacenamiento y duración)
+- Lista de units que se deben usar obligatoriamente:
+
+{{PARAMETRIC_UNITS}}
 
 Instrucciones CRITICAS:
 

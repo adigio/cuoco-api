@@ -21,11 +21,13 @@ public class UnitResponseGeminiModel {
 
     private Integer id;
     private String description;
+    private String symbol;
 
     public Unit toDomain() {
         return Unit.builder()
                 .id(id)
                 .description(description)
+                .symbol(symbol)
                 .build();
     }
 }

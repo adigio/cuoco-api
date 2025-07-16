@@ -10,4 +10,6 @@ import java.util.List;
 public class MealPrepConfiguration {
     private Integer size;
     private List<MealPrep> notInclude;
+
+    private ParametricData parametricData;
 }

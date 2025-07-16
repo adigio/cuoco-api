@@ -12,6 +12,7 @@ import com.cuoco.application.port.out.GetDietaryNeedsByIdRepository;
 import com.cuoco.application.port.out.GetMealPrepsFromIngredientsRepository;
 import com.cuoco.application.port.out.GetMealTypeByIdRepository;
 import com.cuoco.application.port.out.GetPreparationTimeByIdRepository;
+import com.cuoco.application.usecase.domainservice.ParametricDataDomainService;
 import com.cuoco.application.usecase.domainservice.RecipeDomainService;
 import com.cuoco.application.usecase.domainservice.UserDomainService;
 import com.cuoco.application.usecase.model.Allergy;
@@ -23,6 +24,7 @@ import com.cuoco.application.usecase.model.Ingredient;
 import com.cuoco.application.usecase.model.MealPrep;
 import com.cuoco.application.usecase.model.MealPrepConfiguration;
 import com.cuoco.application.usecase.model.MealType;
+import com.cuoco.application.usecase.model.ParametricData;
 import com.cuoco.application.usecase.model.PreparationTime;
 import com.cuoco.application.usecase.model.Recipe;
 import com.cuoco.application.usecase.model.RecipeConfiguration;
@@ -49,6 +51,8 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
 
     private final UserDomainService userDomainService;
     private final RecipeDomainService recipeDomainService;
+    private final ParametricDataDomainService parametricDataDomainService;
+
     private final GetMealPrepsFromIngredientsRepository getMealPrepsFromIngredientsProvider;
     private final GetAllMealPrepsByIdsRepository getAllMealPrepsByIdsRepository;
     private final CreateAllMealPrepsRepository createAllMealPrepsRepository;
@@ -62,6 +66,7 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
     public GetMealPrepsFromIngredientsUseCase(
             UserDomainService userDomainService,
             RecipeDomainService recipeDomainService,
+            ParametricDataDomainService parametricDataDomainService,
             @Qualifier("provider") GetMealPrepsFromIngredientsRepository getMealPrepsFromIngredientsProvider,
             GetAllMealPrepsByIdsRepository getAllMealPrepsByIdsRepository,
             CreateAllMealPrepsRepository createAllMealPrepsRepository,
@@ -74,6 +79,7 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
     ) {
         this.userDomainService = userDomainService;
         this.recipeDomainService = recipeDomainService;
+        this.parametricDataDomainService = parametricDataDomainService;
         this.getMealPrepsFromIngredientsProvider = getMealPrepsFromIngredientsProvider;
         this.getAllMealPrepsByIdsRepository = getAllMealPrepsByIdsRepository;
         this.createAllMealPrepsRepository = createAllMealPrepsRepository;
@@ -195,10 +201,12 @@ public class GetMealPrepsFromIngredientsUseCase implements GetMealPrepFromIngred
 
     private MealPrepConfiguration buildMealPrepConfiguration(List<MealPrep> notInclude) {
         int mealPrepSize = MEAL_PREP_SIZE;
+        ParametricData parametricData = parametricDataDomainService.getAll();
 
         return MealPrepConfiguration.builder()
                 .size(mealPrepSize)
                 .notInclude(notInclude)
+                .parametricData(parametricData)
                 .build();
     }
 }

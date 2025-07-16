@@ -22,19 +22,14 @@ public class IngredientResponseGeminiModel {
 
     private String name;
     private Double quantity;
-    private Unit unit;
+    private Integer unitId;
     private Boolean optional;
 
     public Ingredient toDomain() {
         return Ingredient.builder()
                 .name(name)
                 .quantity(quantity)
-                .unit(Unit.builder()
-                        .id(unit.getId())
-                        .description(unit.getDescription())
-                        .symbol(unit.getSymbol())
-                        .build()
-                )
+                .unit(Unit.builder().id(unitId).build())
                 .optional(optional)
                 .build();
     }
