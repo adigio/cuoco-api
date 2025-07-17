@@ -36,6 +36,14 @@ public class UserPreferencesHibernateModel {
     @JoinColumn(name = "diet_id", referencedColumnName = "id")
     private DietHibernateModel diet;
 
+    public static UserPreferencesHibernateModel fromDomain(UserPreferences userPreferences) {
+        return UserPreferencesHibernateModel.builder()
+                .id(userPreferences.getId())
+                .cookLevel(CookLevelHibernateModel.fromDomain(userPreferences.getCookLevel()))
+                .diet(DietHibernateModel.fromDomain(userPreferences.getDiet()))
+                .build();
+    }
+
     public UserPreferences toDomain() {
         return UserPreferences.builder()
                 .id(id)

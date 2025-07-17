@@ -1,7 +1,7 @@
 package com.cuoco.adapter.out.hibernate.model;
 
-import com.cuoco.application.usecase.model.Allergy;
 import com.cuoco.application.usecase.model.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -41,6 +41,9 @@ public class UserHibernateModel {
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private UserPreferencesHibernateModel preferences;
+
     @ManyToMany
     @JoinTable(
             name = "user_allergies",
@@ -75,6 +78,22 @@ public class UserHibernateModel {
 
     @OneToMany(mappedBy = "user")
     private List<UserCalendarsHibernateModel> calendars;
+
+    public static UserHibernateModel fromDomain(User user) {
+        return UserHibernateModel.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .plan(PlanHibernateModel.fromDomain(user.getPlan()))
+                .active(user.getActive())
+                .preferences(UserPreferencesHibernateModel.fromDomain(user.getPreferences()))
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .dietaryNeeds(user.getDietaryNeeds().stream().map(DietaryNeedHibernateModel::fromDomain).toList())
+                .allergies(user.getAllergies().stream().map(AllergyHibernateModel::fromDomain).toList())
+                .build();
+    }
 
     public User toDomain() {
         return User.builder()
