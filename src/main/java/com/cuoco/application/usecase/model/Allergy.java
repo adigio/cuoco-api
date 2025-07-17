@@ -3,13 +3,11 @@ package com.cuoco.application.usecase.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
 @Builder
 @AllArgsConstructor
-public class Allergy {
+public class Allergy implements Parametric{
     private Integer id;
     private String description;
 }

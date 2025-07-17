@@ -1,5 +1,0 @@
-"Analiza esta imagen y extrae SOLO los nombres de ingredientes visibles en español argentino. 
-Devuelve una lista separada por comas, sin palabras adicionales ni explicaciones. 
-Enfócate únicamente en ingredientes de comida, no en platos preparados. 
-Usa nombres comunes argentinos: papa (no patata), palta (no aguacate), choclo (no maíz).
-Ejemplos: tomate, papa, cebolla, palta, choclo"

@@ -5,19 +5,17 @@ import com.cuoco.application.port.in.SignInUserCommand;
 import com.cuoco.application.port.out.GetUserByEmailRepository;
 import com.cuoco.application.usecase.model.AuthenticatedUser;
 import com.cuoco.application.usecase.model.User;
+import com.cuoco.application.utils.JwtUtil;
 import com.cuoco.shared.model.ErrorDescription;
-import com.cuoco.shared.utils.JwtUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 
+@Slf4j
 @Component
 public class SignInUserUseCase implements SignInUserCommand {
-
-    static final Logger log = LoggerFactory.getLogger(SignInUserUseCase.class);
 
     private final GetUserByEmailRepository getUserByEmailRepository;
     private final JwtUtil jwtUtil;
@@ -38,16 +36,19 @@ public class SignInUserUseCase implements SignInUserCommand {
 
         User user = getUserByEmailRepository.execute(command.getEmail());
 
-
         if(!passwordEncoder.matches(command.getPassword(), user.getPassword())) {
             log.info("Invalid credentials");
             throw new ForbiddenException(ErrorDescription.INVALID_CREDENTIALS.getValue());
         }
 
-        user.setPassword(null);
-        AuthenticatedUser authenticatedUser = buildAuthenticatedUser(user);
+        if(user.getActive() != null && !user.getActive()) {
+            log.info("User with email {} is not activated yet", user.getEmail());
+            throw new ForbiddenException(ErrorDescription.USER_NOT_ACTIVATED.getValue());
+        }
 
-        return authenticatedUser;
+        user.setPassword(null);
+
+        return buildAuthenticatedUser(user);
     }
 
     private AuthenticatedUser buildAuthenticatedUser(User user) {

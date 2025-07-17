@@ -2,10 +2,9 @@ package com.cuoco.application.port.in;
 
 import com.cuoco.application.usecase.model.User;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.ToString;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface CreateUserCommand {
@@ -13,7 +12,7 @@ public interface CreateUserCommand {
     User execute(Command command);
 
     @Data
-    @ToString
+    @Builder
     @AllArgsConstructor
     class Command {
 

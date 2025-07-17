@@ -4,17 +4,15 @@ import com.cuoco.adapter.out.hibernate.model.AllergyHibernateModel;
 import com.cuoco.adapter.out.hibernate.repository.GetAllergiesByIdHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.GetAllergiesByIdRepository;
 import com.cuoco.application.usecase.model.Allergy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Repository
 public class GetAllergiesByIdDatabaseRepositoryAdapter implements GetAllergiesByIdRepository {
-
-    static final Logger log = LoggerFactory.getLogger(GetAllergiesByIdDatabaseRepositoryAdapter.class);
 
     private final GetAllergiesByIdHibernateRepositoryAdapter getAllergiesByIdHibernateRepositoryAdapter;
 

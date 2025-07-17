@@ -1,5 +1,6 @@
 package com.cuoco.adapter.out.hibernate.model;
 
+import com.cuoco.application.usecase.model.UserRecipe;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,5 +31,10 @@ public class UserRecipesHibernateModel {
     @JoinColumn(name = "recipe_id", referencedColumnName = "id")
     private RecipeHibernateModel recipe;
 
-    private Boolean favorite;
+    public UserRecipe toDomain() {
+        return UserRecipe.builder()
+                .user(user.toDomain())
+                .recipe(recipe.toDomain())
+                .build();
+    }
 }

@@ -1,39 +1,33 @@
 package com.cuoco.application.port.in;
 
 import com.cuoco.application.usecase.model.Ingredient;
-import com.cuoco.application.usecase.model.RecipeFilter;
+import com.cuoco.application.usecase.model.Recipe;
+import lombok.Builder;
+import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
 public interface GetRecipesFromIngredientsCommand {
 
-    String execute(Command command);
+    List<Recipe> execute(Command command);
 
+    @Data
+    @Builder
+    @ToString
     class Command {
+        private List<Ingredient> ingredients;
+        private Boolean filtersEnabled;
 
-        private final RecipeFilter filters;
-        private final List<Ingredient> ingredients;
+        private Integer servings;
+        private Integer preparationTimeId;
+        private Integer cookLevelId;
+        private Integer dietId;
+        private List<Integer> typeIds;
+        private List<Integer> allergiesIds;
+        private List<Integer> dietaryNeedsIds;
 
-        public Command(RecipeFilter filters, List<Ingredient> ingredients) {
-            this.filters = filters;
-            this.ingredients = ingredients;
-        }
-
-        public RecipeFilter getFilters() {
-            return filters;
-        }
-
-        public List<Ingredient> getIngredients() {
-            return ingredients;
-        }
-
-        @Override
-        public String toString() {
-            return "Command{" +
-                    "filters=" + filters +
-                    ", ingredients=" + ingredients +
-                    '}';
-        }
+        private Integer size;
+        private List<Long> notInclude;
     }
-
 }

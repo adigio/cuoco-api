@@ -10,7 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "diet")
+@Entity(name = "diets")
 @Data
 @Builder
 @NoArgsConstructor
@@ -21,6 +21,13 @@ public class DietHibernateModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String description;
+
+    public static DietHibernateModel fromDomain(Diet diet) {
+        return DietHibernateModel.builder()
+                .id(diet.getId())
+                .description(diet.getDescription())
+                .build();
+    }
 
     public Diet toDomain() {
         return Diet

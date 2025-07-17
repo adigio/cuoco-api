@@ -1,20 +1,18 @@
 package com.cuoco.application.usecase;
 
-import com.cuoco.application.port.in.GetPlansQuery;
+import com.cuoco.application.port.in.GetAllPlansQuery;
 import com.cuoco.application.port.out.GetAllPlansRepository;
 import com.cuoco.application.usecase.model.Plan;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Slf4j
 @Component
-public class GetAllPlansUseCase implements GetPlansQuery {
+public class GetAllPlansUseCase implements GetAllPlansQuery {
 
-    static final Logger log = LoggerFactory.getLogger(GetAllPlansUseCase.class);
-
-    private GetAllPlansRepository getAllPlansRepository;
+    private final GetAllPlansRepository getAllPlansRepository;
 
     public GetAllPlansUseCase(GetAllPlansRepository getAllPlansRepository) {
         this.getAllPlansRepository = getAllPlansRepository;

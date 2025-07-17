@@ -10,7 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "cook_level")
+@Entity(name = "cook_levels")
 @Data
 @Builder
 @NoArgsConstructor
@@ -22,9 +22,15 @@ public class CookLevelHibernateModel {
     private Integer id;
     private String description;
 
+    public static CookLevelHibernateModel fromDomain(CookLevel cookLevel) {
+        return CookLevelHibernateModel.builder()
+                .id(cookLevel.getId())
+                .description(cookLevel.getDescription())
+                .build();
+    }
+
     public CookLevel toDomain() {
-        return CookLevel
-                .builder()
+        return CookLevel.builder()
                 .id(id)
                 .description(description)
                 .build();

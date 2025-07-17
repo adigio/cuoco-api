@@ -1,5 +1,6 @@
 package com.cuoco.adapter.out.hibernate.model;
 
+import com.cuoco.application.usecase.model.Ingredient;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,7 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "ingredient")
+@Entity(name = "ingredients")
 @Data
 @Builder
 @NoArgsConstructor
@@ -28,6 +29,25 @@ public class IngredientHibernateModel {
     private CategoryHibernateModel category;
 
     @ManyToOne
-    @JoinColumn(name = "measure_unit_id", referencedColumnName = "id")
-    private MeasureUnitHibernateModel measureUnit;
+    @JoinColumn(name = "unit_id", referencedColumnName = "id")
+    private UnitHibernateModel unit;
+
+    public static IngredientHibernateModel fromDomain(Ingredient ingredient) {
+        return IngredientHibernateModel.builder()
+                .id(ingredient.getId())
+                .name(ingredient.getName())
+                .unit(UnitHibernateModel.fromDomain(ingredient.getUnit()))
+                .build();
+    }
+
+    public Ingredient toDomain(Double quantity, Boolean optional) {
+        return Ingredient.builder()
+                .id(id)
+                .name(name)
+                .quantity(quantity)
+                .optional(optional)
+                .unit(unit.toDomain())
+                .build();
+    }
+
 }
