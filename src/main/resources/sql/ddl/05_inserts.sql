@@ -5,6 +5,15 @@ VALUES (1, 'Free'),
 INSERT INTO plan_configuration (id, title, description, quantity, price, currency)
 VALUES (1, 'Cuoco Pro - Plan Premium', 'Actualiza a Pro: Recetas ilimitadas, filtros avanzados, meal preps y mucho más', 1, 500.00, 'ARS');
 
+INSERT INTO payment_status (id, description)
+VALUES (1, 'pending'),
+       (2, 'approved'),
+       (3, 'in_process'),
+       (4, 'rejected'),
+       (5, 'cancelled'),
+       (6, 'refunded'),
+       (7, 'charged_back');
+
 INSERT INTO cook_levels (id, description)
 VALUES (1, 'Bajo'),
        (2, 'Medio'),

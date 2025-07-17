@@ -22,7 +22,7 @@ public class PaymentStatusHibernateModel {
     private Integer id;
     private String description;
 
-    public PaymentStatusHibernateModel fromDomain(PaymentStatus paymentStatus) {
+    public static PaymentStatusHibernateModel fromDomain(PaymentStatus paymentStatus) {
         return PaymentStatusHibernateModel.builder()
                 .id(paymentStatus.getId())
                 .description(paymentStatus.getDescription())

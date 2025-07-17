@@ -4,6 +4,7 @@ import com.cuoco.adapter.out.hibernate.model.UserHibernateModel;
 import com.cuoco.adapter.out.hibernate.model.UserPaymentsHibernateModel;
 import com.cuoco.adapter.out.hibernate.repository.CreateUserPaymentHibernateRepositoryAdapter;
 import com.cuoco.application.port.out.CreateUserPaymentRepository;
+import com.cuoco.application.port.out.UpdateUserPaymentRepository;
 import com.cuoco.application.usecase.model.UserPayment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,21 +15,23 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Qualifier("repository")
 @RequiredArgsConstructor
-public class CreateUserPaymentDatabaseRepositoryAdapter implements CreateUserPaymentRepository {
+public class UpdateUserPaymentDatabaseRepositoryAdapter implements UpdateUserPaymentRepository {
 
     private final CreateUserPaymentHibernateRepositoryAdapter createUserPaymentHibernateRepositoryAdapter;
 
     @Override
     public UserPayment execute(UserPayment userPayment) {
-        log.info("Executing create user payment in database");
+        log.info("Executing update user payment in database");
 
-        UserPaymentsHibernateModel userPaymentToSave = UserPaymentsHibernateModel.fromDomain(userPayment);
+        UserPaymentsHibernateModel userPaymentToUpdate = UserPaymentsHibernateModel.fromDomain(userPayment);
 
-        UserPaymentsHibernateModel savedUserPayment = createUserPaymentHibernateRepositoryAdapter.save(userPaymentToSave);
+        userPaymentToUpdate.setUser(UserHibernateModel.builder().id(userPayment.getUser().getId()).build());
 
-        log.info("Saved user payment with ID {}", savedUserPayment.getId());
+        UserPaymentsHibernateModel updatedUserPayment = createUserPaymentHibernateRepositoryAdapter.save(userPaymentToUpdate);
 
-        UserPayment response = savedUserPayment.toDomain();
+        log.info("Updated user payment with ID {}", updatedUserPayment.getId());
+
+        UserPayment response = updatedUserPayment.toDomain();
 
         response.setUser(userPayment.getUser());
 

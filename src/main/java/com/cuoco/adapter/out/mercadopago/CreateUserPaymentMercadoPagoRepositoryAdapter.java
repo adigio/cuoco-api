@@ -2,6 +2,7 @@ package com.cuoco.adapter.out.mercadopago;
 
 import com.cuoco.adapter.exception.NotAvailableException;
 import com.cuoco.application.port.out.CreateUserPaymentRepository;
+import com.cuoco.application.usecase.model.PaymentStatus;
 import com.cuoco.application.usecase.model.Plan;
 import com.cuoco.application.usecase.model.PlanConfiguration;
 import com.cuoco.application.usecase.model.User;
@@ -9,6 +10,7 @@ import com.cuoco.application.usecase.model.UserPayment;
 import com.cuoco.shared.config.mercadopago.MercadoPagoConfig;
 import com.cuoco.shared.model.ErrorDescription;
 import com.cuoco.shared.utils.Constants;
+import com.cuoco.shared.utils.PaymentConstants;
 import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
 import com.mercadopago.client.preference.PreferenceClient;
 import com.mercadopago.client.preference.PreferenceItemRequest;
@@ -29,7 +31,7 @@ import java.util.UUID;
 @Component
 @Qualifier("provider")
 @RequiredArgsConstructor
-public class CreateUserPaymentMercadoLibreRepositoryAdapter implements CreateUserPaymentRepository {
+public class CreateUserPaymentMercadoPagoRepositoryAdapter implements CreateUserPaymentRepository {
 
     private static final String EXTERNAL_REFERENCE_PREFIX = "CUOCO_PRO_UPGRADE";
     private static final String HOST_DOMAIN = "cuoco.com.ar";
@@ -81,17 +83,16 @@ public class CreateUserPaymentMercadoLibreRepositoryAdapter implements CreateUse
     private PreferenceRequest buildPreference(UserPayment userPayment) {
         return PreferenceRequest.builder()
                 .items(List.of(buildItems(userPayment.getPlan())))
-                .backUrls(buildBackUrls())
                 .externalReference(generateExternalReference(userPayment.getUser().getId()))
+                .backUrls(buildBackUrls())
+                .autoReturn("approved")
                 .build();
     }
 
     private PreferenceBackUrlsRequest buildBackUrls() {
 
-        String host = request.getRequestURL().toString().replace(request.getRequestURI(), Constants.EMPTY.getValue());
-        String contextPath = host.contains(HOST_DOMAIN) ? API_CONTEXT : Constants.EMPTY.getValue();
-        String baseUrl = host + contextPath;
-
+        String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), Constants.EMPTY.getValue());
+        
         return PreferenceBackUrlsRequest.builder()
                 .success(baseUrl + config.getCallbacks().getSuccess())
                 .pending(baseUrl + config.getCallbacks().getPending())
@@ -115,6 +116,7 @@ public class CreateUserPaymentMercadoLibreRepositoryAdapter implements CreateUse
         return UserPayment.builder()
                 .user(request.getUser())
                 .plan(request.getPlan())
+                .status(PaymentStatus.builder().id(PaymentConstants.STATUS_PENDING.getValue()).build())
                 .externalId(preference.getId())
                 .checkoutUrl(preference.getInitPoint())
                 .externalReference(preference.getExternalReference())

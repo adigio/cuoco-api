@@ -41,6 +41,7 @@ public class SecurityConfiguration {
                                 "/preparation-times",
                                 "/dietary-needs",
                                 "/allergies",
+                                "/payments/webhook",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"

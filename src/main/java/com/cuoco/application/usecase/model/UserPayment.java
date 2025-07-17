@@ -10,6 +10,7 @@ public class UserPayment {
     private Long id;
     private User user;
     private Plan plan;
+    private PaymentStatus status;
     private String externalId;
     private String externalReference;
     private String checkoutUrl;

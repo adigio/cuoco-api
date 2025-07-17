@@ -32,7 +32,7 @@ public class PlanHibernateModel {
         return PlanHibernateModel.builder()
                 .id(plan.getId())
                 .description(plan.getDescription())
-                .configuration(PlanConfigurationHibernateModel.fromDomain(plan.getConfiguration()))
+                .configuration(plan.getConfiguration() != null ? PlanConfigurationHibernateModel.fromDomain(plan.getConfiguration()) : null)
                 .build();
     }
 

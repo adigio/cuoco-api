@@ -1,5 +1,6 @@
 package com.cuoco.adapter.out.hibernate.model;
 
+import com.cuoco.application.usecase.model.User;
 import com.cuoco.application.usecase.model.UserPayment;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,6 +34,10 @@ public class UserPaymentsHibernateModel {
     @JoinColumn(name = "to_plan_id")
     private PlanHibernateModel toPlan;
 
+    @OneToOne
+    @JoinColumn(name = "status_id")
+    private PaymentStatusHibernateModel status;
+
     private String externalId;
     private String externalReference;
     private String checkoutUrl;
@@ -43,7 +48,9 @@ public class UserPaymentsHibernateModel {
     public static UserPaymentsHibernateModel fromDomain(UserPayment userPayment) {
         return UserPaymentsHibernateModel.builder()
                 .id(userPayment.getId())
+                .user(UserHibernateModel.fromDomain(userPayment.getUser()))
                 .toPlan(PlanHibernateModel.fromDomain(userPayment.getPlan()))
+                .status(PaymentStatusHibernateModel.fromDomain(userPayment.getStatus()))
                 .externalId(userPayment.getExternalId())
                 .externalReference(userPayment.getExternalReference())
                 .checkoutUrl(userPayment.getCheckoutUrl())
@@ -52,7 +59,10 @@ public class UserPaymentsHibernateModel {
 
     public UserPayment toDomain() {
         return UserPayment.builder()
+                .id(id)
+                .user(user.toDomain())
                 .plan(toPlan.toDomain())
+                .status(status.toDomain())
                 .externalId(externalId)
                 .externalReference(externalReference)
                 .checkoutUrl(checkoutUrl)
