@@ -64,10 +64,10 @@ public class CreateUserPaymentMercadoPagoRepositoryAdapter implements CreateUser
             return response;
 
         } catch (MPException e) {
-            log.error("Error while creating preference in MercadoPago SDK", e);
+            log.error("Error while creating preference in MercadoPago SDK: {}", e.getMessage());
             throw new NotAvailableException(ErrorDescription.NOT_AVAILABLE.getValue());
         } catch (MPApiException e) {
-            log.error("Failed to create preference payment with MercadoPago API", e);
+            log.error("Failed to create preference payment with MercadoPago API: {}", e.getApiResponse());
             throw new NotAvailableException(ErrorDescription.NOT_AVAILABLE.getValue());
         }
     }
@@ -92,6 +92,8 @@ public class CreateUserPaymentMercadoPagoRepositoryAdapter implements CreateUser
     private PreferenceBackUrlsRequest buildBackUrls() {
 
         String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), Constants.EMPTY.getValue());
+
+        log.info("Creating payment using URL {}", baseUrl);
         
         return PreferenceBackUrlsRequest.builder()
                 .success(baseUrl + config.getCallbacks().getSuccess())
