@@ -22,6 +22,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -34,8 +35,9 @@ import java.util.UUID;
 public class CreateUserPaymentMercadoPagoRepositoryAdapter implements CreateUserPaymentRepository {
 
     private static final String EXTERNAL_REFERENCE_PREFIX = "CUOCO_PRO_UPGRADE";
-    private static final String HOST_DOMAIN = "cuoco.com.ar";
-    private static final String API_CONTEXT = "/api";
+
+    @Value("${shared.base-url}")
+    private String baseUrl;
 
     private final HttpServletRequest request;
     private final MercadoPagoConfig config;
@@ -64,10 +66,10 @@ public class CreateUserPaymentMercadoPagoRepositoryAdapter implements CreateUser
             return response;
 
         } catch (MPException e) {
-            log.error("Error while creating preference in MercadoPago SDK", e);
+            log.error("Error while creating preference in MercadoPago SDK: {}", e.getMessage());
             throw new NotAvailableException(ErrorDescription.NOT_AVAILABLE.getValue());
         } catch (MPApiException e) {
-            log.error("Failed to create preference payment with MercadoPago API", e);
+            log.error("Failed to create preference payment with MercadoPago API: {}", e.getApiResponse());
             throw new NotAvailableException(ErrorDescription.NOT_AVAILABLE.getValue());
         }
     }
@@ -90,8 +92,7 @@ public class CreateUserPaymentMercadoPagoRepositoryAdapter implements CreateUser
     }
 
     private PreferenceBackUrlsRequest buildBackUrls() {
-
-        String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), Constants.EMPTY.getValue());
+        log.info("Creating payment preference backs using URL {}", baseUrl);
         
         return PreferenceBackUrlsRequest.builder()
                 .success(baseUrl + config.getCallbacks().getSuccess())

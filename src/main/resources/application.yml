@@ -51,6 +51,7 @@ mercado-pago:
     secondary-color: ${MP_BRANDING_SECONDARY_COLOR:#FFA500}
     show-mercado-pago-branding: ${MP_BRANDING_ENABLE_MP_BRANDING:false}
 shared:
+  base-url: ${BASE_URL:https://dev.cuoco.com.ar}
   email:
     no-reply:
       name: ${NO_REPLY_NAME:Cuoco}
