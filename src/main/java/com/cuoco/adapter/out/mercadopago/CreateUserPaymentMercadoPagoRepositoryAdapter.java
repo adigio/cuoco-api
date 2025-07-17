@@ -22,6 +22,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -34,8 +35,9 @@ import java.util.UUID;
 public class CreateUserPaymentMercadoPagoRepositoryAdapter implements CreateUserPaymentRepository {
 
     private static final String EXTERNAL_REFERENCE_PREFIX = "CUOCO_PRO_UPGRADE";
-    private static final String HOST_DOMAIN = "cuoco.com.ar";
-    private static final String API_CONTEXT = "/api";
+
+    @Value("${shared.base-url}")
+    private String baseUrl;
 
     private final HttpServletRequest request;
     private final MercadoPagoConfig config;
@@ -90,10 +92,7 @@ public class CreateUserPaymentMercadoPagoRepositoryAdapter implements CreateUser
     }
 
     private PreferenceBackUrlsRequest buildBackUrls() {
-
-        String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), Constants.EMPTY.getValue());
-
-        log.info("Creating payment using URL {}", baseUrl);
+        log.info("Creating payment preference backs using URL {}", baseUrl);
         
         return PreferenceBackUrlsRequest.builder()
                 .success(baseUrl + config.getCallbacks().getSuccess())
