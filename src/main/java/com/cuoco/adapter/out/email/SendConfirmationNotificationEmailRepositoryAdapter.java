@@ -72,7 +72,7 @@ public class SendConfirmationNotificationEmailRepositoryAdapter implements SendC
 
         String confirmationLink = baseUrl
                 .concat(contextPath)
-                .concat("/auth/confirm?token=")
+                .concat("/auth/activate?token=")
                 .concat(token);
 
         log.info("Builded URL link from this base {} and this context {}", baseUrl, contextPath);
